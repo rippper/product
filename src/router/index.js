@@ -4,6 +4,7 @@ import exam from './exam' // 考试
 import ebook from './ebook' // 电子书
 import personalCenter from './personalCenter' // 个人中心
 import course from './course' // 课程相关
+import trainingCourse from './trainingCourse' // 培训班
 
 // 由于懒加载页面太多的话会造成webpack热更新太慢，所以开发环境不使用懒加载，只有生产环境使用懒加载
 const _import = require('@/plugins/import.' + process.env.NODE_ENV)
@@ -146,7 +147,9 @@ const routes = [
       // 个人中心相关路由
       ...personalCenter,
       // 课程相关路由
-      ...course
+      ...course,
+      // 培训班相关路由
+      ...trainingCourse
     ]
   },
   { path: '*', redirect: '/error' }
