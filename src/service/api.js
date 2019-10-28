@@ -7,6 +7,7 @@ const Platform = '/Wechat'
 const Platform1 = '/mobile'
 const Enum = '/AppEnum'
 const Platform2 = '/wechatarticle'
+const appTraining = '/appTraining' // zyb培训班
 
 export default {
   // 判断用户是否存在
@@ -478,6 +479,10 @@ export default {
   },
   NoticeList: {
     url: API_URL + Platform2 + '/NoticeList',
+    data: {}
+  },
+  TrainingClass: { // zyb培训班获取接口
+    url: API_URL + appTraining + '/TrainingClass',
     data: {}
   }
 }

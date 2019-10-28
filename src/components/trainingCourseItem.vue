@@ -109,10 +109,21 @@ export default {
             ul{
                 display: flex;
                 li{
+                    width:33%;
                     color: #a9bcc7;
                     margin-right: toRem(13px);
+                    @include ellipsis_two(1);
                     .train_detailed_label{
                         margin-right: toRem(7px);
+                    }
+                    &:first-of-type{
+                        width:40%;
+                    }
+                    &:nth-of-type(2){
+                        width:30%;
+                    }
+                    &:last-of-type{
+                        width:30%;
                     }
                 }
             }

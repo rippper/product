@@ -481,6 +481,11 @@ export const EnumThumbsUpCancle = (data) => fetch.post(Api.EnumThumbsUpCancle.ur
  */
 export const NoticeList = (data) => fetch.post(Api.NoticeList.url,
   { ...Api.NoticeList.data, ...data })
+/**
+ * zyb培训班课程
+ */
+export const TrainingClass = (data) => fetch.post(Api.TrainingClass.url,
+  { ...Api.TrainingClass.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {

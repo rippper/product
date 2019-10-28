@@ -1,26 +1,46 @@
 <template>
     <div class="trainCour">
-        <headerFix title="培训班" fixed="true">
-            <i class="train_back" slot="left"></i>
-            <i class="train_searchdepart" slot="right"></i>
-        </headerFix>
-        <div class="train_SelectDepart">
-            <transPlaceSelect
-                v-for="(item, index) in selectType"
-                :key="index"
-                :Type="item.Type"
-                :typeList="item.typeList"
-            >
-            </transPlaceSelect>
-        </div>
-        <div class="train_CourseDepart">
-            <trainingCourseItem v-for="(item, index) in courseInfor" :key="index" :courseInfor="courseInfor[index]"></trainingCourseItem>
-        </div>
+            <headerFix title="培训班" :fixed="true">
+                <i class="train_back" slot="left"></i>
+                <i class="train_searchdepart" slot="right"></i>
+            </headerFix>
+            <!-- <mt-loadmore :bottom-method="downmore" :bottom-all-loaded="allLoaded" ref="loadmore" :auto-fill="false" @bottom-status-change="handleBottomChange" :bottomDistance="150"> -->
+            <div>
+                <div class="train_SelectDepart">
+                        <transPlaceSelect
+                            v-for="(item, index) in selectType"
+                            :key="index"
+                            :Type="item.Type"
+                            :typeList="item.typeList"
+                        >
+                        </transPlaceSelect>
+                </div>
+                <div class="train_CourseDepart">
+                    <ul v-infinite-scroll="downmore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+                        <li v-for="(item, index) in courseInfor" :key="index">
+                            <trainingCourseItem :courseInfor="courseInfor[index]" ></trainingCourseItem>
+                        </li>
+                    </ul>
+                    <div class="train_LoadMore" v-text="loadMore"></div>
+                </div>
+            </div>
+            <!-- <div slot="bottom" class="mint-loadmore-bottom">
+                <span v-show="bottomStatus !== 'loading'" :class="{ 'rotate': bottomStatus === 'drop' }">上拉加载更多↑</span>
+                <span v-show="bottomStatus === 'loading'">加载中...</span>
+            </div> -->
+            <!-- </mt-loadmore> -->
     </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import { headerFix, transPlaceSelect, trainingCourseItem } from '../components'
+import { TrainingClass } from '../service/getData'
+import { InfiniteScroll } from 'mint-ui'
+
+Vue.use(InfiniteScroll)
+// Vue.component(Loadmore.name, Loadmore)
+
 export default {
     data () {
         return {
@@ -75,11 +95,35 @@ export default {
                     mostApply: 200,
                     buttonState: { Type: 0, Value: '已报名' }
                 }
-            ]
+            ],
+            // allLoaded: false,
+            // count: 40,
+            // bottomStatus: ''
+            loading: false,
+            loadMore: '加载中'
         }
     },
+    mounted () {
+        this.render()
+    },
     methods: {
+        downmore () {
+            this.loading = true
+            setTimeout(() => {
+                this.courseInfor.push(this.courseInfor[0])
+            //     // this.$refs.loadmore.onBottomLoaded();
+                this.loading = false
+            }, 1000)
+            console.log(this.courseInfor)
+        },
+        // handleBottomChange(status) {
+        //     this.bottomStatus = status;
+        // }
+        async render () {
 
+            let msg = await TrainingClass({})
+            console.log(msg)
+        }
     },
     components: {
         headerFix,
@@ -93,6 +137,7 @@ export default {
   @import "../style/mixin";
   .trainCour {
       background:#f2f7ff;
+      box-sizing: border-box;
       .train_back{
           width: toRem(24px);
           height: toRem(42px);
@@ -115,14 +160,20 @@ export default {
       }
       .train_SelectDepart{
           background: #fff;
-          padding-bottom: toRem(25px);
-          margin-top: toRem(92px);
+          padding-top: toRem(98px);
+          padding-bottom: toRem(20px);
           margin-bottom: toRem(20px);
       }
       .train_CourseDepart{
+          overflow: auto;
+          height: toRem(1250px);
           background: #fff;
           padding-top: toRem(42px);
-          padding-bottom: toRem(10px);
+          padding-bottom: toRem(50px);
+      }
+      .train_LoadMore{
+          text-align: center;
+          height: toRem(10px);
       }
   }
 </style>

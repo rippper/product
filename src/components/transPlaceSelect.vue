@@ -50,7 +50,7 @@ export default {
     @import "../style/mixin";
     .selectPlace{
         -webkit-font-smoothing:antialiased;
-        padding-top: toRem(43px);
+        padding-top: toRem(15px);
         dl{
             display: flex;
             dt{
