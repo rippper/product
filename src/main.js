@@ -10,6 +10,8 @@ import routes from './router'
 import { CheckLoginStatus } from './service/getData'
 import store from './store/'
 import './style/base.scss'
+import 'swiper/dist/css/swiper.css'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
 import App from './App'
 // FastClick绑定
 FastClick.attach(document.body)
@@ -18,6 +20,7 @@ Vue.config.productionTip = false
 Vue.use(VueFilter)
 Vue.use(VueComponents)
 Vue.use(VueRouter)
+Vue.use(VueAwesomeSwiper)
 
 Vue.prototype.isAllowWeiXin = isAllowWeiXin
 const agent = userAgent()

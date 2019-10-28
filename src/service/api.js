@@ -7,7 +7,10 @@ const Platform = '/Wechat'
 const Platform1 = '/mobile'
 const Enum = '/AppEnum'
 const Platform2 = '/wechatarticle'
-
+const Book = '/wechatbook'
+const Course = '/wechatCourse'
+const Production = '/wechatproduction'
+const Article = '/apiarticle'
 export default {
   // 判断用户是否存在
   CheckUserIsExit: {
@@ -148,27 +151,27 @@ export default {
   },
   // 文章频道
   GetArticleChannelInfoList: {
-    url: API_URL + Platform + '/GetArticleChannelInfoList',
+    url: API_URL + Article + '/GetArticleChannelInfoList',
     data: { ParentId: '', ParentCode: '' }
   },
   // 文章列表
   GetArticleInfoList: {
-    url: API_URL + Platform + '/GetArticleInfoList',
+    url: API_URL + Article + '/GetArticleInfoList',
     data: { CategoryId: '', Keyword: '', CategoryCode: '', Page: '1', Rows: '10' }
   },
   // 文章数
   GetActicleInfoCount: {
-    url: API_URL + Platform1 + '/GetActicleInfoCount',
+    url: API_URL + Article + '/GetActicleInfoCount',
     data: { CategoryCode: '' }
   },
   // 文章详情
   ArticleDetail: {
-    url: API_URL + Platform + '/ArticleDetail',
+    url: API_URL + Article + '/ArticleDetail',
     data: { Id: '' }
   },
   // 文章详情
   GetArticleDetailMore: {
-    url: API_URL + Platform + '/GetArticleDetailMore',
+    url: API_URL + Article + '/GetArticleDetailMore',
     data: { Id: '', CategoryId: '', Sort: 'Id', Order: 'desc' }
   },
   // 通知公告
@@ -456,28 +459,24 @@ export default {
     url: API_URL + Enum + '/ThumbsUpCancle',
     data: {}
   },
-  // 党史人物列表
-  FigurePageList: {
-    url: API_URL + Enum + '/FigurePageList',
-    data: { Page: 1, Rows: 10, Sort: 'Id', Order: 'desc' }
-  },
-  // 党史人物详情
-  GetFigureDetail: {
-    url: API_URL + Enum + '/GetFigureDetail',
-    data: { Id: '' }
-  },
-  // 党史人物诞辰纪念
-  CheckFigureDate: {
-    url: API_URL + Enum + '/CheckFigureDate',
-    data: {}
-  },
-  // 入党纪念
-  CheckPartyDate: {
-    url: API_URL + Enum + '/CheckPartyDate',
-    data: {}
-  },
+  // 首页通知公告
   NoticeList: {
     url: API_URL + Platform2 + '/NoticeList',
+    data: {}
+  },
+  // 首页电子书列表
+  BookList: {
+    url: API_URL + Book + '/BookList',
+    data: {}
+  },
+  // 课程列表
+  CourseList: {
+    url: API_URL + Course + '/CourseList',
+    data: {}
+  },
+  // 展厅列表
+  ProductionInfoList: {
+    url: API_URL + Production + '/ProductionInfoList',
     data: {}
   }
 }
