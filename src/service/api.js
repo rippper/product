@@ -11,6 +11,8 @@ const Book = '/wechatbook'
 const Course = '/wechatCourse'
 const Production = '/wechatproduction'
 const Article = '/apiarticle'
+const wechatTraining = '/wechatTraining' // zyb培训班
+
 export default {
   // 判断用户是否存在
   CheckUserIsExit: {
@@ -477,6 +479,10 @@ export default {
   // 展厅列表
   ProductionInfoList: {
     url: API_URL + Production + '/ProductionInfoList',
+    data: {}
+  },
+  TrainingClass: { // zyb培训班获取接口
+    url: API_URL + wechatTraining + '/TrainingClass',
     data: {}
   }
 }

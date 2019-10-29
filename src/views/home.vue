@@ -24,8 +24,9 @@
      </div>
      <div class="handle">
        <router-link class="search-btn" to="/courseSearch"><img src="../assets/search-img1.png" alt=""></router-link>
-       <router-link class="history-btn" to="/history"><img src="../assets/history.png" alt=""></router-link>
-     </div>
+       <router-link class="history-btn" to="/trainingcourse"><img src="../assets/history.png" alt=""></router-link>
+     </div> 
+     <!-- /history -->
    </div>
     <div class="container">
       <!-- <mt-swipe :auto="4000">

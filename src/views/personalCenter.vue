@@ -3,73 +3,41 @@
 */
 <template>
   <div class="personalCenter container_bottom">
-    <header-fix title="个人中心"></header-fix>
-    <div class="person_top">
-      <div class="person_top1">
-        <error-img class="user_avatar" :src="userInfo.UserPhoto" :error-src="noPhoto" alt="头像"></error-img>
-        <h4>{{userInfo.Username}}</h4>
-      </div>
-      <div class="my_info">
-        <div class="my_info_job">
-          <h2>{{userInfo.UserZW || '无'}}</h2>
-          <p>我的职务</p>
-        </div>
-        <div class="my_info_score">
-          <h2>{{userInfo.TotalCredit}}</h2>
-          <p>我的学分</p>
-        </div>
-      </div>
-    </div>
-    <div class="person-link">
-      <ul>
-        <li>
-          <router-link :to="{name: 'thoughtReport'}">
-            <!-- <img src="../assets/hq-personal-ico-5.png" alt="思想汇报"> -->
-            <p>思想汇报</p>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/myCourse">
-            <!-- <img src="../assets/hq-personal-course.png" alt="我的课程"> -->
-            <p>我的课程</p>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/myExam">
-            <img src="../assets/my-exam-icon.png" alt="我的考试">
-            <p>我的考试</p>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/rankList">
-            <!-- <img src="../assets/hq-personal-rank.png" alt="排行榜"> -->
-            <p>排行榜</p>
-          </router-link>
-        </li>
-        <li>
-          <div class="qrcode" @click="toggleModel">
-            <!-- <img src="../assets/hq-personal-code.png" alt="APP二维码"> -->
-            <p>APP二维码</p>
+    <header-fix title="个人中心">
+      <router-link slot="left" >
+        <img src="../assets/message-icon.png" alt="">
+      </router-link>
+      <router-link slot="right" to="/courseSearch"><img src="../assets/scan-code-img.png" alt=""></router-link>
+    </header-fix>
+    <div class="wrapper">
+      <div class="person-info">
+        <div class="top">
+          <div class="headImg">
+            
           </div>
-        </li>
-        <li>
-          <router-link to="/setting">
-            <!-- <img src="../assets/hq-personal-set-up.png" alt="更多设置"> -->
-            <p>更多设置</p>
-          </router-link>
-        </li>
-      </ul>
+        </div>
+        <div class="text">
+
+        </div>
+      </div>
+      <div class="person-link">
+        <ul>
+          <li>
+            <p class="num"></p>
+            <p class="tip"></p>
+          </li>
+          <li>
+            <p class="num"></p>
+            <p class="tip"></p>
+          </li>
+          <li>
+            <p class="num"></p>
+            <p class="tip"></p>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="exit">
-      <mt-button v-if="userAgent.weixin&&isAllowWeiXin" @click.native="exit" type="primary" size="large">
-        解除微信绑定
-      </mt-button>
-      <mt-button v-else @click.native="exit" type="primary" size="large">安全退出</mt-button>
-    </div>
-    <footer-fix selected="personalCenter"></footer-fix>
-    <mb-model :isShow.sync="showModel">
-      <img class="app_code" src="../assets/app_code.png" alt="app二维码">
-    </mb-model>
+    <footer-fix selected="personCenter"></footer-fix>
   </div>
 </template>
 <script>
@@ -77,7 +45,7 @@
   import Vue from 'vue'
   import { mapActions, mapState } from 'vuex'
   import noPhoto from '../assets/user_avatar.png'
-  import { errorImg, footerFix, headerFix, mbModel } from '../components'
+  import { footerFix, headerFix } from '../components'
   import { LoginOut, DelBind } from '../service/getData'
   import { goBack } from '../service/mixins'
 
@@ -99,9 +67,7 @@
     },
     components: {
       footerFix,
-      headerFix,
-      errorImg,
-      mbModel
+      headerFix
     },
     methods: {
       ...mapActions(['getUserInformation', 'saveUserInfo']),
@@ -140,7 +106,7 @@
     .header {
       width: 100%;
       background: transparent;
-
+      background-color: #3e6ed7; 
       .webapp-left {
         font-size: 22px;
         color: #fff;
@@ -157,9 +123,6 @@
       margin: 0 auto;
       padding-top: toRem(34px);
       align-items: center;
-      background: url(../assets/hq-personal-shinebg.png) center top;
-      background-size: toRem(698px) toRem(401px);
-
       .person_top1 {
         .user_avatar {
           @include square(150px);
@@ -217,31 +180,6 @@
         }
       }
     }
-
-    .person-link {
-      ul {
-        @extend %clearFix;
-
-        li {
-          width: 50%;
-          text-align: center;
-          @extend %pull-left;
-          margin-top: toRem(75px);
-
-          img {
-            width: toRem(61px);
-            height: toRem(61px);
-          }
-
-          p {
-            color: #333;
-            font-size: 14px;
-            margin-top: toRem(10px);
-          }
-        }
-      }
-    }
-
     .exit {
       margin-bottom: toRem(20px);
 
