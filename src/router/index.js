@@ -11,6 +11,7 @@ const _import = require('@/plugins/import.' + process.env.NODE_ENV)
 
 const Home = _import('home.vue')
 const Login = _import('login.vue')
+const Login1 = _import('login1.vue')
 const Error = _import('error.vue')
 const Message = _import('message.vue')
 const MessageDetail = _import('messageDetail.vue')
@@ -40,6 +41,13 @@ const routes = [
         name: 'login',
         path: '/login',
         component: Login,
+        meta: { title: '登陆', isSkip: true }
+      },
+      // 登陆
+      {
+        name: 'login1',
+        path: '/login1',
+        component: Login1,
         meta: { title: '登陆', isSkip: true }
       },
       // 首页

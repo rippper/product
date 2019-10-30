@@ -4,8 +4,8 @@
 <template>
   <div class="personalCenter container_bottom">
     <header-fix title="个人中心">
-      <router-link slot="left" >
-        <img src="../assets/message-icon.png" alt="">
+      <router-link slot="left" to='/'>
+        <img src="../assets/message.png" alt="">
       </router-link>
       <router-link slot="right" to="/courseSearch"><img src="../assets/scan-code-img.png" alt=""></router-link>
     </header-fix>
@@ -13,28 +13,61 @@
       <div class="person-info">
         <div class="top">
           <div class="headImg">
-            
+            <img :src="userInfo.Img" alt="" v-if="userInfo.Img">
+            <img src="../assets/headImg-per.png" alt="" v-else>
+          </div>
+          <div class="edit">
+            <router-link to='/'>
+              <p class="p1">{{userInfo.Username}}</p>
+              <p class="p2">编辑资料<img src="../assets/edit-icon.png" alt=""></p>
+            </router-link>
           </div>
         </div>
         <div class="text">
-
+          <ul>
+            <li>
+              <p class="num">{{userInfo.TotalCredit}}</p>
+              <p class="word">总学分</p>
+            </li>
+            <li>
+              <p class="num">41</p>
+              <p class="word">积分数</p>
+            </li>
+            <li>
+              <p class="num">{{userInfo.Learncount || '0'}}</p>
+              <p class="word">学习次数</p>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="person-link">
-        <ul>
-          <li>
-            <p class="num"></p>
-            <p class="tip"></p>
-          </li>
-          <li>
-            <p class="num"></p>
-            <p class="tip"></p>
-          </li>
-          <li>
-            <p class="num"></p>
-            <p class="tip"></p>
-          </li>
-        </ul>
+        <div class="pl-top">
+          <mt-cell title="我的学分" is-link>
+           <img slot="icon" src="../assets/coin-grey.png" alt="">
+           <span>{{userInfo.TotalCredit}}</span>
+          </mt-cell>
+          <mt-cell title="我的课程" is-link>
+           <img slot="icon" src="../assets/book-grey.png" alt="">
+          </mt-cell>
+          <mt-cell title="我的考试" is-link>
+           <img slot="icon" src="../assets/exam-grey.png" alt="">
+          </mt-cell>
+          <mt-cell title="我的下载" is-link>
+           <img slot="icon" src="../assets/downLoad-grey.png" alt="">
+          </mt-cell>
+        </div>
+        <div class="pl-bottom">
+          <mt-cell title="信息反馈" is-link>
+           <img slot="icon" src="../assets/feedBack-grey.png" alt="">
+           <span>提供您的宝贵意见</span>
+          </mt-cell>
+          <mt-cell title="软件升级" is-link>
+           <img slot="icon" src="../assets/upData-grey.png" alt="">
+          </mt-cell>
+          <mt-cell title="设置中心" is-link>
+           <img slot="icon" src="../assets/setting-grey.png" alt="">
+          </mt-cell>
+        </div>
       </div>
     </div>
     <footer-fix selected="personCenter"></footer-fix>
@@ -87,9 +120,6 @@
             this.$router.push('/login')
           }
         }
-      },
-      toggleModel () {
-        this.showModel = !this.showModel
       }
     }
   }
@@ -100,107 +130,162 @@
 
   .personalCenter {
     // background: url("../assets/hq-personal-bg.png") no-repeat center top;
-    background-size: 10rem toRem(390px);
-    background-color: #fff;
-
     .header {
       width: 100%;
-      background: transparent;
       background-color: #3e6ed7; 
+      height: toRem(200px);
       .webapp-left {
         font-size: 22px;
         color: #fff;
       }
-
+      .header_left{
+        display: none;
+        a{
+          img{
+            width: toRem(38px);
+            height: toRem(34px);
+          }
+        }
+      }
+      .header_right{
+        display: none;
+        a{
+          img{
+            width: toRem(38px);
+            height: toRem(34px);
+          }
+        }
+      }
       .header_title {
         color: #fff;
+        display: none;
       }
     }
-
-    .person_top {
-      width: toRem(698px);
-      height: toRem(401px);
-      margin: 0 auto;
-      padding-top: toRem(34px);
-      align-items: center;
-      .person_top1 {
-        .user_avatar {
-          @include square(150px);
-          border-radius: 50%;
-          display: block;
-          margin: 0 auto;
-        }
-
-        h4 {
-          text-align: center;
-          color: #333;
-          font-size: 20px;
-          margin-top: toRem(15px);
-        }
-      }
-
-      .my_info {
-        @extend %clearFix;
-        margin-top: toRem(25px);
-
-        .my_info_job {
-          @extend %pull-left;
-          margin-left: toRem(80px);
-          text-align: center;
-
-          h2 {
-            color: #333;
-            font-size: 18px;
-            height: 24px;
-            line-height: 24px;
-          }
-
-          p {
-            color: #999;
-            font-size: 14px;
-          }
-        }
-
-        .my_info_score {
-          @extend %pull-right;
-          margin-right: toRem(80px);
-          text-align: center;
-
-          h2 {
-            color: #333;
-            font-size: 18px;
-            height: 24px;
-            line-height: 24px;
-          }
-
-          p {
-            color: #999;
-            font-size: 14px;
-          }
-        }
-      }
-    }
-    .exit {
-      margin-bottom: toRem(20px);
-
-      .mint-button--large {
+    .wrapper{
+      background: #fff;
+      .person-info{
+        position: relative;
         width: toRem(690px);
-        margin: toRem(80px) auto 0;
-        height: toRem(80px);
-        line-height: toRem(80px);
-        background-image: linear-gradient(to right, #fb9f22, #dd1100);
+        margin-left: toRem(30px);
+        .top{
+          width: toRem(690px);
+          height: toRem(280px);
+          background: #fff;
+          top: toRem(-90px);
+          box-shadow: 0 0 toRem(20px) #e8e8e8;
+          border-radius: toRem(15px);
+          position: absolute;
+          @extend %clearFix;
+          .headImg{
+            float:left;
+            margin-left: toRem(30px);
+            margin-top: toRem(-20px);
+            img{
+              width: toRem(124px);
+              height: toRem(124px);
+            }
+          }
+          .edit{
+            float: left;
+            margin-left: toRem(30px);
+            padding-top: toRem(20px);
+            a{
+              .p1{
+                font-size: 16px;
+                color: #333;
+                font-weight: bold
+              }
+              .p2{
+                color: #999;
+                img{
+                  width: toRem(22px);
+                  height: toRem(22px);
+                  margin-left: toRem(10px)
+                }
+              }
+            }
+          }
+        }
+        .text{
+          position: absolute;
+          width: toRem(630px);
+          height: toRem(100px);
+          left: toRem(30px);
+          top: toRem(50px);
+          ul{
+            display: flex;
+            justify-content: space-around;
+          }
+          li{
+            text-align: center;
+            .num{
+              font-size: 20px;
+              color: #333;
+              font-weight: bold;
+            }
+            .word{
+              margin-top: toRem(20px);
+              color: #999;
+            }
+          }
+          
+        }
       }
-    }
-
-    .webapp {
-      font-size: toRem(32px);
-    }
-
-    .mb-model_container {
-      .app_code {
-        margin: 0 auto;
-        display: block;
-        @include square(300px);
+      .person-link{
+        padding-top: toRem(220px); 
+        .pl-top{
+          padding: 0 toRem(30px);
+          .mint-cell{
+            height: toRem(98px);
+            line-height: toRem(98px);
+            .mint-cell-wrapper{
+              padding: 0 0;
+              .mint-cell-title{
+                span{
+                  font-size: 14px;
+                }
+                img{
+                  margin-right: toRem(30px); 
+                }
+              }
+              .mint-cell-value{
+                color: #dcdcdc;
+                margin-right: toRem(40px);
+              }
+              .mint-cell-allow-right::after{
+                color: #dcdcdc;
+                right: toRem(7px);
+              }
+            }
+          }
+        }
+        .pl-bottom{
+          padding: 0 toRem(30px);
+          border-top: toRem(20px) solid #f5f9ff;
+          .mint-cell{
+            height: toRem(98px);
+            line-height: toRem(98px);
+            .mint-cell-wrapper{
+              padding: 0 0;
+              .mint-cell-title{
+                span{
+                  font-size: 14px;
+                }
+                img{
+                  margin-right: toRem(30px); 
+                }
+              }
+              .mint-cell-value{
+                color: #dcdcdc;
+                margin-right: toRem(40px);
+              }
+              .mint-cell-allow-right::after{
+                color: #dcdcdc;
+                right: toRem(7px);
+              }
+            }
+          }
+        }
       }
     }
   }

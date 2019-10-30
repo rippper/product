@@ -7,36 +7,36 @@
     <header-fix title="注册" fixed>
       <i class="webapp webapp-left" @click.stop="goBack" slot="left"></i>
     </header-fix>
-    <mt-field class="account_field" label="用户名" v-model="infoSend.Account" placeholder="请输入用户名"></mt-field>
-    <mt-field label="密码" v-model="infoSend.Password" placeholder="密码长度为6~16个字符"></mt-field>
-    <mt-field label="确认密码" v-model="confirmPwd" placeholder="请再次确认密码"></mt-field>
-    <mt-field label="姓名" v-model="infoSend.Name" placeholder="请输入姓名"></mt-field>
-    <mt-cell title="选择部门" @click.native="openGroupList" is-link>
+    <mt-field class="account_field" label="用户名" v-model="infoSend.Account" placeholder=""></mt-field>
+    <mt-field label="密码" v-model="infoSend.Password" placeholder=""></mt-field>
+    <mt-field label="确认密码" v-model="confirmPwd" placeholder=""></mt-field>
+    <mt-field label="姓名" v-model="infoSend.Name" placeholder=""></mt-field>
+    <mt-cell title="所在区镇" @click.native="openGroupList" is-link>
       <span>{{infoSend.groupName|| '请选择'}}</span>
     </mt-cell>
-    <mt-field class="idcard_field" label="身份证号码" v-model="infoSend.IdCard" :attr="{maxlength:18}"
-              placeholder="请输入18位有效身份证"></mt-field>
-    <mt-cell class="not-required" title="选择职级" @click.native="openGradeList" is-link>
+    <mt-field class="idcard_field" label="身份证号" v-model="infoSend.IdCard" :attr="{maxlength:18}"
+              placeholder=""></mt-field>
+    <!-- <mt-cell class="not-required" title="选择职级" @click.native="openGradeList" is-link>
       <span>{{gradeName|| '请选择'}}</span>
-    </mt-cell>
-    <mt-field label="手机号码" v-model="infoSend.Mobile" placeholder="请输入手机号码"></mt-field>
+    </mt-cell> -->
+    <!-- <mt-cell title="手机号码" v-model="infoSend.Mobile" is-link><span>获取验证码</span></mt-cell> -->
+    <mt-field label="邮箱号码" v-model="infoSend.Email" placeholder=""></mt-field>
+    <!-- <mt-field label="验证码" v-model="infoSend.cerCode" placeholder=""></mt-field> -->
+    <div class="agree">
+        <label>
+            <div class="option">
+                <input type="checkbox" class="hidden-input" v-model="agreeState">
+                <span class=""></span>
+            </div>
+            <div class="option-val">
+                我已经阅读且同意 <router-link to="/userAgreement">"用户协议和隐私政策声明协议"</router-link> 
+            </div>
+        </label>  
+    </div>
     <div class="submit_edit">
       <mt-button type="primary" size="large" @click.native="verification">注册</mt-button>
     </div>
-    <!--职级选择器-->
-    <mt-popup
-      v-model="isShowGradeList"
-      popup-transition="popup-fade"
-      position="bottom">
-      <div slot class="grade_list">
-        <mt-picker :slots="gradeSlots" show-toolbar value-key="Name" @change="onGradeChange">
-          <div class="clearFix">
-            <span class="btn pull-left" @click="closeGradeList">取消</span>
-            <span class="btn pull-right" @click="confirmGradeList">确定</span>
-          </div>
-        </mt-picker>
-      </div>
-    </mt-popup>
+   
     <!--选择地区-->
     <group-list-popup :is-show="isShowGroupList" :group-name="groupName"
                       @update:data="overWriteInfoSend"
@@ -46,7 +46,7 @@
 <script>
   import Vue from 'vue'
   import { Button, Cell, Field, MessageBox, Picker, Popup, Toast } from 'mint-ui'
-  import { GetGradeList, Register } from '../service/getData'
+  import { Register } from '../service/getData'
   import { goBack } from '../service/mixins'
 
   Vue.component(Button.name, Button)
@@ -59,7 +59,7 @@
     mixins: [goBack],
     data () {
       return {
-        groupName: '选择部门',
+        groupName: '所在区镇',
         infoSend: {
           Account: '',
           Password: '',
@@ -67,15 +67,12 @@
           GroupId: '',
           IdCard: '',
           Grade: '',
-          Mobile: '',
-          SmgCode: ''
+          SmgCode: '',
+          Email: ''
         },
         confirmPwd: '', // 确认密码,
-        isShowGradeList: false, // 是否显示职级选择器
         isShowGroupList: false,
         gradeList: [], // 职级列表
-        gradeName: '选择职级', // 职级名称
-        gradeSelected: {}, // 被选中职级的数据
         gradeSlots: [
           // 职级数据
           {
@@ -86,15 +83,15 @@
             textAlign: 'center'
           }
         ],
-
         isPassConfirm: false, // 两次输入密码确认
         isPassIdCard: false, // 身份证验证
         isPassMobile: false, // 手机号验证
-        isPassPwd: true // 密码验证
+        isPassPwd: true, // 密码验证
+        agreeState: false
       }
     },
     mounted () {
-      this.getGradeList()
+      // this.getGradeList()
     },
     methods: {
       // 注册
@@ -115,32 +112,7 @@
       openGroupList () {
         this.isShowGroupList = true
       },
-      // 职级列表
-      async getGradeList () {
-        let data = await GetGradeList()
-        if (data.Type == 1) {
-          this.gradeList = data.Data.GroupInfoList
-          this.gradeSlots[0].values = data.Data.GroupInfoList
-        }
-      },
-      // 职级选择器
-      onGradeChange (picker, values) {
-        let selected = values[0]
-        if (selected) {
-          this.gradeSelected = selected
-        }
-      },
-      closeGradeList () {
-        this.isShowGradeList = false
-      },
-      openGradeList () {
-        this.isShowGradeList = true
-      },
-      confirmGradeList () {
-        this.isShowGradeList = false
-        this.infoSend.Grade = this.gradeSelected.Id
-        this.gradeName = this.gradeSelected.Name
-      },
+     
       verification () {
         const toastInfo = message => {
           return { message, position: 'bottom', duration: 2000 }
@@ -161,8 +133,9 @@
           Toast(toastInfo('请选择地区'))
         } else if (this.isPassIdCard == false) {
           Toast(toastInfo('请输入有效身份证号码'))
-        } else if (this.isPassMobile == false) {
-          Toast(toastInfo('手机号格式不正确'))
+        //    else if (this.isPassMobile == false) {
+        //   Toast(toastInfo('手机号格式不正确'))
+        // }
         } else {
           this.userRegister()
         }
@@ -224,10 +197,9 @@
     .mint-cell {
       .mint-cell-wrapper {
         padding: 0 toRem(30px);
-
         .mint-cell-text {
           margin-left: 0;
-
+          font-size: 15px;
           &:after {
             content: "*";
             display: inline;
@@ -308,14 +280,54 @@
     .mint-datetime-action {
       color: $color-text-reverse;
     }
-
+    .agree{
+        width: 100%;
+        margin: toRem(30px) auto 0;
+        label{
+            margin-left: toRem(30px);
+            position: relative;
+            @extend %clearFix;
+            font-size: 13px;
+            .option{
+                float: left;
+                .hidden-input {
+                    opacity: 0;
+                    position: absolute;
+                    z-index: -1;
+                    height: toRem(30px);
+                    width: toRem(30px);
+                    top: 0px;
+                }
+                input[type=checkbox]+span {
+                    display: inline-block;
+                    height: toRem(30px);
+                    width: toRem(30px);
+                    background-color: transparent;
+                    border: 1px solid #4374df;
+                    margin-right: 9px;
+                    vertical-align: middle;
+                }
+                input[type=checkbox]:checked+span {
+                    background: url(../assets/remember-dh.png) no-repeat 0px toRem(2px);
+                    background-size: toRem(30px) toRem(30px);
+                    border: none;
+                }
+            }
+            .option-val{
+              float: left;
+            }
+            a{
+                color: #4374df;
+                font-size: 13px;
+            }
+        }
+    }
     .submit_edit {
-      margin-top: toRem(50px);
+      margin-top: toRem(130px);
       padding: 0 toRem(30px);
     }
-
     .submit_edit button {
-      background-image: linear-gradient(to right, #fb9f22, #dd1100);
+      background-color: #4374df;
       border-radius: toRem(50px);
       color: #fff;
     }

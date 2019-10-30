@@ -10,7 +10,8 @@
          </div>
        </div>
        <div class="logined" v-else>
-         <img src="../assets/headImg-default.png" alt="" class="headImg">
+          <img :src="userInfo.Img" alt="" v-if="userInfo.Img" class="headImg">
+          <img src="../assets/headImg-default.png" alt="" class="headImg" v-else>
          <div class="text">
            <div class="hd">
              {{userInfo.Username}},欢迎登录!
