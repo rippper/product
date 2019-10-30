@@ -4,19 +4,19 @@
                 <i class="train_back" slot="left"></i>
                 <i class="train_searchdepart" slot="right"></i>
             </headerFix>
-            <!-- <mt-loadmore :bottom-method="downmore" :bottom-all-loaded="allLoaded" ref="loadmore" :auto-fill="false" @bottom-status-change="handleBottomChange" :bottomDistance="150"> -->
-            <div>
-                <div class="train_SelectDepart">
+            <div class="train_bodydepartment">
+                <div class="train_SelectDepart" ref="titlepart">
                         <transPlaceSelect
                             v-for="(item, index) in selectType"
                             :key="index"
                             :Type="item.Type"
                             :typeList="item.typeList"
+                            @rebackMsg="changeType"
                         >
                         </transPlaceSelect>
                 </div>
-                <div class="train_CourseDepart">
-                    <ul v-infinite-scroll="downmore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+                <div class="train_CourseDepart" ref="itempart">
+                    <ul class="train_selectitem" v-infinite-scroll="downmore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
                         <li v-for="(item, index) in courseInfor" :key="index">
                             <trainingCourseItem :courseInfor="courseInfor[index]" ></trainingCourseItem>
                         </li>
@@ -24,22 +24,16 @@
                     <div class="train_LoadMore" v-text="loadMore"></div>
                 </div>
             </div>
-            <!-- <div slot="bottom" class="mint-loadmore-bottom">
-                <span v-show="bottomStatus !== 'loading'" :class="{ 'rotate': bottomStatus === 'drop' }">上拉加载更多↑</span>
-                <span v-show="bottomStatus === 'loading'">加载中...</span>
-            </div> -->
-            <!-- </mt-loadmore> -->
     </div>
 </template>
 
 <script>
 import Vue from 'vue'
 import { headerFix, transPlaceSelect, trainingCourseItem } from '../components'
-import { TrainingClass } from '../service/getData'
+import { TrainingClass, GetTrainingSchoolList, GetTrainingClassTypeList } from '../service/getData'
 import { InfiniteScroll } from 'mint-ui'
 
 Vue.use(InfiniteScroll)
-// Vue.component(Loadmore.name, Loadmore)
 
 export default {
     data () {
@@ -54,76 +48,140 @@ export default {
                     typeList: ['全部', '省级培训班', '党校培训班', '其他培训班']
                 }
             ],
-            courseInfor: [
-                {
-                    labelType: 0,
-                    courseName: '2019年第一次安全培训班',
-                    startTime: '2019-08-29',
-                    Place: '教研9-201',
-                    Teacher: '王者荣耀',
-                    applyPeople: 120,
-                    mostApply: 200,
-                    buttonState: { Type: 1, Value: '立即报名' }
-                },
-                {
-                    labelType: 1,
-                    courseName: '2019年第一次安全培训班',
-                    startTime: '2019-08-29',
-                    Place: '教研9-201',
-                    Teacher: '王者荣耀',
-                    applyPeople: 200,
-                    mostApply: 200,
-                    buttonState: { Type: 0, Value: '已满员' }
-                },
-                {
-                    labelType: 2,
-                    courseName: '2019年第一次安全培训班',
-                    startTime: '2019-08-29',
-                    Place: '教研9-201',
-                    Teacher: '王者荣耀',
-                    applyPeople: 200,
-                    mostApply: 200,
-                    buttonState: { Type: 0, Value: '未审核' }
-                },
-                {
-                    labelType: 3,
-                    courseName: '2019年第一次安全培训班',
-                    startTime: '2019-08-29',
-                    Place: '教研9-201',
-                    Teacher: '王者荣耀',
-                    applyPeople: 200,
-                    mostApply: 200,
-                    buttonState: { Type: 0, Value: '已报名' }
-                }
-            ],
-            // allLoaded: false,
-            // count: 40,
-            // bottomStatus: ''
+            courseInfor: [],
             loading: false,
-            loadMore: '加载中'
+            loadMore: '加载中',
+            allMessage: '',
+            schoolId: 0,
+            courseType: 0,
+            Rows: 5,
+            currentPage: 1
         }
     },
     mounted () {
+        this.cauclate()
         this.getTrainClass()
     },
     methods: {
-        downmore () {
+        async downmore () {
             this.loading = true
-            setTimeout(() => {
-                this.courseInfor.push(this.courseInfor[0])
-            //     // this.$refs.loadmore.onBottomLoaded();
+            console.log()
+            console.log(this.courseInfor.length === this.allMessage)
+            console.log(111)
+            if (this.courseInfor.length === this.allMessage) {
+                console.log(this.allMessage)
+                console.log(this.courseInfor.length)
+                this.loadMore = '已全部显示'
+            } else if (this.courseInfor.length < this.allMessage) {
+                this.currentPage++
+                let Infor = await TrainingClass({
+                    SchoolId: this.schoolId,
+                    MajorId: this.courseType,
+                    Page: this.currentPage,
+                    Rows: this.Rows,
+                    Sort: 'Id',
+                    Order: 'desc'
+                })
                 this.loading = false
-            }, 1000)
-            console.log(this.courseInfor)
+                Infor.Data.ListData = this.filtration(Infor.Data.ListData)
+                console.log(this.allMessage)
+                this.courseInfor = this.courseInfor.concat(Infor.Data.ListData)
+            } 
+            this.loading = false
+            // 
+            
         },
-        // handleBottomChange(status) {
-        //     this.bottomStatus = status;
-        // }
+        cauclate () {
+            let topBox = parseFloat(window.getComputedStyle(this.$refs.titlepart).height) + parseFloat(window.getComputedStyle(this.$refs.titlepart).padding) + parseFloat(window.getComputedStyle(this.$refs.titlepart).marginBottom)
+            topBox = Math.ceil(topBox) + 4
+            let all = window.screen.height
+            this.$refs.itempart.style.height = parseFloat(all) - topBox + 'px'
+        },
+        filtration (Arr) {
+            Arr.forEach((item, index) => {
+                item.StartTime = item.StartTime.substr(0, 10)
+                if (item.ApplyStatus == '') {
+                    if (item.CurrentUser == item.UserLimit) {
+                        item.labelType = 1
+                        item.buttonState = { Type: 0, Value: '已满员' }
+                    } else if (item.CurrentUser < item.UserLimit) {
+                        item.labelType = 0
+                        item.buttonState = { Type: 1, Value: '立即报名' }
+                    }
+                } else {
+                    if (item.ApplyStatus == 'Normal') {
+                        item.labelType = 3
+                        item.buttonState = { Type: 0, Value: '已报名' }
+                    } else if (item.ApplyStatus == 'UnAudit') {
+                        item.labelType = 2
+                        item.buttonState = { Type: 0, Value: '未审核' }
+                    } else if (item.ApplyStatus == 'UnApprove') {
+                        item.labelType = 5
+                        item.buttonState = { Type: 0, Value: '未通过' }
+                    }
+                }
+            })
+            return Arr
+        },
+        async changeType (msg) {
+            if (msg.type == '学校:') {
+                this.schoolId = msg.item
+            } else if (msg.type == '专业:') {
+                this.courseType = msg.item
+            }
+            this.loadMore = '加载中'
+            this.courseInfor = []
+            let Infor = await TrainingClass({
+                SchoolId: this.schoolId,
+                MajorId: this.courseType,
+                Page: 1,
+                Rows: this.Rows,
+                Sort: 'Id',
+                Order: 'desc'
+            })
+            Infor.Data.ListData = this.filtration(Infor.Data.ListData)
+            this.allMessage = Infor.Data.totalCount
+            this.courseInfor = Infor.Data.ListData
+            this.currentPage = 1
+            if (this.allMessage <= this.Rows) {
+                this.loadMore = '已全部显示'
+            }
+        },
         async getTrainClass () {
+            let school = await GetTrainingSchoolList({
+                Page: 1,
+                Rows: 100,
+                Sort: 'Id',
+                Order: 'desc'
+            })
+            let classType = await GetTrainingClassTypeList({
+                Page: 1,
+                Rows: 100,
+                Sort: 'Id',
+                Order: 'desc'
+            })
             let msg = await TrainingClass({
-                Page: 1, Rows: 100, Sort: 'Id', Order: 'desc'
+                SchoolId: 0,
+                MajorId: 0,
+                Page: 1,
+                Rows: this.Rows
             })
             console.log(msg)
+            school.Data.ListData.unshift({
+                text: '全部',
+                id: 0
+            })
+            
+            this.selectType[0].typeList = school.Data.ListData
+            classType.Data.ListData.unshift({
+                text: '全部',
+                id: 0
+            })
+            this.selectType[1].typeList = classType.Data.ListData
+
+            msg.Data.ListData = this.filtration(msg.Data.ListData)
+            this.allMessage = msg.Data.totalCount
+            this.courseInfor = msg.Data.ListData   
         }
     },
     components: {
@@ -137,44 +195,49 @@ export default {
 <style lang="scss">
   @import "../style/mixin";
   .trainCour {
-      background:#f2f7ff;
-      box-sizing: border-box;
-      .train_back{
-          width: toRem(24px);
-          height: toRem(42px);
-          background:url('../assets/tra_turnback.png');
-          background-size: 100%;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%,-50%);
-      }
-      .train_searchdepart{
-          width: toRem(42px);
-          height: toRem(42px);
-          background: url('../assets/tra_searchbtn.png');
-          background-size: 100%;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%,-50%);
-      }
-      .train_SelectDepart{
-          background: #fff;
-          padding-top: toRem(98px);
-          padding-bottom: toRem(20px);
-          margin-bottom: toRem(20px);
-      }
-      .train_CourseDepart{
-          overflow: auto;
-          height: toRem(1250px);
-          background: #fff;
-          padding-top: toRem(42px);
-          padding-bottom: toRem(50px);
-      }
-      .train_LoadMore{
-          text-align: center;
-          height: toRem(10px);
-      }
+        background:#f2f7ff;
+        box-sizing: border-box;
+        .train_back{
+            width: toRem(24px);
+            height: toRem(42px);
+            background:url('../assets/tra_turnback.png');
+            background-size: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .train_searchdepart{
+            width: toRem(42px);
+            height: toRem(42px);
+            background: url('../assets/tra_searchbtn.png');
+            background-size: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .train_bodydepartment{
+            flex-direction: column;
+            .train_SelectDepart{
+                box-sizing: border-box;
+                background: #fff;
+                padding-top: toRem(98px);
+                padding-bottom: toRem(20px);
+                margin-bottom: toRem(20px);
+            }
+            .train_CourseDepart{
+                overflow: auto;
+                background: #fff;
+                padding-top: toRem(42px);
+                padding-bottom: toRem(50px);
+            }
+            .train_LoadMore{
+                text-align: center;
+                font-size: toRem(25px);
+                height: toRem(10px);
+            }
+        }
+      
   }
 </style>

@@ -12,8 +12,8 @@
                     <li
                         v-for="(item, index) in typeList"
                         :key="index"
-                        v-text="item"
-                        @click="typeSelect(index)"
+                        v-text="item.text"
+                        @click="typeSelect(index, item.id)"
                         ref="Option"
                     >
                     </li>
@@ -31,16 +31,23 @@ export default {
         typeList: Array
     },
     mounted () {
-
+        this.selectAll()
     },
     methods: {
-        typeSelect (index) {
+        selectAll () {
+            if (this.typeList.length > 1) {
+                this.$refs.Option[0].style.color = '#fff'
+                this.$refs.Option[0].style.background = '#4374df'
+            }
+        },
+        typeSelect (index, Id) {
             this.$refs.Option.forEach((item) => {
                 item.style.color = ''
                 item.style.background = ''
             })
             this.$refs.Option[index].style.color = '#fff'
             this.$refs.Option[index].style.background = '#4374df'
+            this.$emit('rebackMsg', { type: this.Type, item: Id })
         }
     }
 }
@@ -54,7 +61,7 @@ export default {
         dl{
             display: flex;
             dt{
-                width: toRem(125px);
+                width: toRem(130px);
                 padding-left: toRem(30px);
                 span{
                     font-size: toRem(28px);
@@ -63,6 +70,7 @@ export default {
                 }
             }
             dd{
+                width: toRem(790px);
                 ul{
                     display: flex;
                     flex-wrap: wrap;

@@ -501,6 +501,16 @@ export const ProductionInfoList = (data) => fetch.post(Api.ProductionInfoList.ur
  */
 export const TrainingClass = (data) => fetch.post(Api.TrainingClass.url,
   { ...Api.TrainingClass.data, ...data })
+/**
+ * zyb获取培训学校列表
+ */
+export const GetTrainingSchoolList = (data) => fetch.post(Api.GetTrainingSchoolList.url,
+  { ...Api.GetTrainingSchoolList.data, ...data })
+/**
+ * zyb获取课程类型列表
+ */
+export const GetTrainingClassTypeList = (data) => fetch.post(Api.GetTrainingClassTypeList.url,
+  { ...Api.GetTrainingClassTypeList.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {

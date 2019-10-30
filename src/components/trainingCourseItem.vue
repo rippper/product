@@ -8,28 +8,29 @@
             <span class="train_labelAndName_LabelYellow" v-else-if="courseInfor.labelType == 1">已满员</span>
             <span class="train_labelAndName_LabelPurple" v-else-if="courseInfor.labelType == 2">未审核</span>
             <span class="train_labelAndName_LabelGreen" v-else-if="courseInfor.labelType == 3">已报名</span>
-            <span class="train_labelAndName_Name" v-text="courseInfor.courseName"></span>
+            <span class="train_labelAndName_LabelRed" v-else-if="courseInfor.labelType == 4">未通过</span>
+            <span class="train_labelAndName_Name" v-text="courseInfor.Name"></span>
         </div>
         <div class="train_CourseItem_Detailed">
             <ul>
                 <li>
                     <span class="train_detailed_label">开课时间:</span>
-                    <span v-text="courseInfor.startTime"></span>
+                    <span v-text="courseInfor.StartTime"></span>
                 </li>
                 <li>
                     <span class="train_detailed_label">地点:</span>
-                    <span v-text="courseInfor.Place"></span>
+                    <span v-text="courseInfor.Address"></span>
                 </li>
                 <li>
                     <span class="train_detailed_label">教师:</span>
-                    <span v-text="courseInfor.Teacher"></span>
+                    <span v-text="courseInfor.TeacherName"></span>
                 </li>
             </ul>
         </div>
         <div class="train_CourseItem_Applyer">
             <div>
-                <span class="train_Applyer_Shower">报名人数:</span>
-                <span class="train_Applyer_ApplyPeople" v-text="courseInfor.applyPeople"></span>/<span v-text="courseInfor.mostApply"></span>
+                <span class="train_Applyer_Shower">剩余名额:</span>
+                <span class="train_Applyer_ApplyPeople" v-text="courseInfor.UserLimit - courseInfor.CurrentUser"></span>/<span v-text="courseInfor.UserLimit"></span>
             </div>
             <div class="train_Applyer_buttonGroup">
                 <div class="train_Applyer_rejuect" v-if="courseInfor.buttonState.Type == 0" v-text="courseInfor.buttonState.Value">
@@ -73,7 +74,8 @@ export default {
             .train_labelAndName_LabelGray,
             .train_labelAndName_LabelYellow,
             .train_labelAndName_LabelPurple,
-            .train_labelAndName_LabelGreen
+            .train_labelAndName_LabelGreen,
+            .train_labelAndName_LabelRed
             {
                 display: inline-block;
                 width: toRem(90px);
@@ -96,6 +98,9 @@ export default {
             }
             .train_labelAndName_LabelGreen{
                 background: #5ca17a;
+            }
+            .train_labelAndName_LabelRed{
+                background: #d1022c;
             }
             .train_labelAndName_Name{
                 font-size: toRem(32px);
