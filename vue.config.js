@@ -3,7 +3,7 @@ const publicPath = process.env.VUE_APP_PATHNAME
 
 // 代理路径
 const target = 'http://test46.jy365.net'
-
+// const target = 'http://192.168.1.96:8005'
 module.exports = {
   publicPath,
 

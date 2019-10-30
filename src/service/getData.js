@@ -482,10 +482,35 @@ export const EnumThumbsUpCancle = (data) => fetch.post(Api.EnumThumbsUpCancle.ur
 export const NoticeList = (data) => fetch.post(Api.NoticeList.url,
   { ...Api.NoticeList.data, ...data })
 /**
+ * 首页 电子书列表
+ */
+export const BookList = (data) => fetch.post(Api.BookList.url,
+  { ...Api.BookList.data, ...data })
+/**
+ * 课程列表
+ */
+export const CourseList = (data) => fetch.post(Api.CourseList.url,
+  { ...Api.CourseList.data, ...data })
+/**
+ * 课程列表
+ */
+export const ProductionInfoList = (data) => fetch.post(Api.ProductionInfoList.url,
+  { ...Api.ProductionInfoList.data, ...data })
+/**
  * zyb培训班课程
  */
 export const TrainingClass = (data) => fetch.post(Api.TrainingClass.url,
   { ...Api.TrainingClass.data, ...data })
+/**
+ * zyb获取培训学校列表
+ */
+export const GetTrainingSchoolList = (data) => fetch.post(Api.GetTrainingSchoolList.url,
+  { ...Api.GetTrainingSchoolList.data, ...data })
+/**
+ * zyb获取课程类型列表
+ */
+export const GetTrainingClassTypeList = (data) => fetch.post(Api.GetTrainingClassTypeList.url,
+  { ...Api.GetTrainingClassTypeList.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {
