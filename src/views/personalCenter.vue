@@ -70,7 +70,7 @@
         </div>
       </div>
     </div>
-    <footer-fix selected="personCenter"></footer-fix>
+    <footer-fix selected="personalCenter"></footer-fix>
   </div>
 </template>
 <script>

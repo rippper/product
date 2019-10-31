@@ -7,8 +7,8 @@
         首页
       </mt-tab-item>
       <mt-tab-item id="courseCenter" href="#/courseCenter">
-        <img class="footer_icon_2" v-if="selected == 'courseCenter'" slot="icon" src="../assets/hq-course-actived.png">
-        <img class="footer_icon_2" v-else slot="icon" src="../assets/hq-course-normal.png">
+        <img class="footer_icon_2" v-if="selected == 'courseCenter'" slot="icon" src="../assets/hq-video-actived.png">
+        <img class="footer_icon_2" v-else slot="icon" src="../assets/hq-video-normal.png">
         视频
       </mt-tab-item>
       <mt-tab-item id="orangize" href="#/organise">

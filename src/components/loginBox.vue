@@ -1,20 +1,18 @@
 <template>
   <div class="userLoginCom">
     <div class="head-handle">
-      <p class="close"><img src="../assets/close-x.png" alt="">关闭</p>
-      <router-link to="/register">
-        注册
-      </router-link>
+      <p class="close" @click="closeLb"><img src="../assets/close-x.png" alt="">关闭</p>
+      <router-link to='/register'>注册</router-link>
     </div>
     
     <div class="user_login">
       <div class="handle-tab">
-        <p claas="ht on">
+        <p class="ttitle on">
           账号密码登录
         </p>
-        <p claas="ht">
+        <!-- <p claas="ht">
           手机登录
-        </p>
+        </p> -->
       </div>
 
       <section >
@@ -179,6 +177,11 @@
         }
         this.acError = flag
       }
+    },
+    props: {
+      closeLb: {
+        type: Function
+      }
     }
   }
 </script>
@@ -192,7 +195,7 @@
     background-color: transparent;
     .head-handle{
       @extend %clearFix;
-      padding: 0 toRem(30px);
+      padding: toRem(35px) toRem(30px) 0;
       .close{
         float: left;
         color: #fff;
@@ -214,6 +217,19 @@
     
     .user_login {
       padding: toRem(116px) toRem(60px) 0 toRem(60px);
+      background: #fff;
+      border-radius: toRem(30px) toRem(30px) 0 0;
+      margin-top: toRem(25px);
+      height: 93vh;
+      .handle-tab{
+        padding: 0 toRem(30px) toRem(150px);
+        .ttitle{
+          color: #333;
+          font-size: 24px;
+          font-weight: bold;
+          text-align: center;
+        }
+      }
       .form-control {
         border: none;
         padding-left: toRem(80px);
@@ -270,8 +286,10 @@
         }
 
         .mint-checkbox-input:checked + .mint-checkbox-core {
-          background-color: $brand-primary;
-          border-color: $brand-primary;
+          // background-color: $brand-primary;
+          // border-color: $brand-primary;
+          background-color: #4374df;
+          border-color: #4374df;
         }
       }
 
