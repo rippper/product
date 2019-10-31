@@ -492,5 +492,13 @@ export default {
   GetTrainingClassTypeList: { // zyb获取课程类型列表接口
     url: API_URL + wechatTraining + '/GetTrainingClassTypeList',
     data: {}
+  },
+  GetTrainingById: { // zyb获取培训班详情内容
+    url: API_URL + wechatTraining + '/GetTrainingById',
+    data: {}
+  },
+  TrainingSign: { // zyb培训班用户报名
+    url: API_URL + wechatTraining + '/TrainingSign',
+    data: {}
   }
 }

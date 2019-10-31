@@ -14,6 +14,9 @@ module.exports = {
       '/api': {
         target,
         changeOrigin: true
+        // headers: {
+        //   Connection: 'keep-alive'
+        // }
       },
       '/lessionnew': {
         target,
