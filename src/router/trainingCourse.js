@@ -2,6 +2,7 @@ const _import = require('@/plugins/import.' + process.env.NODE_ENV)
 
 const TrainingCourse = _import('trainingCourse.vue')
 const TrainingDetails = _import('trainingDetails.vue')
+const TrainingSearch = _import('trainingSearch.vue')
 
 export default [
     {
@@ -15,5 +16,11 @@ export default [
         path: '/trainingdetails',
         component: TrainingDetails,
         meta: { title: '培训班详情', isSkip: true }
+    },
+    {
+        name: 'trainingsearch',
+        path: '/trainingsearch',
+        component: TrainingSearch,
+        meta: { title: '培训班搜索', isSkip: true }
     }
 ]

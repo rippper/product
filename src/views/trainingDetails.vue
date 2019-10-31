@@ -72,6 +72,8 @@
 <script>
 import { headerFix } from '../components'
 import { GetTrainingById, TrainingSign } from '../service/getData'
+import { MessageBox } from 'mint-ui'
+
 export default {
     name: 'trainingDetails',
     data () {
@@ -116,10 +118,10 @@ export default {
         },
         changeType () {
             if (this.ApplyStatus == '') {
-                if (this.haveApply == this.mostApply) {
+                if (this.haveApply == 0) {
                     this.TrainingStyle = 1
                     this.buttonState = 0
-                } else if (this.haveApply < this.mostApply) {
+                } else if (this.haveApply <= this.mostApply) {
                     this.TrainingStyle = 0
                     this.buttonState = 1
                 }
@@ -145,14 +147,18 @@ export default {
                 Tel: mobile,
                 IdCard: idcard
             })
-            console.log(msg)
-
+            if (msg.Type == 1) {
+                MessageBox('提示', msg.Message)
+                this.render()
+            } else {
+                MessageBox('提示', msg.Message)
+                this.render()
+            }
         },
         async render () {
             let msg = await GetTrainingById({
                 ids: this.ClassId
             })
-            console.log(msg)
             this.Title = msg.Data[0].Name
             this.ApplyStatus = msg.Data[0].ApplyStatus
             this.School = msg.Data[0].SchoolName
@@ -211,7 +217,7 @@ export default {
                 .trdet_CourseName_TitleLabelGreen,
                 .trdet_CourseName_TitleLabelRed
                 {
-                    width: toRem(82px);
+                    width: toRem(90px);
                     height: toRem(44px);
                     line-height: toRem(44px);
                     text-align: center;

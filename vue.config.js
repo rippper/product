@@ -13,7 +13,7 @@ module.exports = {
     proxy: {
       '/api': {
         target,
-        changeOrigin: true
+        changeOrigin: true,
         // headers: {
         //   Connection: 'keep-alive'
         // }
