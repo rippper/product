@@ -43,6 +43,9 @@
 </template>
 
 <script>
+import { TrainingSign } from '../service/getData'
+import { MessageBox } from 'mint-ui'
+
 export default {
     name: 'trainingCourseItem',
     data () {
@@ -54,8 +57,22 @@ export default {
         courseInfor: Object
     },
     methods: {
-        forApply () {
-            console.log('aaa')
+        async forApply () {
+            let userInfor = JSON.parse(localStorage.getItem('userInfo'))
+            let mobile = userInfor.Mobile
+            let idcard = userInfor.IdCard
+            let msg = await TrainingSign({
+                TrainingId: this.courseInfor.Id,
+                Tel: mobile,
+                IdCard: idcard
+            })
+            if (msg.Type == 1) {
+                MessageBox('提示', msg.Message)
+                this.$emit('renderFnc')
+            } else {
+                MessageBox('提示', msg.Message)
+                this.$emit('renderFnc')
+            }
         }
     }
 }

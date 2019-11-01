@@ -13,11 +13,7 @@ module.exports = {
     proxy: {
       '/api': {
         target,
-        changeOrigin: true,
-        xfwd: true,
-        headers: {
-          Connection: 'keep-alive'
-        }
+        changeOrigin: true
       },
       '/lessionnew': {
         target,

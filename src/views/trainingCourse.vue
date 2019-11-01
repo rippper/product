@@ -5,7 +5,7 @@
     <div class="trainCour">
         <headerFix title="培训班" :fixed="true">
             <i class="train_back" slot="left"></i>
-            <i class="train_searchdepart" slot="right"></i>
+            <i class="train_searchdepart" slot="right" @click="ToSearch"></i>
         </headerFix>
         <div class="train_bodydepartment">
             <!-- 头部检索列表 -->
@@ -23,7 +23,7 @@
             <div class="train_CourseDepart" ref="itempart">
                 <ul class="train_selectitem" v-infinite-scroll="downmore" infinite-scroll-disabled="loading" infinite-scroll-immediate-check="false" infinite-scroll-distance="10">
                     <li v-for="(item, index) in courseInfor" :key="index" @click="linkto(item.Id)">
-                        <trainingCourseItem :courseInfor="courseInfor[index]"></trainingCourseItem>
+                        <trainingCourseItem :courseInfor="courseInfor[index]" @renderFnc="getTrainClass"></trainingCourseItem>
                     </li>
                 </ul>
                 <div class="train_LoadMore" v-text="loadMore"></div>
@@ -41,6 +41,7 @@ import { InfiniteScroll } from 'mint-ui'
 Vue.use(InfiniteScroll)
 
 export default {
+    name: 'trainingCourse',
     data () {
         return {
             selectType: [
@@ -101,8 +102,10 @@ export default {
             return Arr
         },
         linkto (msg) {
-            console.log(msg)
             this.$router.push({ path: '/trainingdetails', query: { id: msg } })
+        },
+        ToSearch () {
+            this.$router.push({ path: '/trainingsearch' })
         },
         async downmore () {
             if (this.courseInfor.length == 0) {
@@ -113,7 +116,6 @@ export default {
                 this.loadMore = '已全部显示'
             } else if (this.courseInfor.length < this.allMessage) {
                 this.currentPage = ++this.currentPage
-                console.log('函数加载' + this.currentPage)
                 let Infor = await TrainingClass({
                     SchoolId: this.schoolId,
                     MajorId: this.courseType,
@@ -154,7 +156,6 @@ export default {
             this.allMessage = Infor.Data.totalCount
             this.courseInfor = Infor.Data.ListData
             this.currentPage = 1
-            console.log('状态加载' + this.currentPage)
             if (this.allMessage <= this.Rows) {
                 this.loadMore = '已全部显示'
             }
@@ -173,12 +174,11 @@ export default {
                 Order: 'desc'
             })
             let msg = await TrainingClass({
-                SchoolId: 0,
-                MajorId: 0,
+                SchoolId: this.schoolId,
+                MajorId: this.courseType,
                 Page: 1,
                 Rows: this.Rows
             })
-            console.log(msg)
             school.Data.ListData.unshift({
                 text: '全部',
                 id: 0
@@ -190,7 +190,7 @@ export default {
                 id: 0
             })
             this.selectType[1].typeList = classType.Data.ListData
-
+            this.currentPage = 1
             msg.Data.ListData = this.filtration(msg.Data.ListData)
             this.allMessage = msg.Data.totalCount
             this.courseInfor = msg.Data.ListData  
