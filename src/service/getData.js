@@ -511,6 +511,16 @@ export const GetTrainingSchoolList = (data) => fetch.post(Api.GetTrainingSchoolL
  */
 export const GetTrainingClassTypeList = (data) => fetch.post(Api.GetTrainingClassTypeList.url,
   { ...Api.GetTrainingClassTypeList.data, ...data })
+/**
+ * zyb获取课程详细信息
+ */
+export const GetTrainingById = (data) => fetch.post(Api.GetTrainingById.url, 
+  { ...Api.GetTrainingById.data, ...data })
+/**
+ * zyb培训班用户报名
+ */
+export const TrainingSign = (data) => fetch.post(Api.TrainingSign.url,
+  { ...Api.TrainingSign.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {

@@ -2,7 +2,7 @@
   <div class="userLoginCom">
     <div class="head-handle">
       <p class="close" @click="closeLb"><img src="../assets/close-x.png" alt="">关闭</p>
-      <router-link to='/register'>注册</router-link>
+      <a href="javascript:;" @click="goReg">注册</a>
     </div>
     
     <div class="user_login">
@@ -180,6 +180,9 @@
     },
     props: {
       closeLb: {
+        type: Function
+      },
+      goReg: {
         type: Function
       }
     }

@@ -4,12 +4,12 @@
 <template>
   <div class="courseCenter container_both">
     <header-fix :title="courseTitle" fixed>
-      <a slot="left" @click="toggleNav">
+      <!-- <a slot="left" @click="toggleNav">
         <i class="webapp webapp-category"></i>
-      </a>
+      </a> -->
       <router-link slot="right" to="/courseSearch"><i class="webapp webapp-search"></i></router-link>
     </header-fix>
-    <nav-slide :show="showSlide" @showChange="showChange">
+    <!-- <nav-slide :show="showSlide" @showChange="showChange">
       <div slot="left" class="category">
         <tree :data="courseCategory" :option="defaultOption" :on-select="searchCourse" :selected-id="channelId"></tree>
       </div>
@@ -46,7 +46,104 @@
           </mt-tab-container-item>
         </mt-tab-container>
       </template>
-    </nav-slide>
+    </nav-slide> -->
+    <div class="category-first">
+      <div class="cf-swiper">
+        <div class="swiper-con">
+          <ul >
+              <li class="actived">当前热点1</li>
+              <li>当前热点2</li>
+              <li>当前热点3</li>
+              <li>当前热点4</li>
+              <li>当前热点5</li>
+              <li>当前热点6</li>
+              <li>当前热点7</li>
+          </ul>
+        </div>
+        <div class="gallery-thumbs">
+          <div class="gt-layer" v-if="showGtLayer" @click="toggleGtLayer"></div>
+          <div class="gt-wrapper" :class="{'show': showGtLayer}">
+            <ul>
+              <li  @click="toSlide(1)">
+                热点1
+              </li>
+              <li  @click="toSlide(2)">
+                热点2
+              </li>
+              <li  @click="toSlide(3)">
+                热点3
+              </li>
+              <li  @click="toSlide(4)">
+                热点4
+              </li>
+              <li  @click="toSlide(5)">
+                热点5
+              </li>
+              <li  @click="toSlide(6)">
+                热点6
+              </li>
+              <li  @click="toSlide(7)">
+                热点7
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="btn" @click="toggleGtLayer">
+        <img src="../assets/course-classify-icon.png" alt="">分类
+      </div>
+    </div>
+    <div class="course-con">
+      <div class="cc-second">
+        <div class="cc-swiper">
+          <div class="swiper-con">
+            <ul>
+              <li class="actived">
+                社区风采
+              </li>
+              <li>政策热点</li>
+              <li>生活养生</li>
+              <li>社区风采</li>
+              <li>政策热点</li>
+            </ul>
+          </div>
+          <div class="cc-thums">
+            <div class="cc-layer" v-if="showCcLayer" @click="toggleCcLayer"></div>
+            <div class=cc-wrapper :class="{'show': showCcLayer}">
+              <ul>
+                <li>社区风采1</li>
+                <li>社区风采2</li>
+                <li>社区风采3</li>
+                <li>社区风采4</li>
+                <li>社区风采5</li>
+                <li>社区风采6</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="btn" @click="toggleCcLayer">
+         <img src="../assets/cross-line.png" alt="">
+        </div>
+      </div>
+      <section v-infinite-scroll="getCourseList"
+                     infinite-scroll-disabled="loading"
+                     infinite-scroll-immediate-check="immediate"
+                     infinite-scroll-distance="10">
+              <course-list :course-data="courseData"
+                           :no-data-bg="noData"
+                           :no-data="noMoreData"
+                           v-if="itemX"
+              >
+              </course-list>
+              <course-list :course-data="courseData"
+                           :no-data-bg="noData"
+                           :no-data="noMoreData"
+                           v-else
+                           class="itemY"
+              >
+              </course-list>
+            </section>
+    </div>
     <footer-fix selected="courseCenter"></footer-fix>
   </div>
 </template>
@@ -61,7 +158,7 @@
   export default {
     data () {
       return {
-        courseTitle: '课程资源',
+        courseTitle: '视频中心',
         showSlide: false,
         courseCategory: [],
         channelId: 0,
@@ -78,7 +175,16 @@
           name: 'Name',
           nodes: 'Nodes',
           Id: 'Id'
-        }
+        },
+        mySwiperFirst: {
+          slidesPerView: 'auto',
+          grabCursor: true,
+          loop: true,
+          freeMode: true,
+          freeModeMomentum: false
+        },
+        showGtLayer: false,
+        showCcLayer: false
       }
     },
     created () {
@@ -146,6 +252,16 @@
         this.showSlide = false
         this.courseData = []
         this.getCourseList()
+      },
+      toggleGtLayer () {
+        this.showGtLayer = !this.showGtLayer 
+      },
+      toSlide (i) {
+        console.log(i)
+      },
+      toggleCcLayer () {
+        console.log(77)
+        this.showCcLayer = !this.showCcLayer
       }
     }
   }
@@ -157,7 +273,23 @@
   .courseCenter {
     width: 100vw;
     height: 100vh;
-
+    background: #4070da;
+    .header{
+      border-bottom: none;
+      background: transparent;
+      @include ht-lineHt(100px);
+      .header_title{
+        color: #fff;
+        font-size: 18px;
+      }
+      .header_right{
+        a{
+          .webapp-search:before{
+            color: #fff;
+          }
+        }
+      }
+    }
     .nav_right {
       .tabSwitch {
         @extend %clearFix;
@@ -165,7 +297,6 @@
         .mb_tab {
           width: 7.5rem;
           @extend %pull-left;
-
           .mb_tab_item {
             span {
               display: block;
@@ -224,7 +355,6 @@
             .course_tt {
               position: absolute;
               bottom: toRem(10px);
-
               .course_time {
                 display: none;
               }
@@ -242,6 +372,166 @@
                 line-height: toRem(40px);
               }
             }
+          }
+        }
+      }
+    }
+    .category-first{
+      @extend %clearFix;
+      .cf-swiper{
+        float: left;
+        width: toRem(550px);
+        margin-left: toRem(30px);
+        overflow: hidden;
+        .swiper-con{
+          width: toRem(10000px);
+          ul{
+            @extend %clearFix;
+            overflow: auto; 
+            li{
+              float: left;
+              height: toRem(80px);
+              line-height: toRem(80px);
+              color: #fff;
+              font-size: 17px;
+              margin-right: toRem(30px);
+              &:nth-last-child(1) {
+                margin-right: 0;
+              }
+              &.actived{
+                background: url("../assets/block-yel.png") no-repeat center bottom;
+                background-size: toRem(30px) toRem(6px);
+              }
+            }
+          }
+        }
+        .gallery-thumbs{
+          .gt-layer{
+            position: absolute;
+            top: toRem(170px);
+            left: 0;
+            height: 100vh;
+            z-index: 50;
+            background: rgba(0,0,0,0.4);
+            width: 100%;
+          }
+          .gt-wrapper{
+            position: absolute;
+            max-height: 0;
+            overflow: hidden;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background-color: $fill-base;
+            font-size: 15px;
+            transition: max-height ease 0.5s;
+            &.show {
+              max-height: toRem(200px);
+            }
+            ul{
+              padding: toRem(30px);
+              @extend %clearFix;
+              li{
+                float: left;
+                margin-right: toRem(40px);
+                font-size: 16px;
+                color: #333;
+              }
+            }
+          }
+        }
+      }
+      .btn{
+        float: left;
+        color: #fff;
+        margin-top: toRem(20px);
+        font-size: 16px;
+        margin-left: toRem(40px);
+        img{
+          width: toRem(28px);
+          height: toRem(28px);
+          vertical-align: baseline;
+          margin-right: toRem(8px);
+        }
+      }
+    }
+    .course-con{
+      background: #fff;
+      border-radius: toRem(20px) toRem(20px) 0 0;
+      .cc-second{
+        @extend %clearFix;
+        padding-top: toRem(40px);
+        .cc-swiper{
+          float: left;
+          width: toRem(610px);
+          margin-left: toRem(30px);
+          overflow: hidden;
+          .swiper-con{
+            width: toRem(10000px);
+            ul{
+              @extend %clearFix;
+              li{
+                width: toRem(150px);
+                height: toRem(52px);
+                line-height: toRem(52px);
+                background: #f5f9ff;
+                color: #4a608c;
+                font-size: 13px;
+                text-align: center;
+                float: left;
+                border-radius: toRem(30px);
+                margin-right: toRem(15px);
+                &.actived{
+                  background: #4374df;
+                  color: #fff;
+                }
+              }
+            }
+          }
+          .cc-thums{
+            .cc-layer{
+              position: absolute;
+              width: 100%;
+              left: 0;
+              top: toRem(270px);
+              height: 100vh;
+              font-size: 15px;
+              background: rgba(0,0,0,0.4);
+              z-index: 50;
+            }
+            .cc-wrapper{
+              position: absolute;
+              max-height: 0;
+              overflow: hidden;
+              left: 0;
+              right: 0;
+              z-index: 100;
+              background-color: $fill-base;
+              font-size: 15px;
+              transition: max-height ease 0.5s;
+              &.show{
+                max-height: toRem(200px);
+              }
+              ul{
+                padding: toRem(30px);
+                @extend %clearFix;
+                li{
+                  float: left;
+                  margin-right: toRem(40px);
+                  font-size: 16px;
+                  color: #333;
+                }
+              }
+            }
+          }
+        }
+        .btn{
+          float: left;
+          margin-top: toRem(5px);
+          margin-left: toRem(50px);
+          img{
+            width: toRem(34px);
+            height: toRem(34px);
           }
         }
       }

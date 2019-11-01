@@ -35,7 +35,7 @@
             <div class="train_Applyer_buttonGroup">
                 <div class="train_Applyer_rejuect" v-if="courseInfor.buttonState.Type == 0" v-text="courseInfor.buttonState.Value">
                 </div>
-                <div class="train_Applyer_accept" v-else-if="courseInfor.buttonState.Type == 1" v-text="courseInfor.buttonState.Value">
+                <div class="train_Applyer_accept" v-else-if="courseInfor.buttonState.Type == 1" v-text="courseInfor.buttonState.Value" @click.stop="forApply()">
                 </div>
             </div>
         </div>
@@ -52,6 +52,11 @@ export default {
     },
     props: {
         courseInfor: Object
+    },
+    methods: {
+        forApply () {
+            console.log('aaa')
+        }
     }
 }
 </script>

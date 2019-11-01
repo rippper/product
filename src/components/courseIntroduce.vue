@@ -5,32 +5,32 @@
   <div class="course_introduce">
     <div class="course_detail_name">
       <p class="title">{{courseDetails.CourseName}}</p>
-      <div class="clearFix">
+      <!-- <div class="clearFix">
         <div class="star_container pull-left">
           <star v-model="courseDetails.CommentCredit" size="small" disabled show-score></star>
         </div>
         <span class="pull-left userCount">{{courseDetails.UserCount}}人学过</span>
         <span class="pull-right">讲师：{{courseDetails.TeacherName}}</span>
-      </div>
+      </div> -->
     </div>
     <div class="course_detail_list">
       <div class="detail_item">
-        <p class="detail_item_left"><span class="label">课程分类：</span>{{courseDetails.ChannelName}}</p>
+        <p class="detail_item_left"><span class="label">所属分类：</span>{{courseDetails.ChannelName}}</p>
         <p class="detail_item_right"><span
-          class="label">学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;分：</span>{{courseDetails.Credit}}分</p>
+          class="label">表现形式：</span>{{courseDetails.CourseType}}</p>
       </div>
       <div class="detail_item">
         <p class="detail_item_left"><span
-          class="label">时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;长：</span>{{courseDetails.Duration}}分钟</p>
+          class="label">点击次数：</span>{{courseDetails.ClickCount}}次</p>
         <p class="detail_item_right"><span
-          class="label">进&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：</span>{{courseDetails.BrowseScore}}</p>
+          class="label">总学分：</span>{{courseDetails.Credit}}分</p>
       </div>
     </div>
-    <div class="split"></div>
+    <!-- <div class="split"></div>
     <div class="course_detail_desc">
       <h4><span class="primary_line"></span><span>课程介绍</span></h4>
       <p>{{courseDetails.Description}}</p>
-    </div>
+    </div> -->
     <!-- <div class="course_collect">
       <mt-button v-if="!isCollect" type="primary" size="large" @click.native="courseCollect">
         <i class="webapp webapp-like_fill"></i>
@@ -45,7 +45,7 @@
 </template>
 <script>
   import Vue from 'vue'
-  import star from './star.vue'
+  // import star from './star.vue'
   import { Button } from 'mint-ui'
   // import { AddCollectionList, DeleteCollectionList } from '../service/getData'
 
@@ -62,9 +62,9 @@
         required: true
       }
     },
-    components: {
-      star
-    },
+    // components: {
+    //   star
+    // },
     methods: {
       // 收藏
       // async courseCollect () {
@@ -127,6 +127,7 @@
     }
 
     .course_detail_list {
+      border-bottom: 1px solid #e8e8e8;
       .detail_item {
         line-height: toRem(60px);
         padding: 0 toRem(30px);
@@ -136,6 +137,9 @@
         .label {
           color: $color-text-thirdly;
           margin-right: toRem(20px);
+          width: toRem(120px);
+          text-align: right;
+          display: inline-block;
         }
       }
 

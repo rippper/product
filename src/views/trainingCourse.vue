@@ -1,29 +1,34 @@
+/*
+ * 培训班检索页面 
+ */
 <template>
     <div class="trainCour">
-            <headerFix title="培训班" :fixed="true">
-                <i class="train_back" slot="left"></i>
-                <i class="train_searchdepart" slot="right"></i>
-            </headerFix>
-            <div class="train_bodydepartment">
-                <div class="train_SelectDepart" ref="titlepart">
-                        <transPlaceSelect
-                            v-for="(item, index) in selectType"
-                            :key="index"
-                            :Type="item.Type"
-                            :typeList="item.typeList"
-                            @rebackMsg="changeType"
-                        >
-                        </transPlaceSelect>
-                </div>
-                <div class="train_CourseDepart" ref="itempart">
-                    <ul class="train_selectitem" v-infinite-scroll="downmore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
-                        <li v-for="(item, index) in courseInfor" :key="index">
-                            <trainingCourseItem :courseInfor="courseInfor[index]" ></trainingCourseItem>
-                        </li>
-                    </ul>
-                    <div class="train_LoadMore" v-text="loadMore"></div>
-                </div>
+        <headerFix title="培训班" :fixed="true">
+            <i class="train_back" slot="left"></i>
+            <i class="train_searchdepart" slot="right"></i>
+        </headerFix>
+        <div class="train_bodydepartment">
+            <!-- 头部检索列表 -->
+            <div class="train_SelectDepart" ref="titlepart">
+                    <transPlaceSelect
+                        v-for="(item, index) in selectType"
+                        :key="index"
+                        :Type="item.Type"
+                        :typeList="item.typeList"
+                        @rebackMsg="changeType"
+                    >
+                    </transPlaceSelect>
             </div>
+            <!-- 培训班列表 -->
+            <div class="train_CourseDepart" ref="itempart">
+                <ul class="train_selectitem" v-infinite-scroll="downmore" infinite-scroll-disabled="loading" infinite-scroll-immediate-check="false" infinite-scroll-distance="10">
+                    <li v-for="(item, index) in courseInfor" :key="index" @click="linkto(item.Id)">
+                        <trainingCourseItem :courseInfor="courseInfor[index]"></trainingCourseItem>
+                    </li>
+                </ul>
+                <div class="train_LoadMore" v-text="loadMore"></div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -63,34 +68,6 @@ export default {
         this.getTrainClass()
     },
     methods: {
-        async downmore () {
-            this.loading = true
-            console.log()
-            console.log(this.courseInfor.length === this.allMessage)
-            console.log(111)
-            if (this.courseInfor.length === this.allMessage) {
-                console.log(this.allMessage)
-                console.log(this.courseInfor.length)
-                this.loadMore = '已全部显示'
-            } else if (this.courseInfor.length < this.allMessage) {
-                this.currentPage++
-                let Infor = await TrainingClass({
-                    SchoolId: this.schoolId,
-                    MajorId: this.courseType,
-                    Page: this.currentPage,
-                    Rows: this.Rows,
-                    Sort: 'Id',
-                    Order: 'desc'
-                })
-                this.loading = false
-                Infor.Data.ListData = this.filtration(Infor.Data.ListData)
-                console.log(this.allMessage)
-                this.courseInfor = this.courseInfor.concat(Infor.Data.ListData)
-            } 
-            this.loading = false
-            // 
-            
-        },
         cauclate () {
             let topBox = parseFloat(window.getComputedStyle(this.$refs.titlepart).height) + parseFloat(window.getComputedStyle(this.$refs.titlepart).padding) + parseFloat(window.getComputedStyle(this.$refs.titlepart).marginBottom)
             topBox = Math.ceil(topBox) + 4
@@ -123,10 +100,44 @@ export default {
             })
             return Arr
         },
+        linkto (msg) {
+            console.log(msg)
+            this.$router.push({ path: '/trainingdetails', query: { id: msg } })
+        },
+        async downmore () {
+            if (this.courseInfor.length == 0) {
+                return
+            }
+            this.loading = true
+            if (this.courseInfor.length === this.allMessage) {
+                this.loadMore = '已全部显示'
+            } else if (this.courseInfor.length < this.allMessage) {
+                this.currentPage = ++this.currentPage
+                console.log('函数加载' + this.currentPage)
+                let Infor = await TrainingClass({
+                    SchoolId: this.schoolId,
+                    MajorId: this.courseType,
+                    Page: this.currentPage,
+                    Rows: this.Rows,
+                    Sort: 'Id',
+                    Order: 'desc'
+                })
+                this.loading = false
+                Infor.Data.ListData = this.filtration(Infor.Data.ListData)
+                this.courseInfor = this.courseInfor.concat(Infor.Data.ListData)
+            } 
+            this.loading = false
+        },
         async changeType (msg) {
             if (msg.type == '学校:') {
+                if (this.schoolId == msg.item) {
+                    return false
+                }
                 this.schoolId = msg.item
             } else if (msg.type == '专业:') {
+                if (this.courseType == msg.item) {
+                    return false
+                }
                 this.courseType = msg.item
             }
             this.loadMore = '加载中'
@@ -143,6 +154,7 @@ export default {
             this.allMessage = Infor.Data.totalCount
             this.courseInfor = Infor.Data.ListData
             this.currentPage = 1
+            console.log('状态加载' + this.currentPage)
             if (this.allMessage <= this.Rows) {
                 this.loadMore = '已全部显示'
             }
@@ -181,7 +193,10 @@ export default {
 
             msg.Data.ListData = this.filtration(msg.Data.ListData)
             this.allMessage = msg.Data.totalCount
-            this.courseInfor = msg.Data.ListData   
+            this.courseInfor = msg.Data.ListData  
+            if (this.courseInfor.length === this.allMessage) {
+                this.loadMore = '已全部显示'
+            } 
         }
     },
     components: {

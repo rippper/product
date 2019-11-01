@@ -14,7 +14,7 @@
       position="bottom"
       class="LoginPopup"
       >
-      <login-box :close-lb="closeLb"></login-box>
+      <login-box :close-lb="closeLb" :go-reg="goReg"></login-box>
     </mt-popup>
   </div>
 </template>
@@ -29,26 +29,26 @@
     data () {
       return {
         showLogin: false,
-        disconnect: false // 用户是否掉线
+        disconnect: false // 用户是否掉线 true为掉线
       }
     },
     created () { 
     },
     mounted () {
-      // let userInfo = getStore('userInfo')
-      // let body = document.querySelector('body')
-      // if (!userInfo || userInfo == {}) {
-      //   // 用户掉线的情况下 弹出用户登陆框 且禁止页面滚动
-      //   this.showLogin = true 
-      //   body.style.overflow = 'hidden'
-      //   body.style.height = '100vh'
-      //   this.disconnect = true
-      // } else {
-      //   this.showLogin = false
-      //   body.style.overflow = 'auto'
-      //   body.style.height = 'auto'
-      //   this.disconnect = false
-      // }
+      let userInfo = getStore('userInfo')
+      let body = document.querySelector('body')
+      if (!userInfo || userInfo == {}) {
+        // 用户掉线的情况下 弹出用户登陆框 且禁止页面滚动
+        this.showLogin = true 
+        body.style.overflow = 'hidden'
+        body.style.height = '100vh'
+        this.disconnect = true
+      } else {
+        this.showLogin = false
+        body.style.overflow = 'auto'
+        body.style.height = 'auto'
+        this.disconnect = false
+      }
     },
     computed: {
     },
@@ -59,6 +59,15 @@
         } else {
           this.showLogin = false
         }
+      },
+      goReg () {
+        let body = document.querySelector('body')
+        body.style.overflow = 'auto'
+        body.style.height = 'auto'
+        this.showLogin = false
+        this.$nextTick(() => {
+          this.$router.push('/register')
+        })
       }
     }
   }
