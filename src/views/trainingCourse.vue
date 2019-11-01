@@ -21,7 +21,12 @@
             </div>
             <!-- 培训班列表 -->
             <div class="train_CourseDepart" ref="itempart">
-                <ul class="train_selectitem" v-infinite-scroll="downmore" infinite-scroll-disabled="loading" infinite-scroll-immediate-check="false" infinite-scroll-distance="10">
+                <ul 
+                    class="train_selectitem"
+                    v-infinite-scroll="downmore"
+                    infinite-scroll-disabled="loading"
+                    infinite-scroll-distance="10"
+                >
                     <li v-for="(item, index) in courseInfor" :key="index" @click="linkto(item.Id)">
                         <trainingCourseItem :courseInfor="courseInfor[index]" @renderFnc="getTrainClass"></trainingCourseItem>
                     </li>

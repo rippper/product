@@ -12,6 +12,7 @@ const Course = '/wechatCourse'
 const Production = '/wechatproduction'
 const Article = '/apiarticle'
 const wechatTraining = '/wechatTraining' // zyb培训班
+const wechatUser = '/wechatUser' // zyb收藏
 
 export default {
   // 判断用户是否存在
@@ -366,15 +367,15 @@ export default {
     data: { startTime: '', endTime: '' }
   },
   // 添加收藏 Type 0：课程、1：文章、2：通知、3：电子 4：电子书章节收藏
-  FavoriteAdd: {
-    url: API_URL + Platform + '/FavoriteAdd',
-    data: { MainId: '', Type: '', Title: '' }
-  },
+  // FavoriteAdd: {
+  //   url: API_URL + Platform + '/FavoriteAdd',
+  //   data: { MainId: '', Type: '', Title: '' }
+  // },
   // 删除收藏
-  FavoriteDelete: {
-    url: API_URL + Platform + '/FavoriteDelete',
-    data: { Id: '' }
-  },
+  // FavoriteDelete: {
+  //   url: API_URL + Platform + '/FavoriteDelete',
+  //   data: { Id: '' }
+  // },
   // 考试记录
   GetPaperList: {
     url: API_URL + Platform + '/GetPaperList',
@@ -499,6 +500,18 @@ export default {
   },
   TrainingSign: { // zyb培训班用户报名
     url: API_URL + wechatTraining + '/TrainingSign',
+    data: {}
+  },
+  ArticleContent: { // zyb文章详情内容
+    url: API_URL + Platform2 + '/ArticleContent',
+    data: {}
+  },
+  FavoriteAdd: { // zyb收藏添加 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
+    url: API_URL + wechatUser + '/FavoriteAdd',
+    data: {}
+  },
+  FavoriteDelete: { // zyb删除添加 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
+    url: API_URL + wechatUser + '/FavoriteDelete',
     data: {}
   }
 }

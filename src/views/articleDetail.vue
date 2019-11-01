@@ -1,0 +1,175 @@
+/*
+ * 文章详情页面
+ */
+<template>
+    <div class="articleDetail" ref="totalHeight">
+        <header-fix :fixed="true">
+            <i class="arti_Back" slot="left"></i>
+            <div class="arti_CollectDepart" slot="right">
+                <i class="arti_CollectNone" @click="collect()" v-if="articleCollect == false"></i>
+                <i class="arti_CollectTrue" @click="discollect()" v-else-if="articleCollect == true"></i>
+                <span class="arti_CollectNum" v-text="collectNumber"></span>
+            </div>
+        </header-fix>
+        <div class="arti_ArticleDepart">
+            <p class="arti_Title" v-text="articleTitle"></p>
+            <p class="arti_InforContent">来源：<span v-text="articleFrom"></span>发布时间：<span v-text="articleTime"></span>作者：<span v-text="articleAuthor"></span></p>
+        </div>
+        <div class="arti_ArticleContent" v-html="articleContent"></div>
+    </div>
+</template>
+
+<script>
+import { headerFix } from '../components'
+import { ArticleContent, FavoriteAdd, FavoriteDelete } from '../service/getData'
+import { MessageBox } from 'mint-ui'
+
+export default {
+    name: 'articleDetail',
+    data () {
+        return {
+            pageHeight: 0,
+            collectNumber: 0,
+            articleId: 223,
+            articleTitle: '',
+            articleFrom: '',
+            articleTime: '',
+            articleAuthor: '',
+            articleContent: `<div></div>`,
+            articleCollect: ''
+        }
+    },
+    mounted () {
+        this.calclulate()
+        this.render()
+    },
+    methods: {
+        calclulate () {
+            this.pageHeight = window.screen.height
+            this.$refs.totalHeight.style.height = this.pageHeight + 'px'
+        },
+        async render () {
+            let msg = await ArticleContent({
+                Id: 223
+            })
+            console.log(msg)
+            this.articleTitle = msg.Data.Name
+            this.articleAuthor = msg.Data.Author ? msg.Data.Author : '匿名'
+            this.articleTime = msg.Data.CreateDate.substr(0, 10)
+            this.articleFrom = msg.Data.Source ? msg.Data.Source : '暂无'
+            this.articleContent = msg.Data.Content
+            this.collectNumber = msg.Data.FavoriteCount
+            this.articleCollect = msg.Data.IsFavorite
+        },
+        async collect () {
+            let msg = await FavoriteAdd({
+                mainId: this.articleId,
+                type: 'Article'
+            })
+            if (msg.Type == 1) {
+                MessageBox('提示', '收藏成功!')
+            } else {
+                MessageBox('提示', '收藏失败!')
+            }
+            this.render()
+        },
+        async discollect () {
+            let msg = await FavoriteDelete({
+                Ids: this.articleId,
+                Type: 'Article'
+            })
+            console.log(msg)
+            if (msg.Type == 1) {
+                MessageBox('提示', '取消收藏成功!')
+            } else {
+                MessageBox('提示', '取消收藏失败!')
+            }
+            this.render()
+        }
+    },
+    components: {
+        headerFix
+    }
+}
+</script>
+
+<style lang="scss">
+@import "../style/mixin";
+    .articleDetail{
+        height: 100%;
+        background: #fff;
+        overflow: auto;
+        .arti_Back{
+            width: toRem(24px);
+            height: toRem(42px);
+            background:url('../assets/tra_turnback.png');
+            background-size: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .arti_CollectDepart{
+            width: toRem(85px);
+            height: toRem(60px);
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translate(-50%,-50%);
+            .arti_CollectNone,
+            .arti_CollectTrue{
+                width: toRem(44px);
+                height: toRem(44px);
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+            .arti_CollectNone{
+                background: url('../assets/arti_heartempty.png') no-repeat;
+                background-size: 100%;
+            }
+            .arti_CollectTrue{
+                background: url('../assets/arti_heart.png') no-repeat;
+                background-size: 100%;
+            }
+            .arti_CollectNum{
+                color: #4674df;
+                width: toRem(48px);
+                position: absolute;
+                top: toRem(12px);
+                right: toRem(-6px);
+                font-size: toRem(12px);
+                height: toRem(24px);
+                line-height: toRem(24px);
+                text-align: center;
+
+            }
+        }
+        .arti_ArticleDepart{
+            padding-top: toRem(118px);
+            padding-left: toRem(15px);
+            padding-right: toRem(15px);
+            .arti_Title{
+                font-size: toRem(42px);
+                font-family: '微软雅黑';
+                font-weight: 600;
+                line-height: toRem(58px);
+            }
+            .arti_InforContent{
+                margin-top: toRem(18px);
+                font-size: toRem(20px);
+                span{
+                    padding-right: toRem(25px);
+                }
+            }
+        }
+        .arti_ArticleContent{
+            padding-top: toRem(68px);
+            padding-left: toRem(15px);
+            padding-right: toRem(15px);
+            img{
+                max-width: toRem(600px);
+            }
+        }
+    }
+</style>
