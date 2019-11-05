@@ -22,34 +22,47 @@
       </video>
     </div>
     <div class="course_detail">
-      <mt-navbar v-model="selected">
-        <mt-tab-item id="introduce">介绍</mt-tab-item>
-        <mt-tab-item id="relatedCourse">相关课程</mt-tab-item>
-        <mt-tab-item id="evaluate">评价</mt-tab-item>
-      </mt-navbar>
       <!-- tab-container -->
-      <mt-tab-container v-model="selected">
-        <mt-tab-container-item id="introduce">
-          <course-introduce :course-details="courseDetails"></course-introduce>
-        </mt-tab-container-item>
-        <mt-tab-container-item id="relatedCourse">
-          <section v-if="selected === 'relatedCourse'" v-infinite-scroll="getRelatedCourse"
-                   infinite-scroll-immediate-check="immediate"
-                   infinite-scroll-disabled="loading"
-                   infinite-scroll-distance="10">
-            <course-list :course-data="courseData" :no-data-bg="noDataBg" :no-data="noData"></course-list>
-          </section>
-        </mt-tab-container-item>
-        <mt-tab-container-item id="evaluate">
-          <course-comment :course-id="courseId" :comment-credit="courseDetails.CommentCredit"></course-comment>
-        </mt-tab-container-item>
-      </mt-tab-container>
-    </div>
-    <div v-if="isOpen" class="open_app">
-      <span>打开APP，可享课程下载服务</span><a id="btnOpenApp" class="openApp" href="javascript:void(0);">打开</a>
-      <a class="close_tip" @click="isOpen = !isOpen">
-        <i class="webapp webapp-close"></i>
-      </a>
+      <course-introduce :course-details="courseDetails"></course-introduce>
+      <div class="contentList">
+        <div class="title">
+          课程目录
+        </div>
+        <div class="list">
+          <ul>
+            <li>
+              <p class="label">[第一集] 习近平日内瓦演讲的意义</p>
+              <img src="../assets/play-blue.png" alt="">
+              <!-- <img src="../assets/play-white.png" alt=""> -->
+            </li>
+            <li>
+              <p class="label">[第一集] 习近平日内瓦演讲的意义</p>
+              <img src="../assets/play-blue.png" alt="">
+              <!-- <img src="../assets/play-white.png" alt=""> -->
+            </li>
+            <li>
+              <p class="label">[第一集] 习近平日内瓦演讲的意义</p>
+              <img src="../assets/play-blue.png" alt="">
+              <!-- <img src="../assets/play-white.png" alt=""> -->
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="course-brief">
+        <div class="title">
+          课程简介
+        </div>
+        <div class="content">
+          的十二大以来经过精炼概括后明确写人党章1982年9月，
+          党的十二大通过新的《中国共产党章程》，正式载入入党誓词。
+          党的十三大至十九大通过的党章都沿用、重申了这一内容。
+          我志愿加人中国共产党。
+        </div>
+      </div>
+      <div class="course-ac">
+        <p class="text"><img src="../assets/message-circle.png" alt=""> 评论</p>  
+        <p class="num">2510</p>
+      </div>
     </div>
   </div>
 </template>
@@ -57,12 +70,12 @@
   import Vue from 'vue'
   import { mapState } from 'vuex'
   import wx from 'weixin-js-sdk'
-  import { Toast, Indicator, Navbar, TabItem, TabContainer, TabContainerItem } from 'mint-ui'
+  import { Toast, Navbar, TabItem, TabContainer, TabContainerItem } from 'mint-ui'
+  // Indicator,
   import { goBack } from '../service/mixins'
   import {
     GetCourseDetail,
     UploadTimeNode,
-    RelatedCourse,
     GetWechatWxAuthModel
   } from '../service/getData'
   import { timeFormat, isIPhone } from '../plugins/utils'
@@ -116,11 +129,11 @@
     mounted () {
       /* 初始化 打开APP */
       // eslint-disable-next-line
-      new Mlink({
-        mlink: 'https://afaki8.mlinks.cc/A0BP?Title=&Content=&Id=' + this.courseId + '&Type=Course&Token=' +
-          localStorage.getItem('ASPXAUTH'),
-        button: document.querySelector('a#btnOpenApp')
-      })
+      // new Mlink({
+      //   mlink: 'https://afaki8.mlinks.cc/A0BP?Title=&Content=&Id=' + this.courseId + '&Type=Course&Token=' +
+      //     localStorage.getItem('ASPXAUTH'),
+      //   button: document.querySelector('a#btnOpenApp')
+      // })
       /* 获取video对象 */
       this.myVideo = document.getElementById('myVideo')
       if (this.userAgent.weixin && this.isAllowWeiXin) {
@@ -129,8 +142,6 @@
       }
       /* 获取课程详情 */
       this.getCourseDetail(this.playFunc)
-      /* 相关课程 */
-      this.getRelatedCourse()
     },
     computed: {
       ...mapState(['userAgent'])
@@ -162,29 +173,6 @@
             }
           })
         })
-      },
-      // 相关课程
-      async getRelatedCourse () {
-        this.noData = false
-        this.noDataBg = false
-        this.loading = true
-        Indicator.open()
-        let data = await RelatedCourse({ CourseId: this.courseId, Page: this.page })
-        Indicator.close()
-        if (data.Type == 1) {
-          let list = data.Data.List
-          if (list.length == 0 && this.page > 1) {
-            this.noData = true
-            return
-          }
-          if (list.length == 0 && this.page == 1) {
-            this.noDataBg = true
-            return
-          }
-          this.courseData = this.courseData.concat(list)
-          this.loading = false
-          this.page += 1
-        }
       },
       // 课程详情
       async getCourseDetail (cb) {
@@ -274,6 +262,7 @@
   @import "../style/mixin";
 
   .play_Mp4 {
+    background: #fff;
     .open_app {
       position: fixed;
       left: 0;
@@ -348,6 +337,66 @@
 
     .course_notes {
       padding-bottom: toRem(100px);
+    }
+    .contentList{
+      margin-top: toRem(50px);
+      padding: 0 0.4rem;
+      .title{
+        color: #333;
+        font-size: 15px;
+      }
+      .list{
+        width: 100%;
+        @extend %clearFix;
+        margin-top: toRem(30px);
+        ul{
+          li{ 
+              @extend %clearFix;
+              line-height: toRem(80px);
+              background: #f5f9ff;
+              margin-top: toRem(20px);
+              &.on{
+                color: #fff;
+              }
+              .label{
+                margin-left: toRem(20px);
+                float: left;
+                color: #4a608c;
+                @include ellipsis_two(1);
+              }
+              img{
+                float: right;
+                width: toRem(34px);
+                height: toRem(34px);
+                margin-top: toRem(23px);
+                margin-right: toRem(20px);
+              }
+          }
+        }
+      }
+    }
+    .course-brief{
+      margin-top: toRem(50px);
+      padding: 0 toRem(30px);
+      .title{
+        font-size: 15px;
+        color: #333;
+        font-weight: bold;
+      }
+      .content{
+        margin-top: toRem(20px);
+        padding-bottom: toRem(80px);
+        text-indent: toRem(24px);
+        font-size: 13px;
+        color: #333;
+        line-height: toRem(48px);
+        border-bottom: toRem(5px) solid #e8e8e8;
+      }
+    }
+    .course-ac{
+      p{
+        float: left;
+      }
     }
   }
 </style>

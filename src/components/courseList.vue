@@ -10,23 +10,14 @@
           <img v-lazy="item.CourseImg">
           <!--<error-img :src="item.CourseImg" :error-src="noCourse"></error-img>-->
         </a>
-        <img v-if="item.CourseType=='JYAicc'" class="tip" src="../assets/jingpin.png" alt=""/>
+        <!-- <img v-if="item.CourseType=='JYAicc'" class="tip" src="../assets/jingpin.png" alt=""/>
         <img v-if="item.CourseType=='Mp4'" class="tip" src="../assets/MP4.png" alt=""/>
-        <img v-if="item.CourseType=='h5'" class="tip" src="../assets/H5.png" alt=""/>
+        <img v-if="item.CourseType=='h5'" class="tip" src="../assets/H5.png" alt=""/> -->
+        <img src="../assets/play-circle.png" alt="" class="play-img">
       </div>
       <div class="course_desc">
         <div class="course_name">{{item.CourseName}}</div>
-        <div class="course_tt">
-          <div class="course_teacher">讲师：{{item.TeacherName || '无'}}</div>
-          <div class="course_time">时长：{{timeFormat(item.Duration*60) || '无'}}</div>
-        </div>
-        <div class="course_bottom">
-          <span class="course_bottom_time">{{item.CreateDate | dateFilter('yyyy.MM.dd')}}</span>
-          <span class="course_bottom_score highlight">{{item.Credit}}学分</span>
-          <!-- <span v-if="!myCourse" class="choose_status"
-                :class="item.SelectFlag=='已选'&&'course_selected'">{{item.SelectFlag}}</span>
-          <span v-if="myCourse" class="progress">进度：{{parseInt(item.BrowseScore)}}%</span> -->
-        </div>
+        <div class="course_click">点击量:{{item.ClickCount}} {{item.CourseType}} {{item.CourseId}}</div>
       </div>
     </div>
     <div class="noDataBg" v-if="noDataBg"></div>
@@ -82,25 +73,34 @@
   @import "../style/mixin";
 
   .course_list {
+    @extend %clearFix;
+    background: #fff;
     .course_item {
-      padding: toRem(20px) toRem(30px);
-      @extend %clearFix;
+      margin: toRem(40px) toRem(20px) 0 toRem(30px);
+      float: left;
       background-color: $fill-base;
-      border-bottom: 1px solid $border-color-base;
+      width: toRem(335px);
+      &:nth-child(2n){
+        margin-left: 0; 
+      }
     }
 
     .course_img {
-      @extend %pull-left;
       position: relative;
-      width: toRem(258px);
-
+      width: toRem(335px);
       .img {
         img {
           width: 100%;
-          height: toRem(146px);
+          height: toRem(212px);
         }
       }
-
+      .play-img{
+        width: toRem(38px);
+        height: toRem(39px);
+        position: absolute;
+        bottom: toRem(0px);
+        right: toRem(10px);
+      }
       .tip {
         position: absolute;
         right: toRem(5px);
@@ -111,11 +111,8 @@
     }
 
     .course_desc {
-      @extend %pull-left;
-      width: toRem(415px);
-      padding-left: toRem(15px);
+      width: toRem(335px);
       position: relative;
-      height: toRem(146px);
     }
 
     .course_tt {
@@ -140,8 +137,12 @@
       font-size: 16px;
       font-weight: 500;
       color: $color-text-base;
+      margin-top: toRem(10px);
     }
-
+    .course_click{
+      font-size: 14px;
+      color: #a9bcc7;
+    }
     .course_bottom {
       position: absolute;
       bottom: 0;

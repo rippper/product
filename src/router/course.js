@@ -41,21 +41,21 @@ export default [
   // mp4播放
   {
     name: 'playMp4',
-    path: 'playMp4',
+    path: '/playMp4',
     component: PlayMp4,
     meta: { title: '课程播放' }
   },
   // JYAicc播放页
   {
     name: 'playJYAicc',
-    path: 'playJYAicc',
+    path: '/playJYAicc',
     component: PlayJYAicc,
     meta: { title: '精英课程播放' }
   },
   // h5播放
   {
     name: 'playH5',
-    path: 'playH5',
+    path: '/playH5',
     component: PlayH5,
     meta: { title: 'h5课程播放' }
   }
