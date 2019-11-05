@@ -50,7 +50,7 @@
     <div class="category-first">
       <div class="cf-swiper">
         <div class="swiper-con">
-          <ul >
+          <!-- <ul >
               <li class="actived">当前热点1</li>
               <li>当前热点2</li>
               <li>当前热点3</li>
@@ -58,7 +58,30 @@
               <li>当前热点5</li>
               <li>当前热点6</li>
               <li>当前热点7</li>
-          </ul>
+          </ul> -->
+           <swiper :options="mySwiperFirst" ref="mySwiper">
+              <swiper-slide @click="toSlide(1)">
+                 当前热点1
+              </swiper-slide>
+              <swiper-slide @click="toSlide(2)">
+                  当前热点2
+              </swiper-slide>
+              <swiper-slide @click="toSlide(3)">
+                  当前热点3
+              </swiper-slide>
+              <swiper-slide @click="toSlide(4)">
+                  当前热点4
+              </swiper-slide>
+              <swiper-slide @click="toSlide(5)">
+                  当前热点5
+              </swiper-slide>
+              <swiper-slide @click="toSlide(6)">
+                  当前热点6
+              </swiper-slide>
+              <swiper-slide @click="toSlide(7)">
+                  当前热点7
+              </swiper-slide>
+            </swiper>
         </div>
         <div class="gallery-thumbs">
           <div class="gt-layer" v-if="showGtLayer" @click="toggleGtLayer"></div>
@@ -85,6 +108,7 @@
               <li  @click="toSlide(7)">
                 热点7
               </li>
+              
             </ul>
           </div>
         </div>
@@ -179,9 +203,10 @@
         mySwiperFirst: {
           slidesPerView: 'auto',
           grabCursor: true,
-          loop: true,
+          loop: false,
           freeMode: true,
-          freeModeMomentum: false
+          freeModeMomentum: false,
+          // centeredSlides: true
         },
         showGtLayer: false,
         showCcLayer: false
@@ -257,7 +282,7 @@
         this.showGtLayer = !this.showGtLayer 
       },
       toSlide (i) {
-        console.log(i)
+        this.$refs.mySwiper.swiper.slideTo(i - 1, 0, true)
       },
       toggleCcLayer () {
         console.log(77)
@@ -384,24 +409,26 @@
         margin-left: toRem(30px);
         overflow: hidden;
         .swiper-con{
-          width: toRem(10000px);
-          ul{
-            @extend %clearFix;
-            overflow: auto; 
-            li{
-              float: left;
-              height: toRem(80px);
-              line-height: toRem(80px);
-              color: #fff;
-              font-size: 17px;
-              margin-right: toRem(30px);
-              &:nth-last-child(1) {
-                margin-right: 0;
-              }
-              &.actived{
-                background: url("../assets/block-yel.png") no-repeat center bottom;
-                background-size: toRem(30px) toRem(6px);
-              }
+          width: toRem(550px);
+          height: toRem(80px);
+          .swiper-slide{
+            height: toRem(60px);
+            line-height: toRem(70px);
+            width:  auto;
+            color: #fff;
+            margin-left: toRem(25px);
+            margin-right: toRem(25px);
+            &:nth-child(1){
+              margin-left: 0;
+            }
+            &:nth-last-child(1){
+              margin-right: 0;
+            }
+            &.swiper-slide-active{
+              color: #fed803;
+              font-size: 16px;
+              background: url("../assets/block-yel.png") no-repeat center bottom;
+              background-size: toRem(30px) toRem(6px); 
             }
           }
         }

@@ -59,24 +59,41 @@
           我志愿加人中国共产党。
         </div>
       </div>
-      <div class="course-ac">
-        <p class="text"><img src="../assets/message-circle.png" alt=""> 评论</p>  
+      <div class="course-ac" @click=" commentBox = true"> 
+         <!-- commentBox -->
+        <p class="text"><img src="../assets/message-circle.png" alt=""> <span>评论</span></p>  
         <p class="num">2510</p>
       </div>
     </div>
+    <div class="comment-wrapper">
+      <mt-popup
+        position="bottom"
+        v-model="commentBox"
+        >
+        <comment-box :close-box="closeBox" :show-list-box="showListBox"></comment-box>
+      </mt-popup>
+    </div>
+    <mt-popup
+        position="right"
+        v-model="commentListBox"
+        class="clb-popup"
+      >
+       <comment-list-box :back-comment="backComment"></comment-list-box>
+      </mt-popup>
   </div>
 </template>
 <script>
   import Vue from 'vue'
   import { mapState } from 'vuex'
   import wx from 'weixin-js-sdk'
-  import { Toast, Navbar, TabItem, TabContainer, TabContainerItem } from 'mint-ui'
+  import { Toast, Navbar, TabItem, TabContainer, TabContainerItem, Popup } from 'mint-ui'
   // Indicator,
   import { goBack } from '../service/mixins'
   import {
     GetCourseDetail,
     UploadTimeNode,
-    GetWechatWxAuthModel
+    GetWechatWxAuthModel,
+    GetCourseCommentList
   } from '../service/getData'
   import { timeFormat, isIPhone } from '../plugins/utils'
 
@@ -84,6 +101,7 @@
   Vue.component(TabItem.name, TabItem)
   Vue.component(TabContainer.name, TabContainer)
   Vue.component(TabContainerItem.name, TabContainerItem)
+  Vue.component(Popup.name, Popup)
   export default {
     mixins: [goBack],
     data () {
@@ -119,7 +137,9 @@
           title: '',
           content: ''
         },
-        hasChangeLocation: false
+        hasChangeLocation: false,
+        commentBox: null, // 评论框显示与否
+        commentListBox: null // 评论详细列表显示与否
       }
     },
     created () {
@@ -142,6 +162,8 @@
       }
       /* 获取课程详情 */
       this.getCourseDetail(this.playFunc)
+      // 获取课程评论列表
+      this.getCommentList()
     },
     computed: {
       ...mapState(['userAgent'])
@@ -249,6 +271,37 @@
             }, 60000)
           }
         }, 100)
+      },
+      closeBox () {
+        this.commentBox = false
+      },
+      backComment () {
+        this.commentBox = true
+        this.commentListBox = false
+      },
+      showListBox () {
+        this.commentListBox = true
+        this.commentBox = false
+      },
+      // 课程评论列表
+      async getCommentList () {
+        this.loading = true
+        let res = await GetCourseCommentList({ courseId: this.courseId, Page: this.page })
+        this.loading = false
+        if (res.IsSuccess) {
+          let list = res.Data.List || []
+          this.commentCount = res.Data.TotalCount
+          if (this.page == 1 && list.length == 0) {
+            this.noData = true
+            return
+          }
+          if (this.page > 1 && list.length == 0) {
+            this.noMoreData = true
+            return
+          }
+          this.commentList = this.commentList.concat(list)
+          this.page += 1
+        }
       }
     },
     beforeDestroy () {
@@ -378,6 +431,7 @@
     .course-brief{
       margin-top: toRem(50px);
       padding: 0 toRem(30px);
+      border-bottom: toRem(5px) solid #e8e8e8;
       .title{
         font-size: 15px;
         color: #333;
@@ -390,13 +444,45 @@
         font-size: 13px;
         color: #333;
         line-height: toRem(48px);
-        border-bottom: toRem(5px) solid #e8e8e8;
       }
     }
     .course-ac{
+      display: table;
+      margin: 0 auto;
+      padding: toRem(25px) 0;
       p{
-        float: left;
+        display: table-cell;
+        font-size: 16px;
+        color: #333;
+        img{
+          width: toRem(44px);
+          height: toRem(42px);
+          margin-right: toRem(10px);
+        }
+        span{
+          margin-right: toRem(10px);
+        }
+        &.num{
+          background: #d1022a;
+          color: #fff;
+          font-size: 12px;
+          border-radius: toRem(25px);
+          padding: toRem(8px) toRem(12px);
+        }
       }
+    }
+    .comment-wrapper{
+      .mint-popup{
+        top: 5rem;
+        width: 100%;
+      }
+      .v-modal{
+        height: auto;
+      }
+    }
+    .clb-popup{
+      width: 100%;
+      height: 100vh;
     }
   }
 </style>

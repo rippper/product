@@ -31,7 +31,7 @@ export default [
   // 电子书章节内容
   {
     name: 'ebookDetail',
-    path: 'ebookDetail',
+    path: '/ebookDetail',
     component: EbookDetail,
     meta: { title: '内容' }
   }
