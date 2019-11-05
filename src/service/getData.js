@@ -372,14 +372,14 @@ export const GetCollectionList = (data) => fetch.post(Api.GetCollectionList.url,
 /**
  *  添加收藏 Type 0：课程、1：文章、2：通知、3：电子 4：电子书章节收藏
  */
-export const FavoriteAdd = (data) => fetch.post(Api.FavoriteAdd.url,
-  { ...Api.FavoriteAdd.data, ...data })
+// export const FavoriteAdd = (data) => fetch.post(Api.FavoriteAdd.url,
+//   { ...Api.FavoriteAdd.data, ...data })
 
 /**
  *  删除收藏
  */
-export const FavoriteDelete = (data) => fetch.post(Api.FavoriteDelete.url,
-  { ...Api.FavoriteDelete.data, ...data })
+// export const FavoriteDelete = (data) => fetch.post(Api.FavoriteDelete.url,
+//   { ...Api.FavoriteDelete.data, ...data })
 
 /**
  *  考试记录
@@ -521,6 +521,21 @@ export const GetTrainingById = (data) => fetch.post(Api.GetTrainingById.url,
  */
 export const TrainingSign = (data) => fetch.post(Api.TrainingSign.url,
   { ...Api.TrainingSign.data, ...data })
+/**
+ * zyb文章详情页面获取数据
+ */
+export const ArticleContent = (data) => fetch.post(Api.ArticleContent.url,
+  { ...Api.ArticleContent.data, ...data })
+/**
+ * zyb添加收藏
+ */
+export const FavoriteAdd = (data) => fetch.post(Api.FavoriteAdd.url,
+  { ...Api.FavoriteAdd.data, ...data })
+/**
+ * zyb删除收藏
+ */
+export const FavoriteDelete = (data) => fetch.post(Api.FavoriteDelete.url,
+  { ...Api.FavoriteDelete.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {
