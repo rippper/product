@@ -264,12 +264,12 @@
           <div class="hd">
              新闻动态
           </div>
-          <router-link to="/">更多 <img src="../assets/nc-arrow-right.png" alt=""></router-link>
+          <router-link to="/articletype">更多 <img src="../assets/nc-arrow-right.png" alt=""></router-link>
         </div>
         <div class="list">
           <ul>
             <li v-for="(item, index) in articleList" :key="item.ArticleId">
-              <router-link to="/">
+              <router-link :to="{ path: '/articledetail', query: { Id: item.ArticleId, from: 'home' } }">
                 <div class="text">
                   <div class="title">
                     <img src="../assets/news-first-icon.png" alt="" v-if="index == 0"> 
@@ -607,7 +607,7 @@
             a{
               float: left;
               color: #4374df;
-              font-size: 14px;
+              font-size:  14px;
               height: toRem(30px);
               line-height: toRem(30px);
               margin-left: toRem(10px)

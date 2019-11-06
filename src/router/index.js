@@ -4,7 +4,7 @@ import ebook from './ebook' // 电子书
 import personalCenter from './personalCenter' // 个人中心
 import course from './course' // 课程相关
 import trainingCourse from './trainingCourse' // 培训班
-import article from './article' //文章
+import article from './article' // 文章
 
 // 由于懒加载页面太多的话会造成webpack热更新太慢，所以开发环境不使用懒加载，只有生产环境使用懒加载
 const _import = require('@/plugins/import.' + process.env.NODE_ENV)

@@ -152,20 +152,10 @@ export default {
     url: API_URL + Platform + '/GetUserCourseInfoList',
     data: { Finish: '2', Keyword: '', Page: 1, Rows: 10 }
   },
-  // 文章频道
-  GetArticleChannelInfoList: {
-    url: API_URL + Article + '/GetArticleChannelInfoList',
-    data: { ParentId: '', ParentCode: '' }
-  },
   // 文章列表
   GetArticleInfoList: {
-    url: API_URL + Article + '/GetArticleInfoList',
-    data: { CategoryId: '', Keyword: '', CategoryCode: '', Page: '1', Rows: '10' }
-  },
-  // 文章数
-  GetActicleInfoCount: {
-    url: API_URL + Article + '/GetActicleInfoCount',
-    data: { CategoryCode: '' }
+    url: API_URL + Platform2 + '/GetArticleInfoList',
+    data: {}
   },
   // 文章详情
   ArticleDetail: {
@@ -504,6 +494,10 @@ export default {
   },
   ArticleContent: { // zyb文章详情内容
     url: API_URL + Platform2 + '/ArticleContent',
+    data: {}
+  },
+  GetArticleChannelInfoList: { // zyb获取文章类型
+    url: API_URL + Platform2 + '/GetArticleChannelInfoList',
     data: {}
   },
   FavoriteAdd: { // zyb收藏添加 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
