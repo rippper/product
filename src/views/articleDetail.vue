@@ -28,7 +28,8 @@ export default {
     name: 'articleDetail',
     data () {
         return {
-            pageHeight: 0,
+            screenHeight: '',
+            screenWidth: '',
             collectNumber: 0,
             articleId: this.$route.query.Id,
             comeFrom: this.$route.query.from,
@@ -43,11 +44,22 @@ export default {
     mounted () {
         this.calclulate()
         this.render()
+        window.addEventListener('resize', this.windowsChange)
+    },
+    beforeDestroy () {
+        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
         calclulate () {
-            this.pageHeight = window.screen.height
-            this.$refs.totalHeight.style.height = this.pageHeight + 'px'
+            this.screenWidth = window.screen.width
+            this.screenHeight = window.screen.height
+            this.$refs.totalHeight.style.height = this.screenHeight + 'px'
+        },
+        windowsChange () {
+            return (() => {
+                this.screenWidth = window.screen.width
+                this.screenHeight = window.screen.height
+            })()
         },
         LinkBack () {
             if (this.comeFrom == 'type') {
@@ -91,6 +103,14 @@ export default {
                 MessageBox('提示', '取消收藏失败!')
             }
             this.render()
+        }
+    },
+    watch: {
+        screenWidth (newsvalue, oldvalue) {
+            this.calclulate()
+        },
+        screenHeight (newsvalue, oldvalue) {
+            this.calclulate()
         }
     },
     components: {

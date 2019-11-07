@@ -80,6 +80,8 @@ export default {
     name: 'articletype',
     data () {
         return {
+            screenHeight: '',
+            screenWidth: '',
             label: '文章分类',
             articleType: [],
             articleTypeId: 0,
@@ -94,6 +96,10 @@ export default {
     mounted () {
         this.calculateHeight()
         this.render()
+        window.addEventListener('resize', this.windowsChange)
+    },
+    beforeDestroy () {
+        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
         calculateHeight () {
@@ -102,6 +108,12 @@ export default {
             let top = parseFloat(window.getComputedStyle(this.$refs.artic_NewsContent).top)
             this.$refs.artic_NewsContent.style.height = height - top + 'px'
             this.$refs.artic_MoreSelectType.style.height = height - top + 'px'
+        },
+        windowsChange () {
+            return (() => {
+                this.screenWidth = window.screen.width
+                this.screenHeight = window.screen.height
+            })()
         },
         changeType () {
             if (this.differType == true) {
@@ -157,7 +169,7 @@ export default {
             })
             this.articleType[index].Jugement = true
             let leftindex = this.$refs.artic_lineItem[index].offsetLeft
-            this.$refs.artic_lineLength.scrollTo(leftindex - 80, 0)
+            this.$refs.artic_lineLength.scrollTo(leftindex - 60, 0)
             this.articleTypeId = this.articleType[index].Id
             this.differType = false
             this.articleData = []
@@ -211,6 +223,14 @@ export default {
             } else if (this.allCount == this.articleData.length) {
                 this.TheLoader = '已全部加载'
             }
+        }
+    },
+    watch: {
+        screenWidth (newsvalue, oldvalue) {
+            this.calculateHeight()
+        },
+        screenHeight (newsvalue, oldvalue) {
+            this.calculateHeight()
         }
     },
     components: {

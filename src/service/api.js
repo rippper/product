@@ -13,6 +13,7 @@ const Production = '/wechatproduction'
 const Article = '/apiarticle'
 const wechatTraining = '/wechatTraining' // zyb培训班
 const wechatUser = '/wechatUser' // zyb收藏
+const wechatExam = '/wechatExam' // zyb考试
 
 export default {
   // 判断用户是否存在
@@ -80,11 +81,6 @@ export default {
   GetChannelInfoList: {
     url: API_URL + Platform + '/GetChannelInfoList',
     data: { ParentId: 0 }
-  },
-  // 考试分类
-  GetExamType: {
-    url: API_URL + Platform + '/GetExamType',
-    data: { ParentId: 0, ParentCode: '' }
   },
   // 考试列表
   GetExamList: {
@@ -506,6 +502,14 @@ export default {
   },
   FavoriteDelete: { // zyb删除添加 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
     url: API_URL + wechatUser + '/FavoriteDelete',
+    data: {}
+  },
+  GetExamType: { // zyb获取考试类型
+    url: API_URL + wechatExam + '/GetExamType',
+    data: {}
+  },
+  ExamList: { // zyb获取考试列表
+    url: API_URL + wechatExam + '/ExamList',
     data: {}
   }
 }

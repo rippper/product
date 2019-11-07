@@ -95,6 +95,7 @@ export default {
             }
         }    
         .artic_TheList_RightDepart{
+            padding-left: toRem(50px);
             img{
                 width: toRem(225px);
                 height: toRem(150px);

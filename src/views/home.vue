@@ -1007,8 +1007,8 @@
         margin-top: toRem(40px);
         padding-left: toRem(15px);
         a{
-           width: toRem(60px);
-           display: block;
+           width: toRem(70px);
+           display: inline-block;
            font-size: 14px;
            color: #a9bcc7;
         }
