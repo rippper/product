@@ -19,24 +19,32 @@
     <!-- <mt-cell class="not-required" title="选择职级" @click.native="openGradeList" is-link>
       <span>{{gradeName|| '请选择'}}</span>
     </mt-cell> -->
-    <!-- <mt-cell title="手机号码" v-model="infoSend.Mobile" is-link><span>获取验证码</span></mt-cell> -->
-    <mt-field label="邮箱号码" v-model="infoSend.Email" placeholder=""></mt-field>
-    <!-- <mt-field label="验证码" v-model="infoSend.cerCode" placeholder=""></mt-field> -->
-    <div class="agree">
-        <label>
-            <div class="option">
-                <input type="checkbox" class="hidden-input" v-model="agreeState">
-                <span class=""></span>
-            </div>
-            <div class="option-val">
-                我已经阅读且同意 <router-link to="/userAgreement">"用户协议和隐私政策声明协议"</router-link> 
-            </div>
-        </label>  
+    <div class="phone-handle">
+      <mt-field label="手机号码" v-model="infoSend.Mobile" class="num"></mt-field>
+      <mt-cell class="getcode" is-link title="获取验证码" @click.native="getCodeF"></mt-cell>
     </div>
+    <mt-field label="邮箱号码" v-model="infoSend.Email" placeholder=""></mt-field>
+    <mt-field label="验证码" v-model="infoSend.MobileCode" placeholder=""></mt-field>
+    <div class="codeImg-handle">
+      <mt-field label="图片验证码" v-model="infoSend.ValidateCode" class="code-num"></mt-field>
+      <img :src="this.codeImgSrc" alt="" class="cerCodeImg">
+      <p class="codeChange"  @click="codeChange">看不清?<span>换一张</span> </p>
+    </div>
+    <div class="checkbox">
+      <label for="remember_checkbox">
+        <span class="mint-checkbox">
+          <input id="remember_checkbox" v-model="agreeState" type="checkbox" class="mint-checkbox-input">
+          <span class="mint-checkbox-core"></span>
+        </span>
+        <span class="mint-checkbox-label">我已经阅读且同意 <router-link to="/userAgreement">"用户协议和隐私政策声明协议" </router-link></span>&nbsp;
+      </label>
+    </div>
+        <!-- <div class="option-val">
+            </router-link> 
+        </div> -->
     <div class="submit_edit">
       <mt-button type="primary" size="large" @click.native="verification">注册</mt-button>
     </div>
-   
     <!--选择地区-->
     <group-list-popup :is-show="isShowGroupList" :group-name="groupName"
                       @update:data="overWriteInfoSend"
@@ -46,7 +54,7 @@
 <script>
   import Vue from 'vue'
   import { Button, Cell, Field, MessageBox, Picker, Popup, Toast } from 'mint-ui'
-  import { Register } from '../service/getData'
+  import { Register, SendMsg, RegPhoneCheck, CheckUserPhone, GetLoginVC } from '../service/getData'
   import { goBack } from '../service/mixins'
 
   Vue.component(Button.name, Button)
@@ -66,9 +74,10 @@
           Name: '',
           GroupId: '',
           IdCard: '',
-          Grade: '',
-          SmgCode: '',
-          Email: ''
+          Email: '',
+          Mobile: '',
+          MobileCode: '',
+          ValidateCode: ''
         },
         confirmPwd: '', // 确认密码,
         isShowGroupList: false,
@@ -87,11 +96,16 @@
         isPassIdCard: false, // 身份证验证
         isPassMobile: false, // 手机号验证
         isPassPwd: true, // 密码验证
-        agreeState: false
+        agreeState: false, // 是否同意注册协议
+        RegPhonePass: false, // 改手机号码是否允许注册
+        codeImgSrc: '',
+        phoneCode: '' // 验证码
       }
     },
     mounted () {
       // this.getGradeList()
+      // this.getAllGroupList()
+      this.getCodeImg()
     },
     methods: {
       // 注册
@@ -101,18 +115,55 @@
           Toast({ message: '注册成功', position: 'bottom' })
           this.$router.push('/login')
         } else if (data.Type != 401) {
+          this.getCodeImg()
           MessageBox('警告', data.Message)
         }
       },
       // 通过部门列表组件重写数据
       overWriteInfoSend (data) {
         this.infoSend = { ...this.infoSend, ...data }
-        this.groupName = data.groupName
+        this.groupName = data.Name
       },
       openGroupList () {
         this.isShowGroupList = true
       },
-     
+      async getCodeF () {
+        if (!this.infoSend.Mobile) {
+          Toast({ message: '请先输入手机号码' })
+          return
+        } 
+        let phoneNum = this.infoSend.Mobile
+        this.RegPhoneCheck(phoneNum)
+        if (!this.RegPhonePass) {
+          Toast({ message: '该用户已存在' })
+        } 
+        let data = await SendMsg({ MobileNo: phoneNum })
+        console.log(data)
+      },
+      codeChange () {
+        this.getCodeImg()
+      },
+      async RegPhoneCheck (num) {
+        let data = await RegPhoneCheck({ PhoneNo: num })
+        if (data.IsSuccess) {
+          this.RegPhonePass = true
+        }
+      },
+      async getCheckUserPhone (phone, code) {
+        let data = await CheckUserPhone({
+          Phonenumber: phone,
+          PhoneCode: code
+        })
+        if (data.IsSuccess) {
+          this.codePass = true
+        }
+      },
+      async getCodeImg () {
+        let data = await GetLoginVC({ BoolRes: true })
+        if (data.IsSuccess) {
+            this.codeImgSrc = data.Data.Img
+        }
+      },
       verification () {
         const toastInfo = message => {
           return { message, position: 'bottom', duration: 2000 }
@@ -130,14 +181,19 @@
         } else if (!this.infoSend.Name) {
           Toast(toastInfo('姓名不能为空'))
         } else if (!this.infoSend.GroupId) {
-          Toast(toastInfo('请选择地区'))
+          Toast(toastInfo('请选择所在区镇'))
         } else if (this.isPassIdCard == false) {
           Toast(toastInfo('请输入有效身份证号码'))
-        //    else if (this.isPassMobile == false) {
-        //   Toast(toastInfo('手机号格式不正确'))
-        // }
+        } else if (this.isPassMobile == false) {
+          Toast(toastInfo('手机号格式不正确'))
+        } else if (this.isPassEmail == false) {
+          Toast(toastInfo('邮箱格式不正确'))
+        } else if (!this.infoSend.ValidateCode) {
+          Toast(toastInfo('图形验证码不能为空'))
+        } else if (!this.agreeState) {
+          Toast(toastInfo('请同意注册协议'))
         } else {
-          this.userRegister()
+           this.userRegister()
         }
       }
     },
@@ -177,6 +233,16 @@
             } else {
               this.isPassPwd = true
             }
+          }
+        }
+      },
+      'infoSend.Email': {
+        handler: function (val, oldVal) {
+          if (val) {
+            let regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+            this.isPassEmail = regEmail.test(val)
+          } else {
+            this.isPassEmail = false
           }
         }
       }
@@ -253,7 +319,56 @@
       width: 95%;
       height: toRem(90px);
     }
-
+    .phone-handle{
+      @extend %clearFix;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+      .num{
+        float: left;
+        width: toRem(550px);
+        .mint-cell-wrapper{
+          border-bottom: none!important;
+        }
+      }
+      .getcode{
+        float: right;
+        width: toRem(200px);
+        color: #a9bcc7;
+        .mint-cell-wrapper{
+          padding: 0 0;
+          .mint-cell-text{
+            &:after {
+              content: "";
+              line-height: 1;
+            }
+          }
+        }
+      }
+    }
+    .codeImg-handle{
+      @extend %clearFix;
+      background: #fff;
+      .code-num{
+        width: toRem(420px);
+        float: left;
+      }
+      .cerCodeImg{
+        float: left;
+        width: toRem(90px);
+        margin-left: toRem(10px);
+        height: toRem(36px);
+        margin-top: toRem(20px);
+      }
+      .codeChange{
+        float: left;
+        margin-left: toRem(15px);
+        margin-top: toRem(20px);
+        font-size: 14px;
+        span{
+          color:#089efa;
+        }
+      }
+    }
     .group_list {
       width: 100%;
       height: 100%;
@@ -280,46 +395,35 @@
     .mint-datetime-action {
       color: $color-text-reverse;
     }
-    .agree{
-        width: 100%;
-        margin: toRem(30px) auto 0;
+    .checkbox {
+        font-size: 14px;
+        margin-top: toRem(-20px);
         label{
-            margin-left: toRem(30px);
-            position: relative;
-            @extend %clearFix;
-            font-size: 13px;
-            .option{
-                float: left;
-                .hidden-input {
-                    opacity: 0;
-                    position: absolute;
-                    z-index: -1;
-                    height: toRem(30px);
-                    width: toRem(30px);
-                    top: 0px;
-                }
-                input[type=checkbox]+span {
-                    display: inline-block;
-                    height: toRem(30px);
-                    width: toRem(30px);
-                    background-color: transparent;
-                    border: 1px solid #4374df;
-                    margin-right: 9px;
-                    vertical-align: middle;
-                }
-                input[type=checkbox]:checked+span {
-                    background: url(../assets/remember-dh.png) no-repeat 0px toRem(2px);
-                    background-size: toRem(30px) toRem(30px);
-                    border: none;
-                }
-            }
-            .option-val{
-              float: left;
-            }
-            a{
-                color: #4374df;
-                font-size: 13px;
-            }
+          margin-left: toRem(30px);
+        }
+        input[type=checkbox] {
+          width: toRem(24px);
+          height: toRem(24px);
+          margin: 0;
+        }
+        .mint-checkbox-label{
+          a {
+            color: #5a85e3;
+          }
+        }
+        .mint-checkbox-core {
+          border-radius: toRem(5px);
+          @include square(30px);
+        }
+        .mint-checkbox-core::after {
+          left: 4px;
+          top: 0;
+          width: 5px;
+          height: 10px;
+        }
+        .mint-checkbox-input:checked + .mint-checkbox-core {
+          background-color: #4374df;
+          border-color: #4374df;
         }
     }
     .submit_edit {

@@ -536,6 +536,26 @@ export const FavoriteAdd = (data) => fetch.post(Api.FavoriteAdd.url,
  */
 export const FavoriteDelete = (data) => fetch.post(Api.FavoriteDelete.url,
   { ...Api.FavoriteDelete.data, ...data })
+/**
+ * 注册获取城镇列表
+ */
+export const GetAllGroupList = (data) => fetch.post(Api.GetAllGroupList.url,
+  { ...Api.GetAllGroupList.data, ...data })
+  /**
+ * 验证手机号码是否存在
+ */
+export const RegPhoneCheck = (data) => fetch.post(Api.RegPhoneCheck.url,
+  { ...Api.RegPhoneCheck.data, ...data })
+/**
+ * 验证手机短信验证码
+ */
+export const CheckUserPhone = (data) => fetch.post(Api.CheckUserPhone.url,
+  { ...Api.CheckUserPhone.data, ...data })
+  /**
+ * 验证手机登录图形验证码
+ */
+export const GetLoginVC = (data) => fetch.post(Api.GetLoginVC.url,
+  { ...Api.GetLoginVC.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {

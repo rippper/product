@@ -125,10 +125,14 @@ export default {
             })
             this.articleType[index].jugement = true
             let leftindex = this.$refs.artic_lineItem[index].offsetLeft
+            // let leftwidth = this.$refs.artic_lineItem[index].width
+            let cc = this.$refs.artic_lineItem[index].clientWidth
+            // let leftRem = leftindex / 75
             this.$nextTick(() => {
                 this.$refs.artic_lineLength.scrollTo(leftindex, 0)
             })
-            console.log(leftindex)
+            // console.log(leftindex, leftRem, leftwidth)
+            console.log(cc)
         }
     }
 }

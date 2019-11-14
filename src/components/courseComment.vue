@@ -77,7 +77,7 @@
       // 课程评论列表
       async getCommentList () {
         this.loading = true
-        let res = await GetCourseCommentList({ courseId: this.courseId, Page: this.page })
+        let res = await GetCourseCommentList({ courseId: this.courseId, Page: this.page, sort: 'Id', order: 'Desc' })
         this.loading = false
         if (res.IsSuccess) {
           let list = res.Data.List || []

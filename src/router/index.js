@@ -4,8 +4,8 @@ import ebook from './ebook' // 电子书
 import personalCenter from './personalCenter' // 个人中心
 import course from './course' // 课程相关
 import trainingCourse from './trainingCourse' // 培训班
-import article from './article' //文章
-
+import article from './article' // 文章
+import studyCircle from './studyCircle'
 // 由于懒加载页面太多的话会造成webpack热更新太慢，所以开发环境不使用懒加载，只有生产环境使用懒加载
 const _import = require('@/plugins/import.' + process.env.NODE_ENV)
 
@@ -96,35 +96,35 @@ const routes = [
   // 我的学分
   {
     name: 'myCredit',
-    path: 'myCredit',
+    path: '/myCredit',
     component: MyCredit,
     meta: { title: '我的学分' }
   },
   // 注册
   {
     name: 'register',
-    path: 'register',
+    path: '/register',
     component: Register,
     meta: { title: '注册', isSkip: true }
   },
   // 打开app
   {
     name: 'openApp',
-    path: 'openApp',
+    path: '/openApp',
     component: OpenApp,
     meta: { title: '打开App' }
   },
   // 笔记详情
   {
     name: 'notesDetail',
-    path: 'notesDetail',
+    path: '/notesDetail',
     component: NotesDetail,
     meta: { title: '笔记详情' }
   },
   // 通知详情
   {
     name: 'noticeDetail',
-    path: 'noticeDetail',
+    path: '/noticeDetail',
     component: NoticeDetail,
     meta: { title: '通知详情' }
   },
@@ -154,6 +154,8 @@ const routes = [
   ...trainingCourse,
   // 文章通知
   ...article,
+  // 学习圈路由
+  ...studyCircle,
   { path: '*', redirect: '/error' }
 ]
 export default routes

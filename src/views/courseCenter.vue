@@ -50,65 +50,29 @@
     <div class="category-first">
       <div class="cf-swiper">
         <div class="swiper-con">
-          <!-- <ul >
-              <li class="actived">当前热点1</li>
-              <li>当前热点2</li>
-              <li>当前热点3</li>
-              <li>当前热点4</li>
-              <li>当前热点5</li>
-              <li>当前热点6</li>
-              <li>当前热点7</li>
-          </ul> -->
-           <swiper :options="mySwiperFirst" ref="mySwiper">
-              <swiper-slide @click="toSlide(1)">
-                 当前热点1
-              </swiper-slide>
-              <swiper-slide @click="toSlide(2)">
-                  当前热点2
-              </swiper-slide>
-              <swiper-slide @click="toSlide(3)">
-                  当前热点3
-              </swiper-slide>
-              <swiper-slide @click="toSlide(4)">
-                  当前热点4
-              </swiper-slide>
-              <swiper-slide @click="toSlide(5)">
-                  当前热点5
-              </swiper-slide>
-              <swiper-slide @click="toSlide(6)">
-                  当前热点6
-              </swiper-slide>
-              <swiper-slide @click="toSlide(7)">
-                  当前热点7
-              </swiper-slide>
-            </swiper>
+          <ul ref="cataF_ul">
+             <li v-for="(item, index) in cataListF" 
+                :key="index" 
+                :class="{'actived': item.jugement}" 
+                @click.stop="chooseListF(index, item.Id)"
+                ref="cataF_item"
+             >
+               {{item.Name}}
+             </li>
+          </ul>
         </div>
         <div class="gallery-thumbs">
           <div class="gt-layer" v-if="showGtLayer" @click="toggleGtLayer"></div>
           <div class="gt-wrapper" :class="{'show': showGtLayer}">
-            <ul>
-              <li  @click="toSlide(1)">
-                热点1
+            <ul ref="cataS_ul">
+              <li 
+              v-for="(item, index) in cataListF" 
+              :key="index"
+              @click="chooseListFdata(index, item.Id)"
+              ref="cataS_item"
+              >
+                {{item.Name}}
               </li>
-              <li  @click="toSlide(2)">
-                热点2
-              </li>
-              <li  @click="toSlide(3)">
-                热点3
-              </li>
-              <li  @click="toSlide(4)">
-                热点4
-              </li>
-              <li  @click="toSlide(5)">
-                热点5
-              </li>
-              <li  @click="toSlide(6)">
-                热点6
-              </li>
-              <li  @click="toSlide(7)">
-                热点7
-              </li>
-              
             </ul>
           </div>
         </div>
@@ -118,29 +82,37 @@
       </div>
     </div>
     <div class="course-con">
-      <div class="cc-second">
+      <div class="cc-second" v-if="cataListS&&cataListS.length > 0">
         <div class="cc-swiper">
           <div class="swiper-con">
             <ul>
-              <li class="actived">
+              <!-- <li class="actived">
                 社区风采
               </li>
               <li>政策热点</li>
               <li>生活养生</li>
               <li>社区风采</li>
-              <li>政策热点</li>
+              <li>政策热点</li> -->
+              <li v-for="(item, index) in cataListS" 
+                  :key="index"
+                  :class="{'actived': item.jugement}"
+                  @click="chooseListS(index, item.Id)"
+              >
+                {{item.Name}}
+              </li>
             </ul>
           </div>
           <div class="cc-thums">
             <div class="cc-layer" v-if="showCcLayer" @click="toggleCcLayer"></div>
             <div class=cc-wrapper :class="{'show': showCcLayer}">
               <ul>
-                <li>社区风采1</li>
-                <li>社区风采2</li>
-                <li>社区风采3</li>
-                <li>社区风采4</li>
-                <li>社区风采5</li>
-                <li>社区风采6</li>
+                <li 
+                  v-for="(item, index) in cataListS"
+                  :key="index"
+                  @click="chooseListSdata(index, item.Id)"
+                >
+                  {{item.Name}}
+                </li>
               </ul>
             </div>
           </div>
@@ -184,7 +156,6 @@
       return {
         courseTitle: '视频中心',
         showSlide: false,
-        courseCategory: [],
         channelId: 0,
         loading: false,
         immediate: false,
@@ -200,16 +171,10 @@
           nodes: 'Nodes',
           Id: 'Id'
         },
-        mySwiperFirst: {
-          slidesPerView: 'auto',
-          grabCursor: true,
-          loop: false,
-          freeMode: true,
-          freeModeMomentum: false,
-          // centeredSlides: true
-        },
         showGtLayer: false,
-        showCcLayer: false
+        showCcLayer: false,
+        cataListF: [],
+        cataListS: []
       }
     },
     created () {
@@ -223,6 +188,14 @@
       tabType (val) {
         const sort = { 1: 'CreateDate', 2: 'ClickCount', 3: 'CommontScore' }
         this.Sort = sort[val]
+        this.page = 1
+        this.noMoreData = false
+        this.noData = false
+        this.courseData = []
+        this.getCourseList()
+      },
+      channelId (val) {
+        console.log(val)
         this.page = 1
         this.noMoreData = false
         this.noData = false
@@ -244,7 +217,10 @@
       async getChannelInfoList () {
         let data = await GetChannelInfoList()
         if (data.IsSuccess) {
-          this.courseCategory = data.Data.CourseCategoryResult
+          this.cataListF = data.Data.CourseCategoryResult
+          this.cataListF.forEach(item => {
+            item.jugement = false
+          })
         }
       },
       // 课程列表
@@ -281,12 +257,71 @@
       toggleGtLayer () {
         this.showGtLayer = !this.showGtLayer 
       },
-      toSlide (i) {
-        this.$refs.mySwiper.swiper.slideTo(i - 1, 0, true)
-      },
       toggleCcLayer () {
-        console.log(77)
         this.showCcLayer = !this.showCcLayer
+      },
+      chooseListF (num, id) {
+        this.cataListF.forEach(item => {
+          item.jugement = false
+          if (item.Id == id) {
+            this.cataListS = item.Nodes
+          }
+        })
+        this.channelId = id
+        this.cataListF[num].jugement = true
+        let offset1 = this.$refs.cataF_item[num].offsetLeft // 当前选中元素距离左边的间距
+        let width1 = this.$refs.cataF_item[num].clientWidth // 当前选中元素的宽度
+        let bodyWidth = document.body.clientWidth // 页面宽度
+        let halfWidth = (550 / 75 * bodyWidth / 10) / 2 // (当前父元素宽度,由设计图550转化rem后计算成当前页面宽度,取一半)
+        // 当选中元素的左间距大于父元素一半时使选中元素一直居中 小于时保持不动
+        // console.log(offset1, halfWidth, offset2)
+        if (offset1 > halfWidth) {
+          let offset2 = offset1 - halfWidth + width1 / 2
+          // console.log(offset1, offset2)
+          this.$nextTick(() => {
+              this.$refs.cataF_ul.scrollTo(offset2, 0)
+          }) 
+        } else {
+          this.$refs.cataF_ul.scrollTo(0, 0)
+        }
+      },
+      chooseListFdata (num, id) {
+        this.channelId = id
+        this.showGtLayer = !this.showGtLayer
+        this.chooseListF(num, id)
+        this.cataListF.forEach(item => {
+          item.jugement = false
+          this.cataListF[num].jugement = true
+        })
+      },
+      chooseListS (num, id) {
+        this.channelId = id
+        this.cataListS.forEach(item => {
+          item.jugement = false
+          this.cataListS[num].jugement = true
+        })
+        let offset1 = this.$refs.cataS_item[num].offsetLeft // 当前选中元素距离左边的间距
+        let width1 = this.$refs.cataS_item[num].clientWidth // 当前选中元素的宽度
+        let bodyWidth = document.body.clientWidth // 页面宽度
+        let halfWidth = (550 / 75 * bodyWidth / 10) / 2
+        if (offset1 > halfWidth) {
+          let offset2 = offset1 - halfWidth + width1 / 2
+          // console.log(offset1, offset2)
+          this.$nextTick(() => {
+              this.$refs.cataS_ul.scrollTo(offset2, 0)
+          }) 
+        } else {
+          this.$refs.cataS_ul.scrollTo(0, 0)
+        }
+      },
+      chooseListSdata (num, id) {
+        this.channelId = id
+        this.showCcLayer = !this.showCcLayer
+        this.chooseListS(num, id)
+        this.cataListS.forEach(item => {
+          item.jugement = false
+          this.cataListS[num].jugement = true
+        })
       }
     }
   }
@@ -411,24 +446,30 @@
         .swiper-con{
           width: toRem(550px);
           height: toRem(80px);
-          .swiper-slide{
-            height: toRem(60px);
-            line-height: toRem(70px);
-            width:  auto;
-            color: #fff;
-            margin-left: toRem(25px);
-            margin-right: toRem(25px);
-            &:nth-child(1){
-              margin-left: 0;
-            }
-            &:nth-last-child(1){
-              margin-right: 0;
-            }
-            &.swiper-slide-active{
-              color: #fed803;
-              font-size: 16px;
-              background: url("../assets/block-yel.png") no-repeat center bottom;
-              background-size: toRem(30px) toRem(6px); 
+          line-height: toRem(80px);
+          font-size: 16px;
+          color: #fff;
+          overflow: hidden;
+          position: relative;
+          ul{
+            display: flex;
+            height: toRem(80px);
+            overflow: auto;
+            li{
+              text-align: center;
+              flex-shrink: 0;
+              color: #fff;
+              font-size: 14px;
+              margin-right: toRem(50px);
+              &:nth-last-child(1){
+                margin-right: 0;
+              }
+              &.actived{
+                background: url("../assets/block-yel.png") no-repeat center bottom;
+                background-size: toRem(30px) toRem(6px); 
+                color: #fed803;
+                font-size: 16px;
+              }
             }
           }
         }
@@ -453,15 +494,16 @@
             font-size: 15px;
             transition: max-height ease 0.5s;
             &.show {
-              max-height: toRem(200px);
+              max-height: 100vh;
             }
             ul{
               padding: toRem(30px);
               @extend %clearFix;
               li{
                 float: left;
-                margin-right: toRem(40px);
-                font-size: 16px;
+                margin:toRem(10px) toRem(40px) 0 0;
+                font-size: 14px;
+
                 color: #333;
               }
             }
@@ -471,7 +513,7 @@
       .btn{
         float: left;
         color: #fff;
-        margin-top: toRem(20px);
+        margin-top: toRem(15px);
         font-size: 16px;
         margin-left: toRem(40px);
         img{
@@ -485,6 +527,7 @@
     .course-con{
       background: #fff;
       border-radius: toRem(20px) toRem(20px) 0 0;
+      min-height: 85vh;
       .cc-second{
         @extend %clearFix;
         padding-top: toRem(40px);
@@ -494,11 +537,16 @@
           margin-left: toRem(30px);
           overflow: hidden;
           .swiper-con{
-            width: toRem(10000px);
+            width: toRem(610px);
+            height: toRem(52px);
+            line-height: toRem(52px);
+            font-size: 14px;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
             ul{
               @extend %clearFix;
               li{
-                width: toRem(150px);
                 height: toRem(52px);
                 line-height: toRem(52px);
                 background: #f5f9ff;
@@ -511,6 +559,7 @@
                 &.actived{
                   background: #4374df;
                   color: #fff;
+                  padding: 0 toRem(15px)
                 }
               }
             }
@@ -534,10 +583,9 @@
               right: 0;
               z-index: 100;
               background-color: $fill-base;
-              font-size: 15px;
               transition: max-height ease 0.5s;
               &.show{
-                max-height: toRem(200px);
+                max-height: 100vh;
               }
               ul{
                 padding: toRem(30px);
@@ -545,7 +593,7 @@
                 li{
                   float: left;
                   margin-right: toRem(40px);
-                  font-size: 16px;
+                  font-size: 13px;
                   color: #333;
                 }
               }

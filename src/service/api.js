@@ -13,7 +13,11 @@ const Production = '/wechatproduction'
 const Article = '/apiarticle'
 const wechatTraining = '/wechatTraining' // zyb培训班
 const wechatUser = '/wechatUser' // zyb收藏
-
+const wechatother = '/wechatother' 
+const wechatCommon = '/wechatCommon'
+const wechatComment = '/wechatComment'
+// /AddCourseComment
+// /GetAllGroupList
 export default {
   // 判断用户是否存在
   CheckUserIsExit: {
@@ -34,6 +38,10 @@ export default {
   Login2: {
     url: API_URL + Platform1 + '/ValidateUser',
     data: { Account: '', Password: '', Mac: '', CId: '' }
+  },
+  GetLoginVC: {
+    url: API_URL + wechatCommon + '/GetLoginVC',
+    data: {}
   },
   // 获取用户信息
   GetUserInfo: {
@@ -273,8 +281,13 @@ export default {
   },
   // 发送验证码
   SendMsg: {
-    url: API_URL + Platform + '/SendMsg',
+    url: API_URL + wechatother + '/SendMsgByPhone',
     data: { MobileNo: '' }
+  },
+  // 验证手机验证码
+  CheckUserPhone: {
+    url: API_URL + wechatother + '/CheckUserPhone',
+    data: { }
   },
   // 修改密码
   SetUserPassword: {
@@ -291,9 +304,14 @@ export default {
     url: API_URL + Platform + '/GetGroupList',
     data: { ParentId: '1' }
   },
+  // 验证手机号码是否存在
+  RegPhoneCheck: {
+    url: API_URL + wechatUser + '/RegPhoneCheck',
+    data: {}
+  },
   // 注册
   Register: {
-    url: API_URL + Platform + '/Register',
+    url: API_URL + wechatUser + '/Register',
     data: {
       Account: '',
       Password: '',
@@ -318,13 +336,13 @@ export default {
   },
   // 课程评论
   GetCourseCommentList: {
-    url: API_URL + Platform + '/getCourseCommentList',
-    data: { courseId: '', Keyword: '', Page: '1', Rows: '10' }
+    url: API_URL + wechatComment + '/CourseComment',
+    data: { courseId: '', Page: '1', Rows: '10', Sort: 'Id', Order: 'desc' }
   },
   // 添加课程评论
   AddCourseComment: {
-    url: API_URL + Platform + '/AddCourseComment',
-    data: { CourseId: '', Content: '', Score: '' }
+    url: API_URL + wechatComment + '/CourseCommentAdd',
+    data: { }
   },
   // 提交精品课程进度
   SyncUserStudyData: {
@@ -513,5 +531,10 @@ export default {
   FavoriteDelete: { // zyb删除添加 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
     url: API_URL + wechatUser + '/FavoriteDelete',
     data: {}
+  },
+  GetAllGroupList: {
+    url: API_URL + wechatCommon + '/GetAllGroupList',
+    data: {}
   }
+  
 }

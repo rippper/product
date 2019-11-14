@@ -36,6 +36,7 @@
     },
     mounted () {
       let userInfo = getStore('userInfo')
+      // console.log(userInfo)
       let body = document.querySelector('body')
       if (!userInfo || userInfo == {}) {
         // 用户掉线的情况下 弹出用户登陆框 且禁止页面滚动

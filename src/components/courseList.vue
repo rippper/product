@@ -17,7 +17,7 @@
       </div>
       <div class="course_desc">
         <div class="course_name">{{item.CourseName}}</div>
-        <div class="course_click">点击量:{{item.ClickCount}} {{item.CourseType}} {{item.CourseId}}</div>
+        <div class="course_click">点击量:{{item.ClickCount}} {{item.CourseType}}</div>
       </div>
     </div>
     <div class="noDataBg" v-if="noDataBg"></div>
@@ -133,7 +133,7 @@
 
     .course_name {
       @include ellipsis_two(1);
-      height: toRem(40px);
+      height: toRem(45px);
       font-size: 16px;
       font-weight: 500;
       color: $color-text-base;

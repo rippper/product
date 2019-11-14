@@ -6,43 +6,49 @@
     </div>
     
     <div class="user_login">
-      <div class="handle-tab">
-        <p class="ttitle on">
-          账号密码登录
-        </p>
-        <!-- <p claas="ht">
-          手机登录
-        </p> -->
-      </div>
-
-      <section >
-
-      </section>
-      <section>
-
-      </section>
-      <form>
-        <div class="form-group">
-          <img class="login_icon" src="../assets/hq-login-user.png" alt=""/>
-          <input v-model="Account" class="form-control" type="text" placeholder="输入用户名/手机号">
-          <span class="acError" v-if="acError">用户名不能包含汉字</span>
-        </div>
-        <div class="form-group">
-          <img class="login_icon" src="../assets/hq-login-password.png" alt=""/>
-          <input v-model="Password" class="form-control" type="password" placeholder="输入密码">
-          <span class="pwError" v-if="pwError">密码长度6~16位</span>
-        </div>
-      </form>
-      <div class="checkbox">
-        <label for="remember_checkbox">
-          <span class="mint-checkbox">
-            <input id="remember_checkbox" v-model="Remember" type="checkbox" class="mint-checkbox-input">
-            <span class="mint-checkbox-core"></span>
-          </span>
-          <span class="mint-checkbox-label">记住密码</span>&nbsp;
-        </label>
-        <a class="forget" @click="showForgetMessage">忘记密码？</a>
-      </div>
+      <mb-tab v-model="selected" class="handle-tab">
+        <mb-tab-item id="1">账号密码登录</mb-tab-item>
+        <mb-tab-item id="2">手机登录</mb-tab-item>
+      </mb-tab>
+      <mt-tab-container v-model="selected">
+        <mt-tab-container-item id="1">
+          <form>
+            <div class="form-group">
+              <img class="login_icon" src="../assets/hq-login-user.png" alt=""/>
+              <input v-model="Account" class="form-control" type="text" placeholder="输入用户名/手机号">
+              <span class="acError" v-if="acError">用户名不能包含汉字</span>
+            </div>
+            <div class="form-group">
+              <img class="login_icon" src="../assets/hq-login-password.png" alt=""/>
+              <input v-model="Password" class="form-control" type="password" placeholder="输入密码">
+              <span class="pwError" v-if="pwError">密码长度6~16位</span>
+            </div>
+          </form>
+          <div class="checkbox">
+            <label for="remember_checkbox">
+              <span class="mint-checkbox">
+                <input id="remember_checkbox" v-model="Remember" type="checkbox" class="mint-checkbox-input">
+                <span class="mint-checkbox-core"></span>
+              </span>
+              <span class="mint-checkbox-label">记住密码</span>&nbsp;
+            </label>
+            <a class="forget" @click="showForgetMessage">忘记密码？</a>
+          </div>
+        </mt-tab-container-item>
+        <mt-tab-container-item id="2">
+          <form>
+            <div class="form-group">
+              <img class="login_icon" src="../assets/hq-login-user.png" alt=""/>
+              <input v-model="AccountPhone" class="form-control" type="number" placeholder="输入手机号">
+            </div>
+            <div class="form-group srcode">
+              <img class="login_icon" src="../assets/hq-login-password.png" alt=""/>
+              <input v-model="PasswordPhone" class="form-control" type="number" placeholder="输入验证码">
+              <p class="code-text" @click.stop="getCode">获取验证码</p>
+            </div>
+          </form>
+        </mt-tab-container-item>
+      </mt-tab-container>
       <mt-button class="login_btn" size="large" type="primary" @click.native="clickLogin">登录</mt-button> 
     </div>
   </div>
@@ -53,7 +59,7 @@
   import Vue from 'vue'
   import { mapActions, mapState } from 'vuex'
   import { getStore, setStore, getQueryString } from '../plugins/utils'
-  import { Login } from '../service/getData'
+  import { Login, SendMsg } from '../service/getData'
 
   Vue.component(Button.name, Button)
 
@@ -69,7 +75,12 @@
         key: 'jy365jy365jy365y',
         iv: '0392039203920300',
         pwError: false,
-        acError: false
+        acError: false,
+        selected: '1',
+        loginParams: {},
+        AccountPhone: '',
+        PasswordPhone: '',
+        isPassMobile: false
       }
     },
     components: {
@@ -99,19 +110,32 @@
       ...mapActions(['getUserAgent', 'getUserInformation', 'saveUserInfo']),
       // 登陆
       async clickLogin () {
-        if (!this.Account || !this.Password) {
-          Toast({ message: '用户名或密码不能为空', position: 'bottom' })
-          return
-        }
-        let loginParams = {
-          Account: this.Account,
-          Password: this.Password,
-          Code: this.Code,
-          Mac: this.Account
+        if (this.selected == 1) {
+          // 账号密码登录
+          if (!this.Account || !this.Password) {
+            Toast({ message: '用户名或密码不能为空', position: 'bottom' })
+            return
+          }
+          this.loginParams = {
+            Account: this.Account,
+            Password: this.Password,
+            Code: this.Code,
+            Mac: this.Account
+          }
+        } else if (this.selected == 2) {
+          // 短信验证码登录
+          if (!this.PasswordPhone || !this.AccountPhone) {
+            Toast({ message: '手机号码或验证码不能为空', position: 'bottom' })
+            return
+          }
+          this.loginParams = {
+            Phonenumber: this.AccountPhone,
+            PhoneCode: this.PasswordPhone
+          }
         }
         Indicator.open()
         let res = null
-        res = await Login(loginParams)
+        res = await Login(this.loginParams)
         Indicator.close()
         if (res.IsSuccess) {
           this.saveUserInfo(res.Data)
@@ -152,6 +176,15 @@
       },
       showForgetMessage () {
         MessageBox.alert('如果忘记密码，请联系本单位联络员或客服0571-28990788', '温馨提示')
+      },
+      async getCode () {
+        console.log(this.AccountPhone, this.isPassMobile)
+        if (!this.isPassMobile) {
+          Toast({ Message: '手机号格式不正确', position: 'bottom', duration: 2000 })
+          return
+        } 
+        let data = await SendMsg({ MobileNo: this.AccountPhone })
+        console.log(data)
       }
     },
     watch: {
@@ -176,6 +209,16 @@
           }
         }
         this.acError = flag
+      },
+      'AccountPhone': {
+        handler: function (val, oldVal) {
+          if (val) {
+            let regMobile = /^1[3|4|5|7|8]\d{9}$/
+            this.isPassMobile = regMobile.test(val)
+          } else {
+            this.isPassMobile = true
+          }
+        }
       }
     },
     props: {
@@ -226,11 +269,20 @@
       height: 93vh;
       .handle-tab{
         padding: 0 toRem(30px) toRem(150px);
-        .ttitle{
+        height: auto;
+        .mb_tab_item{
           color: #333;
           font-size: 24px;
           font-weight: bold;
           text-align: center;
+          height: toRem(110px);
+          line-height: toRem(110px);
+          &.active{
+            border-bottom: none;
+            background: url("../assets/block-blue.png") no-repeat center bottom;
+            background-size: toRem(40px) toRem(6px);
+            color: #4374df;
+          }
         }
       }
       .form-control {
@@ -240,7 +292,6 @@
         font-size: toRem(30px);
         @include ht-lineHt(98px);
       }
-
       .form-group {
         border-bottom: 1px solid $border-color-base;
         background: transparent;
@@ -255,6 +306,25 @@
           left: toRem(20px);
           transform: translateY(-50%);
           width: toRem(42px);
+        }
+        &.srcode{
+          @extend %clearFix;
+          .form-control{
+            float: left;
+            width: toRem(330px);
+          }
+          .code-text{
+            float: right;
+            width: toRem(180px);
+            height: toRem(56px);
+            color: #fff;
+            background: #4374df;
+            text-align: center;
+            line-height: toRem(56px);
+            font-size: 16px;
+            border-radius: toRem(30px);
+            margin-top: toRem(20px);
+          }
         }
       }
 

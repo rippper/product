@@ -11,8 +11,8 @@
         <img class="footer_icon_2" v-else slot="icon" src="../assets/hq-video-normal.png">
         视频
       </mt-tab-item>
-      <mt-tab-item id="orangize" href="#/organise">
-        <img class="footer_icon_2" v-if="selected == 'orangize'" slot="icon" src="../assets/hq-org-actived.png">
+      <mt-tab-item id="studyCircleCenter" href="#/studyCircleCenter">
+        <img class="footer_icon_2" v-if="selected == 'studyCircleCenter'" slot="icon" src="../assets/hq-org-actived.png">
         <img class="footer_icon_2" v-else slot="icon" src="../assets/hq-org-normal.png">
        学习圈
       </mt-tab-item>

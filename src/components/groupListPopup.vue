@@ -4,9 +4,9 @@
       <header-fix :title="title" fixed>
         <a @click="backGroupList" slot="left"><i class="webapp webapp-left"></i></a>
       </header-fix>
-      <div class="cell" v-for="(item) in groupList" :key="item.UserGroupId"
+      <div class="cell" v-for="(item) in groupList" :key="item.Id"
            @click="getChildrenGroup(item)">
-        <span>{{item.UserGroupName}}</span>
+        <span>{{item.Name}}</span>
         <i class="webapp webapp-right"></i>
       </div>
     </div>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import { GetGroupList } from '../service/getData'
+  import { GetAllGroupList } from '../service/getData'
 
   export default {
     data () {
@@ -38,17 +38,15 @@
     },
     methods: {
       async getGroupList () {
-        let data = await GetGroupList({ ParentId: this.parentId })
-        if (data.IsSuccess) {
-          let list = data.Data.GroupInfoList
-          if (list && list.length > 0) {
-            this.groupList = list
-            this.groupListStack[this.parentId] = list
-          } else if (list && list.length == 0) {
-            this.groupIdStack = []
-            this.groupList = []
-            this.$emit('close')
-          }
+        let data = await GetAllGroupList({ ParentId: this.parentId })
+        let list = data.GroupInfoList
+        if (list && list.length > 0) {
+          this.groupList = list
+          this.groupListStack[this.parentId] = list
+        } else if (list && list.length == 0) {
+          this.groupIdStack = []
+          this.groupList = []
+          this.$emit('close')
         }
       },
       backGroupList () {
@@ -65,8 +63,8 @@
         })
       },
       getChildrenGroup (item) {
-        let ParentId = item.UserGroupId
-        let title = item.UserGroupName
+        let ParentId = item.Id
+        let title = item.Name
         this.title = title
         this.parentId = ParentId
         if (ParentId != 0) { // 如果为0，表示没有选择，不更新groupId
@@ -76,11 +74,11 @@
         if (this.groupListStack[ParentId]) {
           this.groupList = this.groupListStack[ParentId]
         } else {
-          if (ParentId == 0 || item.ChildCount > 0) {
+          if (ParentId == 0 || item.Chirldren.length > 0) {
             this.getGroupList()
             return
           }
-          if (item.ChildCount == 0) {
+          if (item.Chirldren.length == 0) {
             this.groupIdStack = []
             this.groupList = []
             this.$emit('close')
@@ -91,7 +89,7 @@
     watch: {
       isShow (newVal) {
         if (newVal) {
-          this.getChildrenGroup({ UserGroupId: '0', UserGroupName: '选择所在区镇' })
+          this.getChildrenGroup({ Id: '0', Name: '选择所在区镇' })
         }
       }
     }

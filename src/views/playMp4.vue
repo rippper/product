@@ -59,10 +59,10 @@
           我志愿加人中国共产党。
         </div>
       </div>
-      <div class="course-ac" @click=" commentBox = true"> 
+      <div class="course-ac" @click="showCommentBox"> 
          <!-- commentBox -->
         <p class="text"><img src="../assets/message-circle.png" alt=""> <span>评论</span></p>  
-        <p class="num">2510</p>
+        <p class="num">{{commentCount}}</p>
       </div>
     </div>
     <div class="comment-wrapper">
@@ -70,16 +70,22 @@
         position="bottom"
         v-model="commentBox"
         >
-        <comment-box :close-box="closeBox" :show-list-box="showListBox"></comment-box>
+        <!-- <section v-infinite-scroll="getCommentList"
+               infinite-scroll-immediate-check="immediate"
+               infinite-scroll-disabled="loading"
+               infinite-scroll-distance="10"> -->
+               <comment-box :close-box="closeBox"  :course-id="courseId"></comment-box>
+          <!-- :comment-list="commentList" -->
+        <!-- </section> -->
       </mt-popup>
     </div>
-    <mt-popup
+    <!-- <mt-popup
         position="right"
         v-model="commentListBox"
         class="clb-popup"
       >
        <comment-list-box :back-comment="backComment"></comment-list-box>
-      </mt-popup>
+    </mt-popup> -->
   </div>
 </template>
 <script>
@@ -92,8 +98,8 @@
   import {
     GetCourseDetail,
     UploadTimeNode,
-    GetWechatWxAuthModel,
-    GetCourseCommentList
+    GetWechatWxAuthModel
+    // GetCourseCommentList
   } from '../service/getData'
   import { timeFormat, isIPhone } from '../plugins/utils'
 
@@ -139,7 +145,8 @@
         },
         hasChangeLocation: false,
         commentBox: null, // 评论框显示与否
-        commentListBox: null // 评论详细列表显示与否
+        commentList: [],
+        commentCount: null
       }
     },
     created () {
@@ -163,7 +170,7 @@
       /* 获取课程详情 */
       this.getCourseDetail(this.playFunc)
       // 获取课程评论列表
-      this.getCommentList()
+      // this.getCommentList()
     },
     computed: {
       ...mapState(['userAgent'])
@@ -272,37 +279,40 @@
           }
         }, 100)
       },
-      closeBox () {
-        this.commentBox = false
-      },
-      backComment () {
+      showCommentBox () {
+        let body = document.querySelector('body')
         this.commentBox = true
-        this.commentListBox = false
+        body.style.overflow = 'hidden'
+        body.style.height = '100vh'
       },
-      showListBox () {
-        this.commentListBox = true
+      closeBox () {
+        let body = document.querySelector('body')
         this.commentBox = false
-      },
-      // 课程评论列表
-      async getCommentList () {
-        this.loading = true
-        let res = await GetCourseCommentList({ courseId: this.courseId, Page: this.page })
-        this.loading = false
-        if (res.IsSuccess) {
-          let list = res.Data.List || []
-          this.commentCount = res.Data.TotalCount
-          if (this.page == 1 && list.length == 0) {
-            this.noData = true
-            return
-          }
-          if (this.page > 1 && list.length == 0) {
-            this.noMoreData = true
-            return
-          }
-          this.commentList = this.commentList.concat(list)
-          this.page += 1
-        }
+        body.style.overflow = 'auto'
+        body.style.height = 'auto'
       }
+      // backComment () {
+      //   this.commentBox = true
+      //   this.commentListBox = false
+      // },
+      // 课程评论列表
+      // async getCommentList () {
+      //   this.loading = true
+      //   let res = await GetCourseCommentList({ id: this.courseId, Page: this.page, Rows: 4 })
+      //   this.loading = false
+      //   let list = res.ListData || []
+      //   this.commentCount = res.Count
+      //   if (this.page == 1 && list.length == 0) {
+      //     this.noData = true
+      //     return
+      //   }
+      //   if (this.page > 1 && list.length == 0) {
+      //     this.noMoreData = true
+      //     return
+      //   }
+      //   this.commentList = this.commentList.concat(list)
+      //   this.page += 1
+      // }
     },
     beforeDestroy () {
       this.updateProgress()
@@ -475,10 +485,13 @@
       .mint-popup{
         top: 5rem;
         width: 100%;
+        .commentBox{
+          .cb-con{
+            height: toRem(750px);
+          }
+        }
       }
-      .v-modal{
-        height: auto;
-      }
+      
     }
     .clb-popup{
       width: 100%;

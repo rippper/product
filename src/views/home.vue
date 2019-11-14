@@ -1138,6 +1138,7 @@
             a{
               img{
                 width: toRem(320px);
+                height: toRem(212px);
               }
               p{
                 margin-top: toRem(30px);
