@@ -6,7 +6,7 @@
         <div class="exam_TitleBox"></div>
         <div class="exam_TypeList">
             <ul>
-                <li v-for="(item, index) in typeList" :key="index">
+                <li v-for="(item, index) in typeList" :key="index" @click="linkTo(index)">
                     <div :class="{ 'exam_InnerBoxPurple':item.type == 1, 'exam_InnerBoxGreen':item.type == 2, 'exam_InnerBoxYellow':item.type == 3, 'exam_InnerBoxBlue':item.type == 4, 'exam_InnerBoxRed':item.type == 0 }">
                         <div class="exam_LeftFloatBox">
                             <div class="exam_LeftFloatCenter">
@@ -52,6 +52,9 @@ export default {
             this.screenWidth = window.screen.width
             this.screenHeight = window.screen.height
             this.$refs.examType.style.height = this.screenHeight + 'px'
+        },
+        linkTo (index) {
+            this.$router.push({ path: '/examtitlelist', query: { Id: this.typeList[index].Id, Name: this.typeList[index].Name } })
         },
         async render () {
             let msg = await GetExamType({})
@@ -152,6 +155,7 @@ export default {
                             font-size: toRem(38px);
                             font-weight: bolder;
                             font-style: italic;
+                            font-family: 'heitong';
                         }
                     }
                     .exam_InnerBoxPurple{

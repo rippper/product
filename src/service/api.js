@@ -511,5 +511,13 @@ export default {
   ExamList: { // zyb获取考试列表
     url: API_URL + wechatExam + '/ExamList',
     data: {}
+  },
+  GetExamInfo: { // zyb获取考试内容
+    url: API_URL + wechatExam + '/GetExamInfo',
+    data: {}
+  },
+  PostExam: { // zyb考试结果上传
+    url: API_URL + wechatExam + '/PostExam',
+    data: {}
   }
 }

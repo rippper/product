@@ -3,6 +3,8 @@ const _import = require('@/plugins/import.' + process.env.NODE_ENV)
 
 const ExamType = _import('examType.vue')
 const ExamTitleList = _import('examTitleList.vue')
+const ExamText = _import('examText.vue')
+const ExamResult = _import('examResult.vue')
 
 export default [
   {
@@ -16,6 +18,18 @@ export default [
     path: '/examtitlelist',
     component: ExamTitleList,
     meta: { title: '考试选择' }
+  },
+  {
+    name: 'examtext',
+    path: '/examtext',
+    component: ExamText,
+    meta: { title: '答题表' }
+  },
+  {
+    name: 'examresult',
+    path: '/examresult',
+    component: ExamResult,
+    meta: { title: '考试结果' }
   }
 
 ]

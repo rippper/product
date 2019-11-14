@@ -79,6 +79,7 @@ export default {
             this.articleContent = msg.Data.Content
             this.collectNumber = msg.Data.FavoriteCount
             this.articleCollect = msg.Data.IsFavorite
+            console.log(msg)
         },
         async collect () {
             let msg = await FavoriteAdd({

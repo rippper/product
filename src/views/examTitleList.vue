@@ -1,10 +1,16 @@
 <template>
     <div class="examTitleList">
         <header-fix :fixed="true" :title="title">
-            <i class="exam_back" slot="left"></i>
+            <i class="exam_back" slot="left" @click="goBack()"></i>
             <i class="exam_search" slot="right"></i>
         </header-fix>
-        <div class="exam_TitleList_TheList">
+        <div 
+            class="exam_TitleList_TheList"
+            v-infinite-scroll="downMore"
+            infinite-scroll-disabled="loading"
+            infinite-scroll-distance="10"
+            ref="exam_TitleList_TheList"
+        >
             <ul>
                 <li v-for="(item, index) in TestList" :key="index">
                     <div class="exam_ListIndex" v-text="item.IndexNum"></div>
@@ -22,30 +28,84 @@
                     </div>
                 </li>
             </ul>
+            <div class="exam_LoadMsg" v-text="loadMsg"></div>
         </div>
     </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import { headerFix } from '../components'
 import { ExamList } from '../service/getData'
+import { InfiniteScroll } from 'mint-ui'
+
+Vue.use(InfiniteScroll)
 
 export default {
     name: 'examTitleList',
     data () {
         return {
-            title: '课程考试',
-            typeId: 1,
+            screenWidth: '',
+            screenHeight: '',
+            title: this.$route.query.Name,
+            typeId: this.$route.query.Id,
             TestList: [],
-            Rows: 7,
+            Rows: 9,
             currentPage: 1,
-            allCount: 0
+            allCount: 0,
+            loadMsg: '加载中'
         }
     },
     mounted () {
+        this.Calculate()
         this.render()
+        window.addEventListener('resize', this.windowsChange)
+    },
+    beforeDestroy () {
+        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
+        windowsChange () {
+            return (() => {
+                this.screenWidth = window.screen.width
+                this.screenHeight = window.screen.height
+            })()
+        },
+        Calculate () {
+            this.$refs.exam_TitleList_TheList.style.height = window.screen.height + 'px'
+        },
+        goBack () {
+            this.$router.push({ path: '/examtype' })
+        },
+        async downMore () {
+            if (this.TestList.length < this.Rows) {
+                return false
+            }
+            if (this.TestList.length < this.allCount) {
+                this.currentPage = ++this.currentPage
+                let msg = await ExamList({
+                    examType: 'All',
+                    ExamTypeId: this.typeId,
+                    Rows: this.Rows,
+                    Page: this.currentPage,
+                    Order: 'desc',
+                    Sort: 'StartTime'
+                })
+                msg.Data.ExamAllModel.forEach((item, index) => {
+                    item.StartTime = item.StartTime.substr(0, 10)
+                    item.EndTime = item.EndTime.substr(0, 10)
+                    let newIndex = this.TestList.length + index 
+                    if (newIndex + 1 < 10) {
+                        item.IndexNum = '0' + (newIndex + 1) 
+                    } else {
+                        item.IndexNum = newIndex + 1
+                    }
+                })
+                this.TestList = this.TestList.concat(msg.Data.ExamAllModel)
+            } else {
+                this.loadMsg = '已全部加载'
+            }
+        },
         async render () {
             let msg = await ExamList({
                 examType: 'All',
@@ -66,7 +126,17 @@ export default {
                 }
             })
             this.TestList = msg.Data.ExamAllModel
-            console.log(msg)
+            if (this.allCount <= this.Rows) {
+                this.loadMsg = '已全部加载'
+            }
+        }
+    },
+    watch: {
+        screenWidth (val) {
+            this.Calculate()
+        },
+        screenHeight (val) {
+            this.Calculate()
         }
     },
     components: {
@@ -100,6 +170,8 @@ export default {
         }
         .exam_TitleList_TheList{
             padding-top: toRem(92px);
+            background: #fff;
+            overflow: auto;
             ul{
                 padding: 0 toRem(15px);
                 li{
@@ -114,6 +186,7 @@ export default {
                         font-weight: bold;
                     }
                     .exam_ListInfor{
+                        flex: 1;
                         display: flex;
                         flex-direction: column;
                         justify-content: space-between;
@@ -122,7 +195,7 @@ export default {
                         width: toRem(460px);
                     }
                     .exam_ListButton{
-                        flex: 1;
+                        width: toRem(208px);
                         text-align: center;
                         &:before{
                             content: '';
@@ -142,6 +215,12 @@ export default {
                         }
                     }
                 }
+            }
+            .exam_LoadMsg{
+                height: toRem(90px);
+                line-height: toRem(90px);
+                font-size: toRem(28px);
+                text-align: center;
             }
         }
     }

@@ -541,6 +541,16 @@ export const FavoriteDelete = (data) => fetch.post(Api.FavoriteDelete.url,
  */
 export const ExamList = (data) => fetch.post(Api.ExamList.url,
   { ...Api.ExamList.data, ...data })
+/*
+ * zyb考试详情 
+ */
+export const GetExamInfo = (data) => fetch.post(Api.GetExamInfo.url,
+  { ...Api.GetExamInfo.data, ...data })
+/*
+ * zyb考试结果上传
+ */
+export const PostExam = (data) => fetch.post(Api.PostExam.url,
+  { ...Api.PostExam.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {
