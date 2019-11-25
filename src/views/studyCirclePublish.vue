@@ -4,9 +4,9 @@
             <i class="webapp webapp-left" @click.stop="goBack" slot="left"></i>
         </header-fix>
         <section class="createPost">
-            <textarea name="" id="" placeholder="分享一些新鲜事~"></textarea>
+            <textarea name="" id="" placeholder="分享一些新鲜事~" v-model="trendData.textArea"></textarea>
             <div class="picAdd">
-                <ul>
+                <!-- <ul>
                     <li class="upload-item">
                         <img class="uploaded_attach" src="../assets/class_bg.png" alt="upload">
                         <img src="../assets/close-icon.png" class="delete_btn" alt="">
@@ -19,28 +19,112 @@
                         >
                         <input type="file" ref="attach" @change="onchangeImgFun($event)">
                     </li>
+                </ul> -->
+                <ul>
+                    <li class="upload-item" v-for="(item,index) in picList" :key="index">
+                        <img class="uploaded_attach" :src="item.Url" alt="upload">
+                        <img class="delete_btn" src="../assets/close-icon.png" alt="delete" @click="deleteAttach(item, index)">
+                    </li>
+                    <li class="upload-btn">
+                        <img 
+                            class="uploaded_attach"
+                            src="../assets/upload-btn.png" 
+                            alt="upload"
+                        >
+                        <input type="file" ref="attach" @change="onchangeImgFun($event)">
+                    </li>
                 </ul>
             </div>
         </section>
+        <mt-button class="publishBtn" @click="publishArticle">立即发布</mt-button>
     </div>
 </template>
 
 <script>
+    import { UploadAttachment, CircleArticleCreate } from '../service/getData'
+    import { Toast, MessageBox } from 'mint-ui'
     export default {
         data () {
             return {
-
+                picList: [], // 上传图片的展示列表
+                trendData: { // 发布时提交的数据
+                    uploadPicList: [],
+                    textArea: ''
+                },
+                textareaVal: {},
+                id: ''
             }
         },
         created () {
-
+            this.id = this.$route.query.id
         },
         mounted () {
 
         },
         methods: {
-            onchangeImgFun () {
-
+            async publishArticle () {
+                // let time = new Date()
+                // this.CreatedDate = formatDate(time, 'yyyy-MM-dd')
+                if (!this.trendData.textArea) {
+                    Toast('请填写您的发布内容')
+                } else {
+                    let data = await CircleArticleCreate({
+                        CircleEnclosure: this.trendData.uploadPicList,
+                        Content: this.trendData.textArea,
+                        CircleId: this.id,
+                        Title: this.trendData.textArea
+                    })
+                    if (data.Type == 1) {
+                        this.trendData = []
+                        this.picList = []
+                        Toast('动态发布成功,内容正在审核中')
+                        this.$nextTick(() => {
+                            this.$router.push({ path: '/studyCircleStageDetail', query: { id: this.id } })
+                        })
+                    }
+                }
+            },
+            async onchangeImgFun (e) {
+                var file = e.target.files[0]
+                // console.log(file)
+                let arr = file.name.split('.')
+                let fileType = arr[arr.length - 1]
+                let formData = new FormData()
+                let fileName = `${+new Date()}.${fileType}`
+                this.imgName = fileName
+                formData.append('FileType', 'ImageCircle')
+                formData.append('FileCode', fileName)
+                formData.append('FileName', fileName)
+                formData.append('file', file, fileName)
+                let res = await UploadAttachment(formData)
+                if (res.IsSuccess) {
+                    let obj = {
+                        Name: fileName,
+                        Url: window.URL.createObjectURL(file),
+                        Type: 'Pic'
+                    }
+                    let obj1 = {
+                        Name: fileName,
+                        Url: fileName,
+                        Type: 'Pic'
+                    }
+                    this.picList.push(obj)
+                    this.trendData.uploadPicList.push(obj1)
+                }
+                // console.log(this.picList)
+            },
+            deleteAttach (item, index) {
+                MessageBox.confirm('是否要删除该文件？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.picList.splice(index, 1)
+                    this.trendData.uploadPicList.splice(index, 1)
+                    Toast({ message: '删除成功!' })
+                }).catch(() => {
+                    Toast({ message: '已取消删除!' })
+                })
             }
         },
         watch: {
@@ -132,6 +216,16 @@
                     }
                 }
             }
+        }
+        .publishBtn{
+            margin: 0 toRem(50px);
+            background: #3462c6;
+            color: #fff;
+            width: toRem(650px);
+            font-size: 17px!important;
+            border-radius: toRem(50px)!important;
+            position: fixed;
+            bottom: toRem(100px);
         }
     }
 </style>

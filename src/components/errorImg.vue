@@ -12,16 +12,10 @@
       }
     },
     created () {
-      const assetsOrigin = 'http://115.238.238.242:8099'
       if (!this.src) {
         this.imageSrc = this.imgErrorSrc || baseErrorSrc
       } else {
-        let flag = /^http/.test(this.src)
-        if (!flag) {
-          this.imageSrc = assetsOrigin + this.src
-        } else {
-          this.imageSrc = this.src
-        }
+        this.imageSrc = this.src
       }
     },
     mounted () {

@@ -1,19 +1,22 @@
 <template>
     <div class="studyCircleStageDetail">
         <div class="brief-intro">
-            <div class="theme">
-                <p class="theme-text1">#漫长深秋</p>
-                <p class="theme-text2">热爱生活、热爱摄影、热爱旅游</p>
+            <div class="theme"
+                :style="{background: `url(${coverImgUrl}) no-repeat left center/100% 100%`}"
+            >
+            <!-- :style="backgroundImage: url()" -->
+                <p class="theme-text1">#{{circleDetail.Name}}</p>
+                <p class="theme-text2">{{circleDetail.Remark}}</p>
                 <p class="theme-text3">
-                    <span class="content-num">23篇内容</span>
-                    <span class="view-num">2198人浏览</span>
+                    <span class="content-num">{{circleDetail.ArticleCount}}篇内容</span>
+                    <span class="view-num">{{circleDetail.ClickCount}}人浏览</span>
                 </p>
             </div>
             <div class="account">
-                <img src="../assets/headImg-per.png" alt="" class="accountImg">
+                <error-img :src="circleDetail.UserImg" :error-src="Avatar" class="accountImg"></error-img>
                 <div class="nt">
-                    <p class="name">群主：张丹晨</p>
-                    <p class="time">2019年09月26日创建</p>
+                    <p class="name">群主：{{circleDetail.UserName}}</p>
+                    <p class="time">{{circleDetail.CreateDate|dateFilter('yyyy年MM月dd日')}}创建</p>
                 </div>
             </div>
         </div>
@@ -23,65 +26,242 @@
             </div>
             <div class="content">
                 <ul>
-                    <li>
+                    <li v-for="item in articleInfoList" :key="item.Id">
                         <div class="hd">
-                            <img src="../assets/headImg-per2.png" alt="" class="headImg">
+                            <error-Img :src="item.Img" :error-src="Avatar" class="headImg"></error-Img>
                             <div class="nt">
                                 <div class="name">
-                                    周耀炳
+                                    {{item.UserName}}
                                 </div>
                                 <div class="time">
-                                    2019-09-26 10:38:12
+                                    {{item.CreateDate}}
                                 </div>
                             </div>
                         </div>
                         <div class="bd">
                             <div class="text">
-                                郭达 杰森斯坦森 男生 壁纸有要的拿走的参考...
+                                {{item.Content}}
                             </div>
-                            <div class="imgCon">
+                            <div class="imgCon" v-if="item.CircleEnclosure.length > 0">
                                 <ul>
-                                    <li>
-                                        <img src="../assets/new-course-img1.png" alt="">
-                                    </li>
-                                    <li>
-                                        <img src="../assets/new-course-img1.png" alt="">
-                                    </li>
-                                    <li>
-                                        <img src="../assets/new-course-img1.png" alt="">
+                                    <li v-for="item1 in item.CircleEnclosure" :key="item1.Id">
+                                        <img :src="item1.Url" alt="">
                                     </li>
                                 </ul>
                             </div>
                         </div>
                         <div class="ft">
-                            <div class="num">496人点赞</div>
+                            <div class="num">{{item.AssistCount}}人点赞</div>
                             <div class="handle">
-                                <p class="handle-praise"><img src="../assets/praise-white.png" alt=""></p>
-                                <p class="handle-mes"><img src="../assets/message-white.png" alt="">20</p>
+                                <p class="handle-praise" @click="addAssist(item)" v-if="item.IsAssist == 0"><img src="../assets/praise-white.png" alt=""></p>
+                                <p class="handle-praise" @click="deleteAssist(item)" v-else><img src="../assets/praise-red.png" alt=""></p>
+                                <p class="handle-mes" @click="showCommentBox(item)"><img src="../assets/message-white.png" alt="">{{item.CommentCount}}</p>
                             </div>
                         </div>
                     </li>
                 </ul>
             </div>
         </section>
+        <mt-popup
+            position="bottom"
+            v-model="commentBox"
+            class="circleCommentBox"
+            :closeOnClickModal="false"
+            > 
+            <circle-comment-box 
+                :close-box="closeBox" 
+                :circle-comment-id="circleCommentId" 
+                :circle-comment-list="circleCommentList"
+                :comment-count="commentCount"
+                :get-comment-box-list="getCommentBoxList"
+                :open-detail="openDetail"
+                :comment-input-state="commentInputState"
+                @emitstate="emitstate"
+                >
+            </circle-comment-box>
+        </mt-popup>
+        <mt-popup
+            position="right"
+            v-model="commentListDetail"
+            class="commentListDetail"
+            >
+            <comment-list-box 
+                :back-comment="backComment"
+                :comment-detail-list="commentDetailList"
+            >
+            </comment-list-box>
+        </mt-popup>
+        <div class="circleArticleAdd">
+            <router-link :to="{path: '/studyCirclePublish', query: {id: id}}">
+                <img src="../assets/circle-addBtn.png" alt="">
+            </router-link>
+        </div>
     </div>
 </template>
 
 <script>
+    import Avatar from '../assets/headImg-default.png'
+    import { Indicator } from 'mint-ui'
+    import { CircleDetail, CircleArticleList, AddUserAssist, DelUserAssist, CommentList } from '../service/getData'
+    import defaultImg from '../assets/no_data@2x.png'
     export default {
         data () {
             return {
-
+                circleDetail: [],
+                coverImgUrl: '',
+                pageNum: 1,
+                articleInfoList: [],
+                noData: false,
+                noMoreData: false,
+                Avatar: Avatar,
+                loading: false,
+                commentCount: null,
+                commentListDetail: false,
+                commentDetailpid: null,
+                commentDetailList: [],
+                commentInputState: true,
+                statec: true,
+                circleCommentList: [],
+                circleCommentId: null,
+                commentBox: false,
+                TypeId: null,
+                id: ''
             }
         },
         created () {
-
+            this.id = this.$route.query.id
         },
         mounted () {
-
+            this.getCircleDetail()
+            this.getCircleArticleList()
         },
         methods: {
-
+            // 获取学习圈详情
+            async getCircleDetail () {
+                let data = await CircleDetail({ Id: this.id })
+                if (data.IsSuccess) {
+                    this.circleDetail = data.Data
+                    this.coverImgUrl = data.Data.Img
+                    if (!this.coverImgUrl) {
+                        this.coverImgUrl = defaultImg
+                    }
+                }
+            },
+            // 学习圈 帖子全部动态
+            async getCircleArticleList () {
+                Indicator.open()
+                this.loading = true
+                let data = await CircleArticleList({
+                    Sort: 'Id',
+                    Order: 'desc',
+                    Page: this.pageNum,
+                    Rows: 5,
+                    CircleId: this.id
+                })
+                Indicator.close()
+                this.loading = false
+                if (data.IsSuccess) {
+                    let arr = data.Data
+                    if (arr.length == 0 && this.pageNum > 1) {
+                        this.noMoreData = true
+                        return
+                    }
+                    if (arr.length == 0 && this.pageNum == 1) {
+                        this.noData = true
+                        return
+                    }
+                    this.pageNum += 1
+                    this.articleInfoList = this.articleInfoList.concat(arr)
+                }
+            },
+            // 添加点赞
+            async addAssist (item) {
+              let data = await AddUserAssist({
+                  ObjType: 'CircleArticle',
+                  ObjId: item.Id
+              })
+              if (data.IsSuccess) {
+                  item.AssistCount += 1
+                  item.IsAssist = 1
+              }
+          },
+            // 删除点赞
+            async deleteAssist (item) {
+                let data = await DelUserAssist({
+                    ObjType: 'CircleArticle',
+                    ObjId: item.Id
+                })
+                if (data.IsSuccess) {
+                    item.AssistCount -= 1
+                    item.IsAssist = 0
+                }
+            },
+            showCommentBox (item) {
+            let body = document.querySelector('body')
+            body.addEventListener('click', this.catchHandle, false) 
+            this.commentBox = true
+            body.style.overflow = 'hidden'
+            body.style.height = '100vh'
+            this.boxArr = item
+            this.circleCommentId = item.Id
+            // console.log(this.circleCommentId)
+            this.getCommentBoxList()
+          },
+          catchHandle () {
+            this.commentInputState = true
+          },
+          closeBox () {
+            let body = document.querySelector('body')
+            this.commentBox = false
+            this.boxArr = {}
+            body.style.overflow = 'auto'
+            body.style.height = 'auto'
+            body.removeEventListener('click', this.catchHandle, false)
+          },
+          emitstate (val) {
+            this.commentInputState = val
+          },
+          // 获取评论列表
+          async getCommentBoxList () {
+            if (!this.boxArr.Id) {
+              return
+            }
+            Indicator.open()
+            this.loading2 = true
+              let data = await CommentList({
+                  MainId: this.boxArr.Id,
+                  Type: 'CircleArticle',
+                  ParentId: 0,
+                  Sort: 'Id',
+                  Order: 'desc',
+                  Page: this.boxArr.page,
+                  Rows: 5
+              })
+              this.loading2 = false
+              Indicator.close()
+              if (data.IsSuccess) {
+                  this.circleCommentList = data.Data.List
+                  this.commentCount = this.circleCommentList.length
+              }
+          },
+          backComment () {
+            this.commentListDetail = false
+            this.showCommentBox(this.boxArr)
+          },
+          openDetail (val) {
+            this.closeBox()
+            this.commentDetailpid = val.Id
+            this.commentListDetail = true
+            let body = document.querySelector('body')
+            body.removeEventListener('click', this.catchHandle, false)
+            this.$nextTick(() => {
+              this.circleCommentList.forEach((item) => {
+                if (item.Id == this.commentDetailpid) {
+                  this.commentDetailList = item.List
+                }
+              })
+            })
+          }
         },
         watch: {
 
@@ -97,8 +277,8 @@
         height: 100vh;
         .brief-intro{
             .theme{
-                background: url("../assets/sc-detail-bg.png") no-repeat;
-                background-size: 100% toRem(420px);
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
                 @extend %clearFix;
                 padding-bottom: toRem(25px); 
                 .theme-text1{
@@ -246,6 +426,30 @@
                         }
                     }
                 }
+            }
+        }
+        .circleCommentBox{
+          top: 5rem;
+          width: 100%;
+          .commentBox{
+            .cb-con{
+              height: toRem(750px);
+            }
+          }
+        }
+        .commentListDetail{
+            &.mint-popup-right{
+            width: 100%;
+            height: 100vh;
+            }
+        }
+        .circleArticleAdd{
+            position: fixed;
+            right: toRem(30px);
+            bottom: toRem(500px);
+            img{
+                width: toRem(130px);
+                height: toRem(130px);
             }
         }
     }

@@ -6,51 +6,96 @@
         <section class="circleCon">
             <div class="name">
                <p class="title">圈子名称</p>
-               <input type="text" placeholder="请输入圈子名称">
+               <input type="text" placeholder="请输入圈子名称" v-model="circleName">
             </div>
             <div class="tip">
                <p class="title">圈子说明</p>
-               <textarea name="" id="" placeholder="请输入您的圈子说明"></textarea>
+               <textarea name="" id="" placeholder="请输入您的圈子说明" v-model="circleTip"></textarea>
             </div>
             <div class="upload">
                 <p class="title">上传封面</p>
                 <div class="picAdd">
-                    <ul>
-                        <li class="upload-item">
-                            <img class="uploaded_attach" src="../assets/class_bg.png" alt="upload">
-                            <img src="../assets/close-icon.png" class="delete_btn" alt="">
-                        </li>
-                        <li class="upload-btn">
-                            <img 
-                                src="../assets/upload-btn.png" 
-                                alt="upload"
-                                class="uploaded_attach"
-                            >
-                            <input type="file" ref="attach" @change="onchangeImgFun($event)">
-                        </li>
-                    </ul>
+                    <div class="uc">
+                        <input type="file" name="image" ref="attach" accept="image/*" @change='onchangeImgFun($event)'
+                        class="header-upload-btn user-header-com">
+                        <img alt="" :src='imgSrc' class="user-header-img user-header-com" >
+                    </div>
                 </div>
             </div>
         </section>
-        <mt-button type="default" class="publishBtn">立即发布</mt-button>
+        <mt-button type="default" class="publishBtn" @click.stop="getCircleCreate">立即发布</mt-button>
     </div>
 </template>
 
 <script>
+    import { CircleCreate, UploadAttachment } from '../service/getData'
+    import { Toast } from 'mint-ui'
+    import { goBack } from '../service/mixins'
     export default {
+        mixins: [goBack],
         data () {
             return {
-
+                circleName: '',
+                circleTip: '',
+                imgSrc: require('../assets/upload-btn.png'),
+                imgName: '',
+                TypeId: '',
+                title: ''
             }
         },
         created () {
-
+            this.TypeId = this.$route.query.id
+            this.title = this.$route.query.title
         },
         mounted () {
 
         },
         methods: {
-
+            async getCircleCreate () {
+                if (!this.circleName) {
+                    Toast({ message: '圈子名称不能为空', position: 'bottom' })
+                } else if (!this.circleTip) {
+                    Toast({ message: '圈子说明不能为空', position: 'bottom' })
+                } else {
+                    let res = await CircleCreate({
+                        Name: this.circleName,
+                        Remark: this.circleTip,
+                        Img: this.imgName,
+                        TypeId: this.TypeId
+                    })
+                    if (res.IsSuccess) {
+                        this.circleName = ''
+                        this.circleTip = ''
+                        this.imgName = ''
+                        this.imgSrc = ''
+                        Toast({ message: '恭喜您,圈子创建成功,正在审核中', position: 'bottom' })
+                        this.$nextTick(() => {
+                            this.$router.push({ path: '/studyCircleStage', query: { id: this.TypeId, title: this.title } })
+                        })
+                    }
+                }
+            },
+            async onchangeImgFun (e) {
+                let file = e.target.files[0]
+                // console.log(file)
+                let arr = file.name.split('.')
+                let fileType = arr[arr.length - 1]
+                let formData = new FormData()
+                let fileName = `${+new Date()}.${fileType}`
+                this.imgName = fileName
+                // console.log(fileName)
+                formData.append('FileType', 'ImageCircle')
+                formData.append('FileCode', fileName)
+                formData.append('FileName', fileName)
+                // this.imgSrc = window.URL.createObjectURL(file)
+                formData.append('file', file, fileName)
+                // console.log(this.imgSrc)
+                console.log(formData.get('FileCode'), formData.get('FileName'), formData.get('FileType'))
+                let res = await UploadAttachment(formData)
+                if (res.IsSuccess) {
+                    this.imgSrc = window.URL.createObjectURL(file)
+                }
+            }
         },
         watch: {
 
@@ -97,58 +142,24 @@
             .upload{
                 .title{
                     color: #a9bcc7;
-                    padding-top: toRem(45px) ;
+                    padding-top: toRem(45px);
                 }
                 .picAdd{
-                    ul{
-                        @extend %clearFix;
-                        .upload-item{
-                            position: relative;
-                            height: toRem(168px);
-                            width: toRem(168px);
-                            margin-right: toRem(50px);
-                            float: left;
-                            margin-top: toRem(25px);
-                            .uploaded_attach{
-                                position: absolute;
-                                width: toRem(168px);
-                                height: toRem(168px);
-                                top: 0;
-                            }
-                            .delete_btn{
-                                position: absolute;
-                                top: toRem(-20px);
-                                right: toRem(-20px);
-                                width: toRem(40px);
-                                height: toRem(40px);
-                                cursor: pointer;
-                            }
+                    margin-top: toRem(30px);
+                    .uc{
+                        position: relative;
+                        display: inline-block;
+                        cursor: pointer;
+                        .user-header-com{
+                            width: toRem(134px);
+                            height: toRem(133px);
+                            display: inline-block;
                         }
-                        .upload-btn{
-                            position: relative;
-                            float: left;
-                            display: block;
-                            height: toRem(168px);
-                            width: toRem(168px);
-                            margin-right: toRem(20px);
-                            margin-top: toRem(25px);
-                            cursor: pointer;
-                            margin-top: toRem(24px);
-                            img{
-                                position: absolute;
-                                width: toRem(168px);
-                                height: toRem(168px);
-                                display: inline-block;
-                            }
-                            input{
-                                position: absolute;
-                                left: 0;
-                                top: 0;
-                                opacity: 0;
-                                width: toRem(168px);
-                                height: toRem(168px);
-                                z-index: 1;
-                            }
+                        .header-upload-btn{
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            opacity: 0;
                         }
                     }
                 }

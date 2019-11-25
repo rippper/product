@@ -4,37 +4,36 @@
           <p class="text">全部{{commentCount}}条评论</p>
           <p class="close" @click.stop="closeBox()"><img src="../assets/cancel.png" alt=""></p>
         </div>
-        <div class="cb-con">
           <section v-infinite-scroll="getCommentList"
                infinite-scroll-immediate-check="immediate"
                infinite-scroll-disabled="loading"
                infinite-scroll-distance="10">
-              <ul>
-                <li v-for="item in commentList" :key="item.Id">
-                  <div class="hd">
-                    <img :src="item.UserImg" alt="">
-                  </div>
-                  <div class="bd">
-                    <div class="left-hand">
-                      <div class="nt">
-                        <div class="name">
-                          {{item.UserName}}
+              <div class="cb-con">
+                <ul>
+                  <li v-for="item in commentList" :key="item.Id">
+                    <div class="hd">
+                      <img :src="item.UserImg" alt="">
+                    </div>
+                    <div class="bd">
+                      <div class="left-hand">
+                        <div class="nt">
+                          <div class="name">
+                            {{item.UserName}}
+                          </div>
+                          <div class="time">
+                            {{item.CreateDate || dateFilter("yyyy-MM-dd")}}
+                          </div>
                         </div>
-                        <div class="time">
-                          {{item.CreateDate || dateFilter("yyyy-MM-dd")}}
+                        <div class="text">
+                          {{item.Comment}}
                         </div>
-                      </div>
-                      <div class="text">
-                        {{item.Comment}}
                       </div>
                     </div>
-                  </div>
-                </li>
-              </ul>
-              <div class="no-data">没有更多评价啦</div>
+                  </li>
+                </ul>
+              </div>
           </section>
-          
-        </div>
+          <!-- <div class="no-data">没有更多评价啦</div> -->
         <div class="reply">
           <div class="reply-box">
             <img src="../assets/message-blue.png" alt="">
@@ -53,9 +52,11 @@
         data () {
             return {
               commentText: '',
-              Page: 1,
+              page: 1,
               commentList: [],
-              commentCount: ''
+              commentCount: '',
+              immediate: false,
+              loading: false
             }
         },
         props: {
@@ -67,7 +68,6 @@
             }
         },
         created () {
-          console.log(this.courseId)
         },
         mounted () {
           this.getCommentList()
@@ -82,6 +82,7 @@
             if (res.IsSuccess) {
               this.page = 1
               this.commentList = []
+              this.commentText = ''
               this.getCommentList()
               Toast({ message: res.Message, position: 'bottom' })
             } else {
@@ -91,10 +92,11 @@
           // 课程评论列表
           async getCommentList () {
             this.loading = true
-            let res = await GetCourseCommentList({ id: this.courseId, Page: this.page, Rows: 4 })
+            let res = await GetCourseCommentList({ id: this.courseId, Page: this.page })
             this.loading = false
             let list = res.ListData || []
             this.commentCount = res.Count
+            this.$emit('counts', this.commentCount)
             if (this.page == 1 && list.length == 0) {
               this.noData = true
               return

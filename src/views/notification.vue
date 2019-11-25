@@ -33,11 +33,13 @@ export default {
     name: 'notification',
     data () {
         return {
+            screenHeight: '',
+            screenWidth: '',
             label: '通知公告',
             loading: false,
             notifiData: [],
             allCount: 0,
-            Rows: 10,
+            Rows: 6,
             currentPage: 1,
             attation: '加载中'
         }
@@ -45,8 +47,18 @@ export default {
     mounted () {
         this.calculateHeight()
         this.render()
+        window.addEventListener('resize', this.windowsChange)
+    },
+    beforeDestroy () {
+        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
+        windowsChange () {
+            return (() => {
+                this.screenWidth = window.screen.width
+                this.screenHeight = window.screen.height
+            })()
+        },
         calculateHeight () {
             this.$refs.notifiPage.style.height = window.screen.height + 'px'
         },
@@ -80,6 +92,14 @@ export default {
             if (this.allCount <= this.Rows) {
                 this.attation = '已全部加载'
             }
+        }
+    },
+    watch: {
+        screenWidth (newsvalue, oldvalue) {
+            this.calculateHeight()
+        },
+        screenHeight (newsvalue, oldvalue) {
+            this.calculateHeight()
         }
     },
     components: {

@@ -16,8 +16,11 @@ const wechatUser = '/wechatUser' // zyb收藏
 const wechatother = '/wechatother' 
 const wechatCommon = '/wechatCommon'
 const wechatComment = '/wechatComment'
-// /AddCourseComment
-// /GetAllGroupList
+const wechatguid = '/wechatguid'
+const wechatExam = '/wechatExam' // zyb考试
+const wechatcircle = '/wechatcircle' // 学习圈
+const WechatFile = '/WechatFile'
+
 export default {
   // 判断用户是否存在
   CheckUserIsExit: {
@@ -89,11 +92,6 @@ export default {
     url: API_URL + Platform + '/GetChannelInfoList',
     data: { ParentId: 0 }
   },
-  // 考试分类
-  GetExamType: {
-    url: API_URL + Platform + '/GetExamType',
-    data: { ParentId: 0, ParentCode: '' }
-  },
   // 考试列表
   GetExamList: {
     url: API_URL + Platform + '/GetExamList',
@@ -160,20 +158,10 @@ export default {
     url: API_URL + Platform + '/GetUserCourseInfoList',
     data: { Finish: '2', Keyword: '', Page: 1, Rows: 10 }
   },
-  // 文章频道
-  GetArticleChannelInfoList: {
-    url: API_URL + Article + '/GetArticleChannelInfoList',
-    data: { ParentId: '', ParentCode: '' }
-  },
   // 文章列表
   GetArticleInfoList: {
-    url: API_URL + Article + '/GetArticleInfoList',
-    data: { CategoryId: '', Keyword: '', CategoryCode: '', Page: '1', Rows: '10' }
-  },
-  // 文章数
-  GetActicleInfoCount: {
-    url: API_URL + Article + '/GetActicleInfoCount',
-    data: { CategoryCode: '' }
+    url: API_URL + Platform2 + '/GetArticleInfoList',
+    data: {}
   },
   // 文章详情
   ArticleDetail: {
@@ -356,7 +344,7 @@ export default {
   },
   // 相关课程
   RelatedCourse: {
-    url: API_URL + Platform + '/RelatedCourse',
+    url: API_URL + wechatguid + '/RelatedCourse',
     data: { CourseId: '', Page: 1, Rows: 10 }
   },
   // 成果展示分类
@@ -450,11 +438,11 @@ export default {
     data: {}
   },
   // 上传文件
-  UploadAttachment: {
-    url: API_URL + '/AppFile/UploadAttachment',
-    data: {},
-    method: 'formData'
-  },
+  // UploadAttachment: {
+  //   url: API_URL + '/AppFile/UploadAttachment',
+  //   data: {},
+  //   method: 'formData'
+  // },
   // 通用评价添加
   EnumCommentAdd: {
     url: API_URL + Enum + '/CommentAdd',
@@ -524,6 +512,10 @@ export default {
     url: API_URL + Platform2 + '/ArticleContent',
     data: {}
   },
+  GetArticleChannelInfoList: { // zyb获取文章类型
+    url: API_URL + Platform2 + '/GetArticleChannelInfoList',
+    data: {}
+  },
   FavoriteAdd: { // zyb收藏添加 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
     url: API_URL + wechatUser + '/FavoriteAdd',
     data: {}
@@ -535,6 +527,69 @@ export default {
   GetAllGroupList: {
     url: API_URL + wechatCommon + '/GetAllGroupList',
     data: {}
+  },
+  GetExamType: { // zyb获取考试类型
+    url: API_URL + wechatExam + '/GetExamType',
+    data: {}
+  },
+  ExamList: { // zyb获取考试列表
+    url: API_URL + wechatExam + '/ExamList',
+    data: {}
+  },
+  GetExamInfo: { // zyb获取考试内容
+    url: API_URL + wechatExam + '/GetExamInfo',
+    data: {}
+  },
+  PostExam: { // zyb考试结果上传
+    url: API_URL + wechatExam + '/PostExam',
+    data: {}
+  },
+  CircleArticleList: { // 学习圈热门动态
+    url: API_URL + wechatcircle + '/CircleArticleList',
+    data: {}
+  },
+  AddUserAssist: { // 学习圈点赞
+    url: API_URL + Platform2 + '/AddUserAssist',
+    data: {}
+  },
+  DelUserAssist: { // 学习圈删除点赞
+    url: API_URL + Platform2 + '/DelUserAssist',
+    data: {}
+  },
+  CommentList: { // 学习圈评论列表
+    url: API_URL + wechatComment + '/CommentList',
+    data: {}
+  },
+  AddComment: { // 学习圈添加评论
+    url: API_URL + wechatComment + '/AddComment',
+    data: {}
+  },
+  CircleHotInfoList: { // 学习圈活跃圈子
+    url: API_URL + wechatcircle + '/CircleHotInfoList',
+    data: {}
+  },
+  UploadAttachment: { // 上传文件
+    url: API_URL + WechatFile + '/UploadAttachment',
+    data: {}
+  },
+  CircleCreate: { // 学习圈创建
+    url: API_URL + wechatcircle + '/CircleCreate',
+    data: {}
+  },
+  CircleArticleCreate: { // 学习圈文章发布
+    url: API_URL + wechatcircle + '/CircleArticleCreate',
+    data: {}
+  },
+  CircleDetail: { // 学习圈详情
+    url: API_URL + wechatcircle + '/CircleDetail',
+    data: {}
+  },
+  CircleTypeInfoList: { // 学习圈分类
+    url: API_URL + wechatcircle + '/CircleTypeInfoList',
+    data: {}
+  },
+  CircleInfoList: { // 学习圈列表
+    url: API_URL + wechatcircle + '/CircleInfoList',
+    data: {}
   }
-  
 }

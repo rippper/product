@@ -49,6 +49,8 @@ export default {
     name: 'trainingCourse',
     data () {
         return {
+            screenHeight: '',
+            screenWidth: '',
             selectType: [
                 {
                     Type: '学校:',
@@ -72,8 +74,18 @@ export default {
     mounted () {
         this.cauclate()
         this.getTrainClass()
+        window.addEventListener('resize', this.windowsChange)
+    },
+    beforeDestroy () {
+        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
+        windowsChange () {
+            return (() => {
+                this.screenWidth = window.screen.width
+                this.screenHeight = window.screen.height
+            })()
+        },
         cauclate () {
             let topBox = parseFloat(window.getComputedStyle(this.$refs.titlepart).height) + parseFloat(window.getComputedStyle(this.$refs.titlepart).padding) + parseFloat(window.getComputedStyle(this.$refs.titlepart).marginBottom)
             topBox = Math.ceil(topBox) + 4
@@ -202,6 +214,14 @@ export default {
             if (this.courseInfor.length === this.allMessage) {
                 this.loadMore = '已全部显示'
             } 
+        }
+    },
+    watch: {
+        screenHeight (value) {
+            this.cauclate()
+        },
+        screenWidth (value) {
+            this.cauclate()
         }
     },
     components: {

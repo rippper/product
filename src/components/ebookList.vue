@@ -5,9 +5,18 @@
   <div class="ebook_list">
     <div class="ebook_item" v-for="item in data" :key="item.BookNameId"
          @click="goChapterList(item.BookNameId,item.BookName)">
-      <error-img :src="item.BookImg" :error-src="errorBook"></error-img>
-      <p class="ebook_name">{{item.BookName}}</p>
-      <p class="ebook_author">作者：{{item.AutoName}}</p>
+          <div class="ebookCover">
+            <error-img :src="item.BookImg" :error-src="errorBook"></error-img>
+          </div>
+          <div class="ebookTip">
+            <p class="title">
+              {{item.BookName}}
+            </p>
+            <div class="">
+              亨利·罗斯是夏威夷水族馆的一名兽医，也是 一位快乐的单身汉，在管理海洋动物的同...
+            </div>
+          </div>
+          <p class="ebook_author">作者：{{item.AutoName}}</p>
     </div>
     <div class="noDataBg" v-if="noDataBg"></div>
     <div class="no-data" v-if="noData">没有更多内容了...</div>
@@ -46,13 +55,9 @@
 
   .ebook_list {
     @extend %clearFix;
-
+    padding: 0 toRem(30px);
     .ebook_item {
-      @extend %pull-left;
-      text-align: center;
-      width: 33.3%;
-      padding-top: toRem(25px);
-
+      padding: toRem(25px) 0;
       img {
         @include wh(176px, 234px);
         @include border-right-radius(10px);

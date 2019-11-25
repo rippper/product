@@ -1,26 +1,26 @@
 <template>
     <div class="commentListBox">
-        <header-fix title="全部评价">
+        <header-fix title="评论详情">
           <i class="webapp webapp-left" @click.stop="backComment" slot="left"></i>
         </header-fix>
         <div class="clb-con">
           <ul>
-            <li>
+            <li v-for="item in commentDetailList" :key="item.Id">
               <div class="hd">
-                <img src="../assets/headImg-per2.png" alt="">
+                <error-img class="user_avatar" :src="item.Img" :error-src="Avatar"></error-img>
               </div>
               <div class="bd">
                 <div class="left-hand">
                   <div class="nt">
                     <div class="name">
-                      李顺成
+                      {{item.UserName}}
                     </div>
                     <div class="time">
-                      2018-07-06
+                      {{item.CreateDate || dateFilter("yyyy-MM-dd")}}
                     </div>
                   </div>
                   <div class="text">
-                    好棒！好像参加！组织的真好！！！
+                    {{item.Content}}
                   </div>
                 </div>
               </div>
@@ -31,15 +31,19 @@
 </template>
 
 <script>
+    import Avatar from '../assets/hq-head-portrait@2x.png'
     export default {
         data () {
             return {
-
+              Avatar
             }
         },
         props: {
             backComment: {
                 type: Function
+            },
+            commentDetailList: {
+              type: Array
             }
         }
     }

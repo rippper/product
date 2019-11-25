@@ -2,7 +2,7 @@
 * header组件
 */
 <template>
-  <header class="header" :class="{ 'is-fixed': fixed, 'have-background': backType }">
+  <header class="header" :class="{ 'is-fixed': fixed, 'have-background': backType, 'style-blueandwrite':theStyle }">
     <div class="header_left">
       <slot name="left"></slot>
     </div>
@@ -20,7 +20,8 @@
     props: {
       title: String,
       fixed: Boolean,
-      backType: Boolean
+      backType: Boolean,
+      theStyle: Boolean
     }
   }
 </script>
@@ -51,6 +52,13 @@
     &.have-background {
       background-color: rgba(255,255,255,0);
       border-bottom: 0;
+    }
+
+    &.style-blueandwrite {
+      background: url('../assets/exam_titlebackground.png');
+      background-size: 100% toRem(300px);
+      color: #fff;
+      border-bottom: none;
     }
 
     .header_left {

@@ -1,24 +1,19 @@
 /**
-* 课程列表
+* 课程目录列表
 */
 <template>
-  <div class="course_list">
-    <div class="course_item" v-for="(item,index) in courseData" :key="index"
-         @click.stop="toPlay(item.CourseType,item.CourseId)">
-      <div class="course_img">
-        <a class="img">
-          <img v-lazy="item.CourseImg">
-          <!--<error-img :src="item.CourseImg" :error-src="noCourse"></error-img>-->
-        </a>
-        <!-- <img v-if="item.CourseType=='JYAicc'" class="tip" src="../assets/jingpin.png" alt=""/>
-        <img v-if="item.CourseType=='Mp4'" class="tip" src="../assets/MP4.png" alt=""/>
-        <img v-if="item.CourseType=='h5'" class="tip" src="../assets/H5.png" alt=""/> -->
-        <img src="../assets/play-circle.png" alt="" class="play-img">
-      </div>
-      <div class="course_desc">
-        <div class="course_name">{{item.CourseName}}</div>
-        <div class="course_click">点击量:{{item.ClickCount}}</div>
-      </div>
+  <div class="courseCatelist">
+    <div class="course_item" >
+         <ul>
+            <li v-for="(item,index) in courseData" :key="index"
+                @click.stop="toPlay(item.CourseType,item.CourseId)"
+                :class="{'selected': item.isSelected}"
+                >
+              <p class="label">{{item.Name}}</p>
+              <img src="../assets/play-white.png" alt="" v-if="item.isSelected">
+              <img src="../assets/play-blue.png" alt="" v-else>
+            </li>
+          </ul>
     </div>
     <div class="noDataBg" v-if="noDataBg"></div>
     <div class="no-data" v-if="noData">没有更多内容了...</div>
@@ -72,17 +67,40 @@
 <style lang="scss" rel="stylesheet/scss">
   @import "../style/mixin";
 
-  .course_list {
+  .courseCatelist {
     @extend %clearFix;
     background: #fff;
     .course_item {
-      margin: toRem(40px) toRem(20px) 0 toRem(30px);
-      float: left;
-      background-color: $fill-base;
-      width: toRem(335px);
-      &:nth-child(2n){
-        margin-left: 0; 
-      }
+      width: 100%;
+        @extend %clearFix;
+        margin-top: toRem(30px);
+        ul{
+          li{ 
+              @extend %clearFix;
+              line-height: toRem(80px);
+              background: #f5f9ff;
+              margin-top: toRem(20px);
+              &.selected{
+                background: #4374df;
+                .label{
+                  color: #fff;
+                }
+              }
+              .label{
+                margin-left: toRem(20px);
+                float: left;
+                color: #4a608c;
+                @include ellipsis_two(1);
+              }
+              img{
+                float: right;
+                width: toRem(34px);
+                height: toRem(34px);
+                margin-top: toRem(23px);
+                margin-right: toRem(20px);
+              }
+          }
+        }
     }
 
     .course_img {

@@ -4,7 +4,7 @@
 <template>
     <div class="articleDetail" ref="totalHeight">
         <header-fix :fixed="true">
-            <i class="arti_Back" slot="left"></i>
+            <i class="arti_Back" slot="left" @click="LinkBack()"></i>
             <div class="arti_CollectDepart" slot="right">
                 <i class="arti_CollectNone" @click="collect()" v-if="articleCollect == false"></i>
                 <i class="arti_CollectTrue" @click="discollect()" v-else-if="articleCollect == true"></i>
@@ -28,9 +28,11 @@ export default {
     name: 'articleDetail',
     data () {
         return {
-            pageHeight: 0,
+            screenHeight: '',
+            screenWidth: '',
             collectNumber: 0,
-            articleId: 223,
+            articleId: this.$route.query.Id,
+            comeFrom: this.$route.query.from,
             articleTitle: '',
             articleFrom: '',
             articleTime: '',
@@ -42,17 +44,34 @@ export default {
     mounted () {
         this.calclulate()
         this.render()
+        window.addEventListener('resize', this.windowsChange)
+    },
+    beforeDestroy () {
+        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
         calclulate () {
-            this.pageHeight = window.screen.height
-            this.$refs.totalHeight.style.height = this.pageHeight + 'px'
+            this.screenWidth = window.screen.width
+            this.screenHeight = window.screen.height
+            this.$refs.totalHeight.style.height = this.screenHeight + 'px'
+        },
+        windowsChange () {
+            return (() => {
+                this.screenWidth = window.screen.width
+                this.screenHeight = window.screen.height
+            })()
+        },
+        LinkBack () {
+            if (this.comeFrom == 'type') {
+                this.$router.push({ path: '/articletype' })
+            } else if (this.comeFrom == 'home') {
+                this.$router.push({ path: '/home' })
+            }
         },
         async render () {
             let msg = await ArticleContent({
-                Id: 223
+                Id: this.articleId
             })
-            console.log(msg)
             this.articleTitle = msg.Data.Name
             this.articleAuthor = msg.Data.Author ? msg.Data.Author : '匿名'
             this.articleTime = msg.Data.CreateDate.substr(0, 10)
@@ -60,6 +79,7 @@ export default {
             this.articleContent = msg.Data.Content
             this.collectNumber = msg.Data.FavoriteCount
             this.articleCollect = msg.Data.IsFavorite
+            console.log(msg)
         },
         async collect () {
             let msg = await FavoriteAdd({
@@ -78,13 +98,20 @@ export default {
                 Ids: this.articleId,
                 Type: 'Article'
             })
-            console.log(msg)
             if (msg.Type == 1) {
                 MessageBox('提示', '取消收藏成功!')
             } else {
                 MessageBox('提示', '取消收藏失败!')
             }
             this.render()
+        }
+    },
+    watch: {
+        screenWidth (newsvalue, oldvalue) {
+            this.calclulate()
+        },
+        screenHeight (newsvalue, oldvalue) {
+            this.calclulate()
         }
     },
     components: {
@@ -168,7 +195,11 @@ export default {
             padding-left: toRem(15px);
             padding-right: toRem(15px);
             img{
-                max-width: toRem(600px);
+                width:100%!important;
+            }
+            video{
+                width: 100%!important;
+                height: 100%!important;
             }
         }
     }

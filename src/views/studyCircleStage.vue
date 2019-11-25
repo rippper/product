@@ -1,6 +1,6 @@
 <template>
     <div class="studyCircleStage container_top">
-        <header-fix title="生活" fixed>
+        <header-fix :title="title" fixed>
             <i class="webapp webapp-left" @click.stop="goBack" slot="left"></i>
         </header-fix>
         <section class="active-circle">
@@ -8,113 +8,234 @@
                 活跃圈子
             </div>
             <swiper :options="srSwiperOption1">
-                <swiper-slide >
-                    <router-link to="/">
+                <swiper-slide v-for="(item, index) in circleHotInfoList" :key="item.Id">
+                    <router-link :to="{path: '/studyCircleStageDetail', query:{id: item.Id}}">
                         <div class="pic">
-                            <img src="../assets/circle-img1.png" alt="">
-                            <p class="num"><img src="../assets/num1-icon.png" alt=""></p>
+                            <error-img :src="item.Img" :error-src="Avatar"></error-img>
+                            <p class="num">
+                                <img src="../assets/num1-icon.png" alt="" v-if="index == 0">
+                                <img src="../assets/num2-icon.png" alt="" v-if="index == 1">
+                                <img src="../assets/num3-icon.png" alt="" v-if="index == 2">
+                            </p>
                         </div>
                         <div class="text">
-                            <p class="name">#无极之道</p>
-                            <p class="num">6条动态</p>
+                            <p class="name">#{{item.Name}}</p>
+                            <p class="num">{{item.ArticleCount}}条动态</p>
                         </div>
                     </router-link>
                 </swiper-slide>
-                <swiper-slide >
-                    <router-link to="/">
-                        <div class="pic">
-                            <img src="../assets/circle-img1.png" alt="">
-                            <p class="num"><img src="../assets/num1-icon.png" alt=""></p>
-                        </div>
-                        <div class="text">
-                            <p class="name">#无极之道</p>
-                            <p class="num">6条动态</p>
-                        </div>
-                    </router-link>
-                </swiper-slide>
-                <swiper-slide >
-                    <router-link to="/">
-                        <div class="pic">
-                            <img src="../assets/circle-img1.png" alt="">
-                            <p class="num"><img src="../assets/num1-icon.png" alt=""></p>
-                        </div>
-                        <div class="text">
-                            <p class="name">#无极之道</p>
-                            <p class="num">6条动态</p>
-                        </div>
-                    </router-link>
-                </swiper-slide>
-                <swiper-slide >
-                    <router-link to="/">
-                        <div class="pic">
-                            <img src="../assets/circle-img1.png" alt="">
-                            <p class="num"><img src="../assets/num1-icon.png" alt=""></p>
-                        </div>
-                        <div class="text">
-                            <p class="name">#无极之道</p>
-                            <p class="num">6条动态</p>
-                        </div>
-                    </router-link>
-                </swiper-slide>
+               
             </swiper>
         </section>
         <section class="content">
             <div class="title">
                 <ul>
-                    <li class="actived">
+                    <li class="tagLi actived" @click="newsListCtr(1)">
                         推荐
                     </li>
-                    <li>
+                    <li class="tagLi" @click="newsListCtr(2)">
                         全部
                     </li>
                 </ul>
             </div>
-            <div class="list">
-                <ul>
-                    <li>
-                        <div class="title">
-                            <div class="hd">
-                                <div class="hd-left">
-                                    <img src="../assets/headImg-per.png" alt=""> <span>友邻有伴</span>
+            <section
+                v-infinite-scroll="getCircleInfoList"
+                infinite-scroll-disabled="loading"
+                infinite-scroll-immediate-check="immediate"
+                infinite-scroll-distance="10"
+                v-if="showList"
+            >
+                <div class="list">
+                    <ul>
+                        <li v-for="item in circleInfoList1" :key="item.Id">
+                            <router-link :to="{path: '/studyCircleStageDetail', query: {id: item.Id}}">
+                                <div class="title">
+                                    <div class="hd">
+                                        <div class="hd-left">
+                                            <img :src="item.UserImg" alt=""> <span>{{item.Name}}</span>
+                                        </div>
+                                        <i class="webapp webapp-right" slot="right"></i>
+                                    </div>
+                                    <div class="bd">
+                                        <p class="nt"><span class="name">{{item.UserName}}</span> <span class="time">{{item.CreateDate|dateFilter('yyyy年MM月dd日')}}创建</span></p>
+                                        <p class="num"><img src="../assets/eye-img1.png" alt="">{{item.ClickCount}}</p>
+                                    </div>
                                 </div>
-                                <i class="webapp webapp-right" slot="right"></i>
-                            </div>
-                            <div class="bd">
-                                <p class="nt"><span class="name">张大春</span> <span class="time">2019年09月26日创建</span></p>
-                                <p class="num"><img src="../assets/eye-img1.png" alt="">2198</p>
-                            </div>
-                        </div>
-                        <div class="con">
-                            <img src="../assets/banner03.png" alt="" class="cover">
-                        </div>
-                    </li>
-                </ul>
-            </div>
+                                <div class="con">
+                                    <error-img :src="item.Img" :error-src="Avatar" class="cover"></error-img>
+                                </div>
+                            </router-link>
+                        </li>
+                    </ul>
+                </div>
+                <div class="noData" v-if="noData">
+                   <img src="../assets/no_data@2x.png" alt="">
+                </div>
+                <div class="noMoreData" v-if="noMoreData">
+                    没有更多数据啦
+                </div>
+            </section>
+            <section
+                v-infinite-scroll="getCircleInfoList2"
+                infinite-scroll-disabled="loading"
+                infinite-scroll-immediate-check="immediate"
+                infinite-scroll-distance="10"
+                v-if="localList"
+            >
+                <div class="list">
+                    <ul>
+                        <li v-for="item in circleInfoList1" :key="item.Id">
+                            <router-link :to="{path: '/studyCircleStageDetail', query: {id: item.Id}}">
+                                <div class="title">
+                                    <div class="hd">
+                                        <div class="hd-left">
+                                            <img :src="item.UserImg" alt=""><span>{{item.Name}}</span>
+                                        </div>
+                                        <i class="webapp webapp-right" slot="right"></i>
+                                    </div>
+                                    <div class="bd">
+                                        <p class="nt"><span class="name">{{item.UserName}}</span> <span class="time">{{item.CreateDate|dateFilter('yyyy年MM月dd日')}}创建</span></p>
+                                        <p class="num"><img src="../assets/eye-img1.png" alt="">{{item.ClickCount}}</p>
+                                    </div>
+                                </div>
+                                <div class="con">
+                                    <error-img :src="item.Img" :error-src="Avatar" class="cover"></error-img>
+                                </div>
+                            </router-link>
+                        </li>
+                    </ul>
+                </div>
+                <div class="noData" v-if="noData1">
+                   <img src="../assets/no_data@2x.png" alt="">
+                </div>
+                <div class="noMoreData" v-if="noMoreData1">
+                    没有更多数据啦
+                </div>
+            </section>
         </section>
+        <div class="circleAdd">
+            <router-link :to="{path: '/studyCircleCreate', query: {id: TypeId}}">
+                <img src="../assets/circle-addBtn.png" alt="">
+            </router-link>
+        </div>
     </div>
 </template>
 
 <script>
+    import { CircleInfoList, CircleHotInfoList } from '../service/getData'
+    import Avatar from '../assets/noCourse.png'
+    import { Indicator } from 'mint-ui'
+    import { goBack } from '../service/mixins'
     export default {
+        mixins: [goBack],
         data () {
             return {
+                title: '',
                 srSwiperOption1: {
                     slidesPerView: 'auto',
                     grabCursor: true,
                     loop: true,
                     freeMode: true,
                     freeModeMomentum: false
-                }
+                },
+                TypeId: '',
+                circleInfoList1: [],
+                circleInfoList2: [],
+                page1: 1,
+                page2: 1,
+                loading: false,
+                immediate: false,
+                noMoreData: false,
+                noData: false,
+                noMoreData1: false,
+                noData1: false,
+                showList: true,
+                localList: false,
+                circleHotInfoList: [],
+                Avatar
             }
         },
         created () {
-
+            this.title = this.$route.query.title 
+            this.TypeId = this.$route.query.id
         },
         mounted () {
-
+            this.getCircleInfoList()
+            this.getCircleInfoList2()
+            this.getCircleHotInfoList()
         },
         methods: {
-
+            // 推荐 取点击量
+            async getCircleInfoList () {
+                Indicator.open()
+                this.loading = true
+                let data = await CircleInfoList({ TypeId: this.TypeId, Order: 'desc', Sort: 'ClickCount', page: this.page1, rows: 3 })
+                this.loading = false
+                Indicator.close()
+                if (data.IsSuccess) {
+                    let list = data.Data.List
+                    if (list.length === 0 && this.page1 > 1) {
+                        this.noMoreData = true
+                        return 
+                    }
+                    if (list.length === 0 && this.page1 == 1) {
+                        this.noData = true
+                        return
+                    }
+                    this.circleInfoList1 = this.circleInfoList1.concat(list)
+                    this.page1++
+                }
+            },
+            // 全部 取时间
+            async getCircleInfoList2 () {
+                Indicator.open()
+                this.loading = true
+                let data = await CircleInfoList({ TypeId: this.TypeId, Order: 'desc', Sort: 'Id', page: this.page2, rows: 3 })
+                this.loading = false
+                Indicator.close()
+                if (data.IsSuccess) {
+                    let list = data.Data.List
+                    // this.circleInfoList = data.Data.List
+                    if (list.length === 0 && this.page2 > 1) {
+                        this.noMoreData1 = true
+                        return
+                    }
+                    if (list.length === 0 && this.page2 == 1) {
+                        this.noData1 = true
+                        return
+                    }
+                    this.circleInfoList2 = this.circleInfoList2.concat(list)
+                    this.page2++
+                }
+            },
+            newsListCtr (item) {
+                let tagLi = document.getElementsByClassName('tagLi')
+                for (let i = 0; i < tagLi.length; i++) {
+                    tagLi[i].classList.remove('actived')
+                    if (item == '1') {
+                        this.showList = true
+                        this.localList = false
+                        tagLi[0].classList.add('actived')
+                    } else if (item == '2') {
+                        this.showList = false
+                        this.localList = true
+                        tagLi[1].classList.add('actived')
+                    }
+                }
+            },
+            // 活跃圈子
+            async getCircleHotInfoList () {
+                let data = await CircleHotInfoList({
+                    Sort: 'Id',
+                    Order: 'desc',
+                    Page: 1,
+                    Rows: 1000,
+                    TypeId: this.TypeId
+                })
+                if (data.IsSuccess) {
+                    this.circleHotInfoList = data.Data.List
+                }
+            }
         },
         watch: {
 
@@ -260,6 +381,27 @@
                         }
                     }
                 }
+            }
+            .noData{
+                img{
+                    padding: toRem(30px);
+                    width: toRem(508px);
+                    height: toRem(804px);
+                }
+            }
+            .noMoreData{
+                text-align: center;
+                padding: toRem(30px);
+                font-size: 16px;
+            }
+        }
+        .circleAdd{
+            position: fixed;
+            right: toRem(30px);
+            bottom: toRem(500px);
+            img{
+                width: toRem(130px);
+                height: toRem(130px);
             }
         }
     }

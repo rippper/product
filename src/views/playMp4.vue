@@ -26,27 +26,30 @@
       <course-introduce :course-details="courseDetails"></course-introduce>
       <div class="contentList">
         <div class="title">
-          课程目录
+          相关课程
         </div>
-        <div class="list">
+        <!-- <div class="list">
           <ul>
             <li>
               <p class="label">[第一集] 习近平日内瓦演讲的意义</p>
               <img src="../assets/play-blue.png" alt="">
-              <!-- <img src="../assets/play-white.png" alt=""> -->
             </li>
             <li>
               <p class="label">[第一集] 习近平日内瓦演讲的意义</p>
               <img src="../assets/play-blue.png" alt="">
-              <!-- <img src="../assets/play-white.png" alt=""> -->
             </li>
             <li>
               <p class="label">[第一集] 习近平日内瓦演讲的意义</p>
               <img src="../assets/play-blue.png" alt="">
-              <!-- <img src="../assets/play-white.png" alt=""> -->
             </li>
           </ul>
-        </div>
+        </div> -->
+        <section  v-infinite-scroll="getRelatedCourse"
+                   infinite-scroll-immediate-check="immediate"
+                   infinite-scroll-disabled="loading"
+                   infinite-scroll-distance="10">
+            <course-cate-list :course-data="courseData" :no-data-bg="noDataBg" :no-data="noData"></course-cate-list>
+        </section>
       </div>
       <div class="course-brief">
         <div class="title">
@@ -74,7 +77,8 @@
                infinite-scroll-immediate-check="immediate"
                infinite-scroll-disabled="loading"
                infinite-scroll-distance="10"> -->
-               <comment-box :close-box="closeBox"  :course-id="courseId"></comment-box>
+               <comment-box :close-box="closeBox" @counts="getCount" :course-id="courseId"></comment-box>
+               <!--  -->
           <!-- :comment-list="commentList" -->
         <!-- </section> -->
       </mt-popup>
@@ -92,13 +96,14 @@
   import Vue from 'vue'
   import { mapState } from 'vuex'
   import wx from 'weixin-js-sdk'
-  import { Toast, Navbar, TabItem, TabContainer, TabContainerItem, Popup } from 'mint-ui'
+  import { Toast, Navbar, TabItem, Indicator, TabContainer, TabContainerItem, Popup } from 'mint-ui'
   // Indicator,
   import { goBack } from '../service/mixins'
   import {
     GetCourseDetail,
     UploadTimeNode,
-    GetWechatWxAuthModel
+    GetWechatWxAuthModel,
+    RelatedCourse
     // GetCourseCommentList
   } from '../service/getData'
   import { timeFormat, isIPhone } from '../plugins/utils'
@@ -169,8 +174,8 @@
       }
       /* 获取课程详情 */
       this.getCourseDetail(this.playFunc)
-      // 获取课程评论列表
-      // this.getCommentList()
+       /* 相关课程 */
+      this.getRelatedCourse()
     },
     computed: {
       ...mapState(['userAgent'])
@@ -290,29 +295,40 @@
         this.commentBox = false
         body.style.overflow = 'auto'
         body.style.height = 'auto'
+      },
+      getCount (data) {
+        this.commentCount = data
+      },
+      // 相关课程
+      async getRelatedCourse () {
+        this.noData = false
+        this.noDataBg = false
+        this.loading = true
+        Indicator.open()
+        let data = await RelatedCourse({ CourseId: this.courseId, Page: this.page })
+        Indicator.close()
+        if (data.Type == 1) {
+          let list = data.Data.ListData
+          if (list.length == 0 && this.page > 1) {
+            this.noData = true
+            return
+          }
+          if (list.length == 0 && this.page == 1) {
+            this.noDataBg = true
+            return
+          }
+          list.forEach((item) => {
+            item.isSelected = false
+            if (item.Id == this.courseId) {
+              item.isSelected = true
+            }
+          })
+          this.courseData = this.courseData.concat(list)
+          console.log(this.courseData)
+          this.loading = false
+          this.page += 1
+        }
       }
-      // backComment () {
-      //   this.commentBox = true
-      //   this.commentListBox = false
-      // },
-      // 课程评论列表
-      // async getCommentList () {
-      //   this.loading = true
-      //   let res = await GetCourseCommentList({ id: this.courseId, Page: this.page, Rows: 4 })
-      //   this.loading = false
-      //   let list = res.ListData || []
-      //   this.commentCount = res.Count
-      //   if (this.page == 1 && list.length == 0) {
-      //     this.noData = true
-      //     return
-      //   }
-      //   if (this.page > 1 && list.length == 0) {
-      //     this.noMoreData = true
-      //     return
-      //   }
-      //   this.commentList = this.commentList.concat(list)
-      //   this.page += 1
-      // }
     },
     beforeDestroy () {
       this.updateProgress()
@@ -408,35 +424,6 @@
         color: #333;
         font-size: 15px;
       }
-      .list{
-        width: 100%;
-        @extend %clearFix;
-        margin-top: toRem(30px);
-        ul{
-          li{ 
-              @extend %clearFix;
-              line-height: toRem(80px);
-              background: #f5f9ff;
-              margin-top: toRem(20px);
-              &.on{
-                color: #fff;
-              }
-              .label{
-                margin-left: toRem(20px);
-                float: left;
-                color: #4a608c;
-                @include ellipsis_two(1);
-              }
-              img{
-                float: right;
-                width: toRem(34px);
-                height: toRem(34px);
-                margin-top: toRem(23px);
-                margin-right: toRem(20px);
-              }
-          }
-        }
-      }
     }
     .course-brief{
       margin-top: toRem(50px);
@@ -491,7 +478,6 @@
           }
         }
       }
-      
     }
     .clb-popup{
       width: 100%;

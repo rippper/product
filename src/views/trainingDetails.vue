@@ -48,7 +48,7 @@
                         </li>
                         <li>
                             <div class="trdet_Tabel_Label">班级简介</div>
-                            <div class="trdet_Tabel_Content trdet_indent" v-text="ClassDesc">1982年9月，为总结党的十一届三中全会以后取得的成就和经验，全面开创社会主义现代化建设的新局面，党的十二大在北京召开。这次大会确定了全面开创社会主义现代化建设新局面的纲领。邓小平同志在致大会开幕词时，第一次提出了“建设有中国特色的社会主义”的崭新命题。</div>
+                            <div class="trdet_Tabel_Content trdet_indent" v-text="ClassDesc"></div>
                         </li>
                     </ul>
                 </div>

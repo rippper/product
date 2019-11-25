@@ -128,16 +128,16 @@
           <div class="con">
             <ul>
               <li>
-                <router-link to="/"><img src="../assets/book-icon.png" alt="图书">图书</router-link>
+                <router-link to="/eBook"><img src="../assets/book-icon.png" alt="图书">图书</router-link>
               </li>
               <li>
                 <router-link to="/"><img src="../assets/showRoom-icon.png" alt="展馆">展馆</router-link>
               </li>
               <li>
-                <router-link to="/"><img src="../assets/exam-icon.png" alt="考试">考试</router-link>
+                <router-link to="/examType"><img src="../assets/exam-icon.png" alt="考试">考试</router-link>
               </li>
               <li>
-                <router-link to="/"><img src="../assets/train-icon.png" alt="培训">培训</router-link>
+                <router-link to="/trainingCourse"><img src="../assets/train-icon.png" alt="培训">培训</router-link>
               </li>
             </ul>
           </div>
@@ -264,12 +264,12 @@
           <div class="hd">
              新闻动态
           </div>
-          <router-link to="/">更多 <img src="../assets/nc-arrow-right.png" alt=""></router-link>
+          <router-link to="/articletype">更多 <img src="../assets/nc-arrow-right.png" alt=""></router-link>
         </div>
         <div class="list">
           <ul>
             <li v-for="(item, index) in articleList" :key="item.ArticleId">
-              <router-link to="/">
+              <router-link :to="{ path: '/articledetail', query: { Id: item.ArticleId, from: 'home' } }">
                 <div class="text">
                   <div class="title">
                     <img src="../assets/news-first-icon.png" alt="" v-if="index == 0"> 
@@ -391,6 +391,7 @@
       this.getBookList2()
       this.getCourseList()
       this.getProductionInfoList1()
+      this.getProductionInfoList2()
       this.getArticleInfoList()
       setInterval(this.showMarquee, 5000)
     },
@@ -555,6 +556,19 @@
           this.proList1 = data.Data.List
         }
       },
+      // 学员风采 ProductionCategoryId: '9',
+      async getProductionInfoList2 () {
+        let data = await ProductionInfoList({
+          ProductionCategoryId: '9',
+          Page: '1',
+          Rows: '8',
+          Order: 'desc', 
+          Sort: 'Id'
+        })
+        if (data.IsSuccess) {
+          this.proList2 = data.Data.List
+        }
+      },
       // 新闻动态
       async getArticleInfoList () {
         let data = await GetArticleInfoList({
@@ -607,7 +621,7 @@
             a{
               float: left;
               color: #4374df;
-              font-size: 14px;
+              font-size:  14px;
               height: toRem(30px);
               line-height: toRem(30px);
               margin-left: toRem(10px)
@@ -1007,8 +1021,8 @@
         margin-top: toRem(40px);
         padding-left: toRem(15px);
         a{
-           width: toRem(60px);
-           display: block;
+           width: toRem(70px);
+           display: inline-block;
            font-size: 14px;
            color: #a9bcc7;
         }

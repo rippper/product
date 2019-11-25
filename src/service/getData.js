@@ -556,6 +556,81 @@ export const CheckUserPhone = (data) => fetch.post(Api.CheckUserPhone.url,
  */
 export const GetLoginVC = (data) => fetch.post(Api.GetLoginVC.url,
   { ...Api.GetLoginVC.data, ...data })
+  /**
+ * 学习圈火热动态列表DelUserAssist
+ */
+export const CircleArticleList = (data) => fetch.post(Api.CircleArticleList.url,
+  { ...Api.CircleArticleList.data, ...data })
+  /**
+ * 删除点赞
+ */
+export const DelUserAssist = (data) => fetch.post(Api.DelUserAssist.url,
+  { ...Api.DelUserAssist.data, ...data })
+  /**
+ * 获取学习圈评论列表
+ */
+export const CommentList = (data) => fetch.post(Api.CommentList.url,
+  { ...Api.CommentList.data, ...data })
+  /**
+ * 学习圈添加评论
+ */
+export const AddComment = (data) => fetch.post(Api.AddComment.url,
+  { ...Api.AddComment.data, ...data })
+  /**
+ * 学习圈活跃圈子
+ */
+export const CircleHotInfoList = (data) => fetch.post(Api.CircleHotInfoList.url,
+  { ...Api.CircleHotInfoList.data, ...data })
+    /**
+ * 上传文件
+ */
+export const UploadAttachment = (data, config) => fetch.postFormData(Api.UploadAttachment.url, data,
+  config)
+    /**
+ * 学习圈创建
+ */
+export const CircleCreate = (data) => fetch.post(Api.CircleCreate.url,
+  { ...Api.CircleCreate.data, ...data })
+    /**
+ * 学习圈文章发布
+ */
+export const CircleArticleCreate = (data) => fetch.post(Api.CircleArticleCreate.url,
+  { ...Api.CircleArticleCreate.data, ...data })
+    /**
+ * 学习圈详情
+ */
+export const CircleDetail = (data) => fetch.post(Api.CircleDetail.url,
+  { ...Api.CircleDetail.data, ...data })
+    /**
+ * 学习圈分类
+ */
+export const CircleTypeInfoList = (data) => fetch.post(Api.CircleTypeInfoList.url,
+  { ...Api.CircleTypeInfoList.data, ...data })
+    /**
+ * 学习圈列表
+ */
+export const CircleInfoList = (data) => fetch.post(Api.CircleInfoList.url,
+  { ...Api.CircleInfoList.data, ...data })
+  /**
+ * 添加点赞功能
+ */
+export const AddUserAssist = (data) => fetch.post(Api.AddUserAssist.url,
+  { ...Api.AddUserAssist.data, ...data })
+/*
+ * zyb考试列表 
+ */
+export const ExamList = (data) => fetch.post(Api.ExamList.url,
+  { ...Api.ExamList.data, ...data })
+/*
+ * zyb考试详情 
+ */
+export const GetExamInfo = (data) => fetch.post(Api.GetExamInfo.url,
+  { ...Api.GetExamInfo.data, ...data })
+/*
+ * zyb考试结果上传
+ */
+export const PostExam = (data) => fetch.post(Api.PostExam.url,
+  { ...Api.PostExam.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {
