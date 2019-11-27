@@ -182,6 +182,7 @@ export default {
 <style lang="scss">
 @import "../style/mixin";
 .trdet_Page{
+    height: 100vh;
     .trdet_Back{
         width: toRem(24px);
         height: toRem(42px);

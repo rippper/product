@@ -293,6 +293,13 @@ export default {
                 Exam_id: 54
             })
             console.log(msg)
+            if (msg.IsSuccess == false) {
+                MessageBox.confirm(msg.Message).then(action => {
+                    let len = history.length
+                    history.go(-(len - 1))
+                })
+                return false
+            }
             let topic = msg.Data.Type1Questions.concat(msg.Data.Type2Questions)
                 topic = topic.concat(msg.Data.Type3Questions)
             topic.forEach(item => {
@@ -377,13 +384,7 @@ export default {
                     return false
                 } 
                 if (!this.checkFlag) { // 成功显示结果
-                    // this.GET_EXAMID(this.EXAM_ID)
-                    // this.GET_EXAMRESULT(msg.Value) // 获取后端返回状态码
-                    // let textmsg = {
-                    //     EXAMID: this.examId,
-                    //     EXAMRESULT: this.examResultValue
-                    // }
-                    // this.$router.push({ path: '/examResult' })
+                    this.$router.push({ path: '/examResult', query: { } })
                     // 等待result页面完成后对接
                 } else { // 成功手动阅卷
                     MessageBox.alert('交卷成功,请等待阅卷').then(action => {
@@ -409,6 +410,7 @@ export default {
         position: relative;
         perspective:1000px;
         overflow: hidden;
+        height: 100vh;
         .examT_goBack{
             position: absolute;
             top: 50%;
@@ -421,7 +423,7 @@ export default {
         }
         .examT_BodyPart{
             display: flex;
-            height: 100%;
+            height: 100vh;
             flex-direction: column;
             background: #fff;
             .examT_BodyPart_banner{

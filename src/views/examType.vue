@@ -78,8 +78,7 @@ export default {
 <style lang="scss">
 @import "../style/mixin";
     .examType{
-        height: 100%;
-        padding-top: toRem(90px);
+        height: 100vh;
         display: flex;
         flex-direction: column;
         .exam_ToBack{
@@ -93,9 +92,9 @@ export default {
             background-size: 100%;
         }
         .exam_TitleBox{
-            height: toRem(208px);
-            background: url('../assets/exam_titlebackground.png') no-repeat 0 toRem(-92px);
-            background-size: 100% toRem(300px);
+            height: toRem(300px);
+            background: url('../assets/exam_titlebackground.png') no-repeat;
+            background-size: 100%;
         }
         .exam_TypeList{
             flex: 1;
