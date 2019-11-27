@@ -130,6 +130,10 @@
             commentInputState: {
               type: Boolean,
               default: false
+            },
+            typeName: {
+              type: String
+              // 用于记录添加评论接口AddComment调用时的type
             }
         },
         created () {
@@ -145,6 +149,7 @@
           }
         },
         methods: {
+          // 该页面以学习圈评论为模板 复用至其余页面
           backChange () {
             // 使用了手机的物理回退按键时 显示对圈子-详情一级评论的回复框
             this.commentF = true
@@ -153,8 +158,9 @@
             // eslint-disable-next-line 
             let mId = this.MainId ? this.MainId : this.circleCommentId // MainId存在对评论进行回复，否则对圈子回复
             let pId = this.ParentId ? this.ParentId : 0 // parentId为0代表1级评论 不为0 为对评论进行回复
+            let tName = this.typeName
             let res = await AddComment({
-              Type: 'CircleArticle',
+              Type: tName,
               Content: this.commentText,
               ParentId: pId,
               MainId: mId
@@ -359,7 +365,7 @@
           .btn{
             color: #4a608c;
             font-size: 16px;
-            margin-left: toRem(30px);
+            margin-left: toRem(15px);
             margin-top: toRem(20px);
           }
         }

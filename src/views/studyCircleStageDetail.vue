@@ -76,6 +76,7 @@
                 :get-comment-box-list="getCommentBoxList"
                 :open-detail="openDetail"
                 :comment-input-state="commentInputState"
+                :typeName="typeName"
                 @emitstate="emitstate"
                 >
             </circle-comment-box>
@@ -125,7 +126,9 @@
                 circleCommentId: null,
                 commentBox: false,
                 TypeId: null,
-                id: ''
+                id: '',
+                boxArr: null,
+                typeName: 'CircleArticle'
             }
         },
         created () {
@@ -184,7 +187,7 @@
                   item.AssistCount += 1
                   item.IsAssist = 1
               }
-          },
+            },
             // 删除点赞
             async deleteAssist (item) {
                 let data = await DelUserAssist({
@@ -197,71 +200,71 @@
                 }
             },
             showCommentBox (item) {
-            let body = document.querySelector('body')
-            body.addEventListener('click', this.catchHandle, false) 
-            this.commentBox = true
-            body.style.overflow = 'hidden'
-            body.style.height = '100vh'
-            this.boxArr = item
-            this.circleCommentId = item.Id
-            // console.log(this.circleCommentId)
-            this.getCommentBoxList()
-          },
-          catchHandle () {
-            this.commentInputState = true
-          },
-          closeBox () {
-            let body = document.querySelector('body')
-            this.commentBox = false
-            this.boxArr = {}
-            body.style.overflow = 'auto'
-            body.style.height = 'auto'
-            body.removeEventListener('click', this.catchHandle, false)
-          },
-          emitstate (val) {
-            this.commentInputState = val
-          },
-          // 获取评论列表
-          async getCommentBoxList () {
-            if (!this.boxArr.Id) {
-              return
-            }
-            Indicator.open()
-            this.loading2 = true
-              let data = await CommentList({
-                  MainId: this.boxArr.Id,
-                  Type: 'CircleArticle',
-                  ParentId: 0,
-                  Sort: 'Id',
-                  Order: 'desc',
-                  Page: this.boxArr.page,
-                  Rows: 5
-              })
-              this.loading2 = false
-              Indicator.close()
-              if (data.IsSuccess) {
-                  this.circleCommentList = data.Data.List
-                  this.commentCount = this.circleCommentList.length
-              }
-          },
-          backComment () {
-            this.commentListDetail = false
-            this.showCommentBox(this.boxArr)
-          },
-          openDetail (val) {
-            this.closeBox()
-            this.commentDetailpid = val.Id
-            this.commentListDetail = true
-            let body = document.querySelector('body')
-            body.removeEventListener('click', this.catchHandle, false)
-            this.$nextTick(() => {
-              this.circleCommentList.forEach((item) => {
-                if (item.Id == this.commentDetailpid) {
-                  this.commentDetailList = item.List
+                let body = document.querySelector('body')
+                body.addEventListener('click', this.catchHandle, false) 
+                this.commentBox = true
+                body.style.overflow = 'hidden'
+                body.style.height = '100vh'
+                this.boxArr = item
+                this.circleCommentId = item.Id
+                // console.log(this.circleCommentId)
+                this.getCommentBoxList()
+            },
+            catchHandle () {
+                this.commentInputState = true
+            },
+            closeBox () {
+                let body = document.querySelector('body')
+                this.commentBox = false
+                this.boxArr = {}
+                body.style.overflow = 'auto'
+                body.style.height = 'auto'
+                body.removeEventListener('click', this.catchHandle, false)
+            },
+            emitstate (val) {
+                this.commentInputState = val
+            },
+            // 获取评论列表
+            async getCommentBoxList () {
+                if (!this.boxArr.Id) {
+                return
                 }
-              })
-            })
-          }
+                Indicator.open()
+                this.loading = true
+                let data = await CommentList({
+                    MainId: this.boxArr.Id,
+                    Type: 'CircleArticle',
+                    ParentId: 0,
+                    Sort: 'Id',
+                    Order: 'desc',
+                    Page: this.boxArr.page,
+                    Rows: 5
+                })
+                this.loading = false
+                Indicator.close()
+                if (data.IsSuccess) {
+                    this.circleCommentList = data.Data.List
+                    this.commentCount = data.Data.TotalCount
+                }
+            },
+            backComment () {
+                this.commentListDetail = false
+                this.showCommentBox(this.boxArr)
+            },
+            openDetail (val) {
+                this.closeBox()
+                this.commentDetailpid = val.Id
+                this.commentListDetail = true
+                let body = document.querySelector('body')
+                body.removeEventListener('click', this.catchHandle, false)
+                this.$nextTick(() => {
+                this.circleCommentList.forEach((item) => {
+                    if (item.Id == this.commentDetailpid) {
+                    this.commentDetailList = item.List
+                    }
+                })
+                })
+            }
         },
         watch: {
 

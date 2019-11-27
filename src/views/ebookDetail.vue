@@ -8,7 +8,7 @@
       <header-fix :title="bookName" fixed v-if="showConfig">
         <div slot="left" class="backEbook" @click.stop="toChapter({path:'ebook'})">
           <i class="webapp webapp-left"></i>
-          <span>返回书架</span>
+          <!-- <span>返回书架</span> -->
         </div>
       </header-fix>
     </transition>
@@ -22,19 +22,33 @@
     </div>
     <transition name="fade">
       <div v-if="showStyleSetting" class="style_setting">
-        <div class="font_setting">
-          <em>字号</em>
-          <span class="font_large" @click.stop="changeFontSize(0.1)">大</span>
-          <span class="font_small" @click.stop="changeFontSize(-0.1)">小</span>
-          <span class="default" @click.stop="defaultFontSize">默认</span>
+        <div class="light_setting">
+          <img src="../assets/sun-icon1.png" alt="">
+          <div class="wind_range">
+            <mt-range 
+              v-model="rangeValue" 
+              :barHeight="4" 
+              class="range"
+              :min="0"
+              :max="100"
+              @change="changeEvent()"
+            ></mt-range>
+          </div>
+          
+          <img src="../assets/sun-icon1.png" alt="">
         </div>
-        <div class="bg_setting clearFix">
-          <span>背景</span>
-          <span class="bg_1" @click.stop="changeBgColor('#f6eee3')"></span>
-          <span class="bg_2" @click.stop="changeBgColor('#e5dfc5')"></span>
-          <span class="bg_3" @click.stop="changeBgColor('#a4a4a4')"></span>
-          <span class="bg_4" @click.stop="changeBgColor('#ccf1d0')"></span>
-          <span class="bg_5" @click.stop="changeBgColor('#0e150e')"></span>
+        <div class="font-bg">
+          <div class="font_setting">
+            <span class="font_small" @click.stop="changeFontSize(-0.1)">A-</span>
+            <span class="font_large" @click.stop="changeFontSize(0.1)">A+</span>
+          </div>
+          <div class="bg_setting clearFix">
+            <span>背景:</span>
+            <span class="bg_1" @click.stop="changeBgColor('#d7d2bd')"></span>
+            <span class="bg_2" @click.stop="changeBgColor('#dccbcb')"></span>
+            <span class="bg_3" @click.stop="changeBgColor('#e0ebfc')"></span>
+            <span class="bg_4" @click.stop="changeBgColor('#edf4e8')"></span>
+          </div>
         </div>
       </div>
     </transition>
@@ -43,26 +57,31 @@
         <mt-tabbar fixed>
           <mt-tab-item id="ebookChapterList"
                        @click.native="toChapter({path:'ebookChapterList',query:{id:detailData.BookContentId}})">
-            <i slot="icon" class="webapp webapp-category"></i>
-            目录
+            <p><img src="../assets/category-icon.png" alt=""></p>
+            <p>目录</p>
           </mt-tab-item>
           <mt-tab-item id="setting" @click.native.stop="toggleStyleSetting">
-            <i slot="icon" class="webapp webapp-set"></i>
-            设置
+            <p><img src="../assets/set-icon2.png" alt=""></p>
+            <p>设置</p>
           </mt-tab-item>
           <mt-tab-item id="night" @click.native.stop="toggleNight">
-            <i v-if="isNight" slot="icon" class="webapp webapp-sun"></i>
-            <i v-if="!isNight" slot="icon" class="webapp webapp-moon"></i>
-            {{isNight ? '白天' : '夜间'}}
+            <!-- <i  slot="icon" class="webapp webapp-sun"></i> -->
+            <p v-if="isNight"><img src="../assets/sun-icon2.png" alt="" ></p>
+            <p v-if="!isNight"><img src="../assets/moon.png" alt="" ></p> 
+            <!-- <i v-if="!isNight" slot="icon" class="webapp webapp-moon"></i> -->
+            <p>{{isNight ? '白天' : '夜间'}}</p>
           </mt-tab-item>
         </mt-tabbar>
       </div>
     </transition>
+    <div class="ebookMod" @click.stop="toggleShowConfig">
+
+    </div>
   </div>
 </template>
 <script>
   import Vue from 'vue'
-  import { Toast, Button, Tabbar, TabItem } from 'mint-ui'
+  import { Toast, Button, Tabbar, TabItem, Range } from 'mint-ui'
   import { headerFix } from '../components'
   import { GetBookChapterContent } from '../service/getData'
   import { setStore, getStore } from '../plugins/utils'
@@ -71,6 +90,7 @@
   Vue.component(Button.name, Button)
   Vue.component(Tabbar.name, Tabbar)
   Vue.component(TabItem.name, TabItem)
+  Vue.component(Range.name, Range)
   export default {
     mixins: [goBack],
     data () {
@@ -85,7 +105,8 @@
         fontSize: 0.5, // 字体大小
         bgColor: '#fff', // 切换背景
         nextId: '',
-        nextIndex: ''
+        nextIndex: '',
+        rangeValue: 0
       }
     },
     components: {
@@ -98,6 +119,7 @@
         this.isNight = ebookConfig.isNight
         this.fontSize = ebookConfig.fontSize
         this.bgColor = ebookConfig.bgColor
+        this.rangeValue = ebookConfig.rangeValue
       }
       this.bookName = getStore('bookName') || ''
       this.detailId = this.$route.query.id || ''
@@ -106,6 +128,9 @@
     mounted () {
       window.scrollTo(0, 0)
       this.getChapterContent()
+      let ebookMod = document.querySelector('.ebookMod')
+      let opNum = 0.1 + (0.9 * this.rangeValue / 100)
+      ebookMod.style.background = 'rgba(0,0,0,' + `${opNum}` + ')' 
     },
     methods: {
       // 图书章节
@@ -161,9 +186,13 @@
         let config = {
           fontSize: this.fontSize,
           isNight: this.isNight,
-          bgColor: this.bgColor
+          bgColor: this.bgColor,
+          rangeValue: this.rangeValue
         }
         setStore('ebookConfig', config)
+      },
+      changeEvent () {
+          // console.log(this.rangeValue)
       },
       /* 下一章 */
       nextChapter () {
@@ -179,6 +208,7 @@
         this.$router.replace({ path: '/ebookDetail', query: { id: this.nextId, index: this.nextIndex } })
         window.location.reload()
       }
+      
     },
     watch: {
       fontSize: function (val) {
@@ -186,6 +216,13 @@
       },
       bgColor: function (val) {
         this.storeConfig()
+      },
+      rangeValue: function (val) {
+        this.storeConfig()
+        let ebookMod = document.querySelector('.ebookMod')
+        let opNum = 1 - (0.1 + (0.9 * val / 100)) 
+        // console.log(opNum)
+        ebookMod.style.background = 'rgba(0,0,0,' + `${opNum}` + ')'
       }
     }
 
@@ -199,10 +236,15 @@
     height: 100vh;
 
     .header {
-      background-color: rgba(0, 0, 0, 0.82);
-
+      z-index: 25;
+      background-color:#4a608c;
+      color: #fff;
       .webapp-left {
         font-size: 16px;
+        color: #fff;
+      }
+      .header_title{
+        color: #fff;
       }
     }
 
@@ -239,12 +281,15 @@
     }
 
     .ebook_config {
+
       .webapp {
         color: $color-text-reverse;
       }
 
       .mint-tabbar {
-        background-color: rgba(0, 0, 0, 0.82);
+        // background-color: rgba(0, 0, 0, 0.82);
+        background-color: #4a608c; 
+        z-index: 30;
       }
 
       .mint-tabbar > .mint-tab-item.is-selected {
@@ -254,6 +299,39 @@
 
       .mint-tab-item {
         padding: toRem(14px) 0;
+        p{
+          height: toRem(44px);
+          margin-bottom: toRem(10px);
+          img{
+            vertical-align: bottom;
+          }
+        }
+        &:nth-child(1){
+          p{
+            img{
+              width: toRem(38px);
+              height: toRem(44px);
+            }
+          }
+        }
+        &:nth-child(2){
+          p{
+            img{
+              width: toRem(47px);
+              height: toRem(30px);
+              margin-top: toRem(7px);
+            }
+          }
+        }
+        &:nth-child(3){
+          p{
+            img{
+              width: toRem(35px);
+              height: toRem(36px);
+              margin-top: toRem(4px);
+            }
+          }
+        }
       }
 
       .mint-tab-item-icon {
@@ -263,7 +341,7 @@
       }
 
       .mint-tab-item-label {
-        font-size: 12px;
+        font-size: 15px;
         color: $color-text-reverse;
       }
     }
@@ -274,31 +352,65 @@
 
     .style_setting {
       position: fixed;
-      bottom: toRem(104px);
+      bottom: toRem(136px);
       width: 100vw;
       left: 0;
-      background: rgba(0, 0, 0, 0.82);
+      background: #4a608c;
       color: $color-text-reverse;
-
+      z-index: 25;
+      .light_setting{
+        padding:toRem(30px);
+        display: flex;
+        justify-content: space-between;
+        img{
+          width: toRem(28px);
+          height: toRem(28px);
+        }
+        .range{
+          width: toRem(560px);
+          height: toRem(24px);
+          .mt-range-content{
+            margin-right: toRem(24px);
+          }
+          .mt-range-thumb{
+            width: toRem(24px);
+            height: toRem(24px);
+          }
+          .mt-range-runway{
+            border-top-color: #3f5277;
+            margin-right: toRem(-24px);
+          }
+          .mt-range-progress{
+            background: #0196ff;
+          }
+        }
+      }
+      .font-bg{
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: toRem(30px);
+        margin: 0 toRem(30px);
+        border-bottom: 1px solid #6e80a3;
+      }
       .font_setting {
-        padding: toRem(15px) 0 toRem(15px) toRem(15px);
-        border-bottom: 1px solid #444;
+        padding: toRem(15px) 0 toRem(15px) 0;
         font-size: 14px;
-
         span {
           display: inline-block;
-          width: toRem(180px);
-          @include ht-lineHt(60px);
+          width: toRem(96px);
+          @include ht-lineHt(46px);
           text-align: center;
           border: 1px solid #fff;
-          border-radius: toRem(60px);
-          margin: 0 toRem(15px);
+          border-radius: toRem(10px);
+          &:nth-child(1){
+            margin-right: toRem(30px);
+          }
         }
       }
 
       .bg_setting {
-        padding: toRem(15px) 0 toRem(15px) toRem(15px);
-        border-bottom: 1px solid #444;
+        // padding: toRem(15px) 0 toRem(15px) toRem(15px);
+        // 
         font-size: 14px;
         line-height: toRem(75px);
 
@@ -310,8 +422,9 @@
           float: left;
           @include square(75px);
           line-height: toRem(75px);
-          margin: 0 toRem(20px);
+          margin-right: toRem(18px);
           border-radius: 50%;
+          font-size: 13px;
         }
 
         .bg_1 {
@@ -334,6 +447,14 @@
           background: #0e150e;
         }
       }
+    }
+    .ebookMod{
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      z-index:20;
+      top: 0;
+      left: 0;
     }
   }
 </style>

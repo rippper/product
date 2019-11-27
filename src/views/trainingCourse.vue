@@ -237,6 +237,7 @@ export default {
   .trainCour {
         background:#f2f7ff;
         box-sizing: border-box;
+        height: 100vh;
         .train_back{
             width: toRem(24px);
             height: toRem(42px);

@@ -223,11 +223,6 @@ export default {
     url: API_URL + Platform + '/UpdateTrainingStudentup',
     data: { Id: '' }
   },
-  // 电子书
-  GetBookInfoList: {
-    url: API_URL + Platform + '/GetBookInfoList',
-    data: { Keyword: '', BookTypeId: '', BookTypeCode: '', Page: '1', Rows: '10' }
-  },
   // 电子书章节
   GetBookChapterInfoList: {
     url: API_URL + Platform + '/GetBookChapterInfoList',
@@ -478,6 +473,21 @@ export default {
     url: API_URL + Book + '/BookList',
     data: {}
   },
+  // 电子书页面频道列表
+  BookCategory: {
+    url: API_URL + Book + '/BookCategory',
+    data: {}
+  },
+  // 电子书章节列表
+  BookChapterList: {
+    url: API_URL + Book + '/BookChapterList',
+    data: {}
+  },
+  // 电子书内容
+  BookContent: {
+    url: API_URL + Book + '/BookContent',
+    data: {}
+  },
   // 课程列表
   CourseList: {
     url: API_URL + Course + '/CourseList',
@@ -522,6 +532,10 @@ export default {
   },
   FavoriteDelete: { // zyb删除添加 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
     url: API_URL + wechatUser + '/FavoriteDelete',
+    data: {}
+  },
+  FavoriteExist: { // zyb查看是否收藏 课程:Course,文章:Article,通知:Notice,电子书:Book,电子书章节:BookChapter,网上展厅:Production
+    url: API_URL + wechatUser + '/FavoriteExist',
     data: {}
   },
   GetAllGroupList: {

@@ -118,11 +118,11 @@
     background-size: toRem(30px);
 
     &.small {
-      width: toRem(24px);
-      height: toRem(24px);
-      line-height: toRem(24px);
-      background-size: toRem(24px);
-      margin: 0 toRem(6px);
+      width: toRem(17px);
+      height: toRem(17px);
+      line-height: toRem(17px);
+      background-size: toRem(17px);
+      margin: 0 toRem(3px);
     }
   }
 

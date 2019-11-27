@@ -107,11 +107,12 @@ function checkCode (res) {
 
 export default {
   post (url, data) {
+    data = qs.stringify(data) || {}
     return axios({
       method: 'post',
       url,
-      data: qs.stringify(data)
-    }).then(
+      data
+    }).then( 
       (response) => {
         return checkStatus(response)
       }
@@ -122,8 +123,8 @@ export default {
     ).catch(
       (err) => {
         console.log(err)
-        Indicator.close()
-        Toast({ message: '服务器异常', position: 'bottom' })
+        // loading.close()
+      // Message('服务器异常')
       }
     )
   },

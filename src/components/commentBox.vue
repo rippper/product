@@ -5,8 +5,8 @@
           <p class="close" @click.stop="closeBox()"><img src="../assets/cancel.png" alt=""></p>
         </div>
           <section v-infinite-scroll="getCommentList"
-               infinite-scroll-immediate-check="immediate"
-               infinite-scroll-disabled="loading"
+               infinite-scroll-immediate-check="immediate2"
+               infinite-scroll-disabled="loading2"
                infinite-scroll-distance="10">
               <div class="cb-con">
                 <ul>
@@ -55,8 +55,8 @@
               page: 1,
               commentList: [],
               commentCount: '',
-              immediate: false,
-              loading: false
+              immediate2: false,
+              loading2: false
             }
         },
         props: {
@@ -91,9 +91,9 @@
           },
           // 课程评论列表
           async getCommentList () {
-            this.loading = true
+            this.loading2 = true
             let res = await GetCourseCommentList({ id: this.courseId, Page: this.page })
-            this.loading = false
+            this.loading2 = false
             let list = res.ListData || []
             this.commentCount = res.Count
             this.$emit('counts', this.commentCount)
@@ -226,7 +226,7 @@
           .btn{
             color: #4a608c;
             font-size: 16px;
-            margin-left: toRem(30px);
+            margin-left: toRem(15px)!important;
             margin-top: toRem(20px);
           }
         }

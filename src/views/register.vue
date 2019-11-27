@@ -182,8 +182,6 @@
           Toast(toastInfo('姓名不能为空'))
         } else if (!this.infoSend.GroupId) {
           Toast(toastInfo('请选择所在区镇'))
-        } else if (this.isPassIdCard == false) {
-          Toast(toastInfo('请输入有效身份证号码'))
         } else if (this.isPassMobile == false) {
           Toast(toastInfo('手机号格式不正确'))
         } else if (this.isPassEmail == false) {
@@ -195,6 +193,9 @@
         } else {
            this.userRegister()
         }
+        // else if (this.isPassIdCard == false) {
+        //   Toast(toastInfo('请输入有效身份证号码'))
+        // } 
       }
     },
     watch: {
@@ -258,6 +259,9 @@
 
     .account_field, .idcard_field {
       margin-top: toRem(20px);
+      .mint-cell-text:after{
+        content: ''!important
+      }
     }
 
     .mint-cell {

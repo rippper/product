@@ -487,6 +487,21 @@ export const NoticeList = (data) => fetch.post(Api.NoticeList.url,
 export const BookList = (data) => fetch.post(Api.BookList.url,
   { ...Api.BookList.data, ...data })
 /**
+ *  电子书分类列表
+ */
+export const BookCategory = (data) => fetch.post(Api.BookCategory.url,
+  { ...Api.BookCategory.data, ...data })
+/**
+ * 电子书章节列表
+ */
+export const BookChapterList = (data) => fetch.post(Api.BookChapterList.url,
+  { ...Api.BookChapterList.data, ...data })
+/**
+ * 电子书内容
+ */
+export const BookContent = (data) => fetch.post(Api.BookContent.url,
+  { ...Api.BookContent.data, ...data })
+/**
  * 课程列表
  */
 export const CourseList = (data) => fetch.post(Api.CourseList.url,
@@ -536,6 +551,11 @@ export const FavoriteAdd = (data) => fetch.post(Api.FavoriteAdd.url,
  */
 export const FavoriteDelete = (data) => fetch.post(Api.FavoriteDelete.url,
   { ...Api.FavoriteDelete.data, ...data })
+/**
+ * zyb查看是否收藏
+ */
+export const FavoriteExist = (data) => fetch.post(Api.FavoriteExist.url,
+  { ...Api.FavoriteExist.data, ...data })
 /**
  * 注册获取城镇列表
  */

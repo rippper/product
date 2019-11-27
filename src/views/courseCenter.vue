@@ -195,7 +195,6 @@
         this.getCourseList()
       },
       channelId (val) {
-        console.log(val)
         this.page = 1
         this.noMoreData = false
         this.noData = false
