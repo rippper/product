@@ -33,6 +33,10 @@
       }
     },
     created () { 
+      if (this.$route.token) {
+        localStorage.setItem('ASPXAUTH', this.$route.token)
+        localStorage.setItem('source', this.$route.source)
+      }
     },
     mounted () {
       let userInfo = getStore('userInfo')

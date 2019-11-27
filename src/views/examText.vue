@@ -92,6 +92,7 @@ export default {
     name: 'examText',
     data () {
         return {
+            ExamId: this.$route.query.Id,
             Ticket: '',
             topicList: [],
             timeLimit: '',
@@ -290,7 +291,7 @@ export default {
         },
         async render () { // 初始页面渲染
             let msg = await GetExamInfo({
-                Exam_id: 54
+                Exam_id: this.ExamId
             })
             console.log(msg)
             if (msg.IsSuccess == false) {

@@ -138,11 +138,12 @@ export default {
         goBack () {
             this.$router.push({ path: '/examtype' })
         },
-        linkTo () {
-
+        linkTo () { // 修改点击给出窗口提示原因
+            this.$router.push({ path: '/examText', query: { Id: this.BeChooseID } })
         },
         closeDescription () {
             this.descriptionType = false
+            this.BeChooseID = 0
             this.BeChooseN = '--'
             this.BeChooseD = '无'
             this.BeChooseT = '无'
