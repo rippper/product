@@ -48,6 +48,8 @@ export default {
     name: 'examResult',
     data () {
         return {
+            Value: this.$route.Value,
+            ExamId: this.$route.Id,
             score: 50,
             spendTime: '6:00',
             passScore: 130,

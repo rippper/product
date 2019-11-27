@@ -385,7 +385,7 @@ export default {
                     return false
                 } 
                 if (!this.checkFlag) { // 成功显示结果
-                    this.$router.push({ path: '/examResult', query: { } })
+                    this.$router.push({ path: '/examResult', query: { 'Id': this.ExamId, 'result': msg.Value } })
                     // 等待result页面完成后对接
                 } else { // 成功手动阅卷
                     MessageBox.alert('交卷成功,请等待阅卷').then(action => {

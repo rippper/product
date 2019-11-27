@@ -260,10 +260,8 @@ export default {
             transform: translate(-50%,-50%);
         }
         .train_bodydepartment{
-            display: flex;
             height: 100vh;
             flex-direction: column;
-            justify-content: space-between;
             .train_SelectDepart{
                 box-sizing: border-box;
                 background: #fff;

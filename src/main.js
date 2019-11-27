@@ -7,7 +7,7 @@ import './assets/iconfont/iconfont.css'
 import { getWXUrl, setStore, userAgent, changeTitle } from './plugins/utils'
 import { isAllowWeiXin } from './service/config'
 import routes from './router'
-import { CheckLoginStatus } from './service/getData'
+import { CheckLoginStatus, GetUserInfo } from './service/getData'
 import store from './store/'
 import './style/base.scss'
 import 'swiper/dist/css/swiper.css'
@@ -60,15 +60,47 @@ const router = new VueRouter({
 })
 router.beforeEach((to, from, next) => {
   /* 判断mobile weixin */
-  setStore('userAgent', agent)
-  store.dispatch('getUserAgent')
-  let fromUrl = from.fullPath
-  let href = window.location.href
-  if (!/\/favicon\.ico/.test(href)) {
-    setStore('fromUrl', fromUrl)
+  let token = getParamer('token')
+  let source = getParamer('source')
+
+  if (token) {
+    localStorage.setItem('ASPXAUTH', token)
+    setStore('source', source)
   }
-  let title = to.meta.title
-  changeTitle(title)
+  function getParamer (paramer) {
+    var url = window.location.href.split('?')[1] 
+    console.log(url)
+    if (url) {                                
+      let urlParamArry = url.split('&')               
+      for (var i = 0; i < urlParamArry.length; i++) {
+        var paramerName = urlParamArry[i].split('=')
+        if (paramer == paramerName[0]) {   
+            console.log(111)                  
+            return paramerName[1]                    
+        }
+      }
+    } else {
+        return false
+    }
+  }
+  if (token) {
+    GetUserInfo({}).then((active) => {
+      console.log(active)
+      store.dispatch('saveUserInfo', active.Data)
+      setStore('userInfo', active.Data)
+    })
+  } else {
+    setStore('userAgent', agent)
+    store.dispatch('getUserAgent')
+    let fromUrl = from.fullPath
+    let href = window.location.href
+    if (!/\/favicon\.ico/.test(href)) {
+      setStore('fromUrl', fromUrl)
+    }
+    let title = to.meta.title
+    changeTitle(title)
+  }
+  
   if (!to.meta.isSkip) {
     if (to.meta.bindApp && to.query.token) {
       /* myEval民主测评页面需要在app中的webview显示，所以需要token，
