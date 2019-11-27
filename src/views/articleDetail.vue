@@ -123,9 +123,8 @@ export default {
 <style lang="scss">
 @import "../style/mixin";
     .articleDetail{
-        height: 100%;
+        height: 100vh;
         background: #fff;
-        overflow: auto;
         .arti_Back{
             width: toRem(24px);
             height: toRem(42px);

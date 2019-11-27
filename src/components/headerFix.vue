@@ -2,12 +2,12 @@
 * header组件
 */
 <template>
-  <header class="header" :class="{ 'is-fixed': fixed, 'have-background': backType, 'style-blueandwrite':theStyle }">
+  <header class="header" :class="{ 'is-fixed': fixed, 'have-background': backType, 'style-blueandwrite':theStyle, 'is-absolute': absolute }">
     <div class="header_left">
       <slot name="left"></slot>
     </div>
     <slot name="title">
-      <h1 class="header_title" v-text="title"></h1>
+      <h1 class="header_title" v-text="title" :class="{ 'writeWords': theStyle }"></h1>
     </slot>
     <div class="header_right">
       <slot name="right"></slot>
@@ -21,7 +21,8 @@
       title: String,
       fixed: Boolean,
       backType: Boolean,
-      theStyle: Boolean
+      theStyle: Boolean,
+      absolute: Boolean
     }
   }
 </script>
@@ -55,10 +56,16 @@
     }
 
     &.style-blueandwrite {
-      background: url('../assets/exam_titlebackground.png');
-      background-size: 100% toRem(300px);
-      color: #fff;
+      background-color: rgba(255,255,255,0);
       border-bottom: none;
+    }
+
+    &.is-absolute{
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      right: 0;
     }
 
     .header_left {
@@ -75,6 +82,11 @@
       @extend %ellipsis;
       color: #333;
       font-size: 16px;
+    }
+
+    .writeWords{
+      color: #fff;
+      font-size: 20px;
     }
 
     .header_right {

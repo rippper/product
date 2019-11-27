@@ -2,7 +2,7 @@
  * 培训班检索页面 
  */
 <template>
-    <div class="trainCour">
+    <div class="trainCour" ref="trainCour">
         <headerFix title="培训班" :fixed="true">
             <i class="train_back" slot="left"></i>
             <i class="train_searchdepart" slot="right" @click="ToSearch"></i>
@@ -67,7 +67,7 @@ export default {
             allMessage: '',
             schoolId: 0,
             courseType: 0,
-            Rows: 5,
+            Rows: 7,
             currentPage: 1
         }
     },
@@ -82,14 +82,16 @@ export default {
     methods: {
         windowsChange () {
             return (() => {
-                this.screenWidth = window.screen.width
-                this.screenHeight = window.screen.height
+                console.log(window.screen.availHeight)
+                this.screenWidth = window.innerWidth + 'px'
+                this.screenHeight = window.innerHeight + 'px'
+                console.log(this.screenHeight)
             })()
         },
         cauclate () {
             let topBox = parseFloat(window.getComputedStyle(this.$refs.titlepart).height) + parseFloat(window.getComputedStyle(this.$refs.titlepart).padding) + parseFloat(window.getComputedStyle(this.$refs.titlepart).marginBottom)
             topBox = Math.ceil(topBox) + 4
-            let all = window.screen.height
+            let all = window.innerHeight + 'px'
             this.$refs.itempart.style.height = parseFloat(all) - topBox + 'px'
         },
         filtration (Arr) {
@@ -236,7 +238,7 @@ export default {
   @import "../style/mixin";
   .trainCour {
         background:#f2f7ff;
-        box-sizing: border-box;
+        height: 100vh;
         .train_back{
             width: toRem(24px);
             height: toRem(42px);
@@ -258,7 +260,10 @@ export default {
             transform: translate(-50%,-50%);
         }
         .train_bodydepartment{
+            display: flex;
+            height: 100vh;
             flex-direction: column;
+            justify-content: space-between;
             .train_SelectDepart{
                 box-sizing: border-box;
                 background: #fff;

@@ -64,7 +64,6 @@
             <div class="artic_LoadForMore" v-text="TheLoader">
             </div>
         </div>
-        
     </div>
 </template>
 
@@ -250,6 +249,7 @@ export default {
 <style lang="scss">
 @import "../style/mixin";
     .articleType{
+        height: 100vh;
         position: relative;
         .artic_Header{
             width: 100%;
