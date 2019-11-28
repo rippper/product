@@ -4,7 +4,7 @@
 <template>
     <div class="trainCour" ref="trainCour">
         <headerFix title="培训班" :fixed="true">
-            <i class="train_back" slot="left"></i>
+            <i class="train_back" slot="left" @clic="goBack"></i>
             <i class="train_searchdepart" slot="right" @click="ToSearch"></i>
         </headerFix>
         <div class="train_bodydepartment">
@@ -93,6 +93,12 @@ export default {
             topBox = Math.ceil(topBox) + 4
             let all = window.innerHeight + 'px'
             this.$refs.itempart.style.height = parseFloat(all) - topBox + 'px'
+        },
+        goBack () {
+            let source = JSON.parse(localStorage.getItem('source'))
+            if (source == 'iOS') {
+                window.webkit.messageHandlers.uploadPersonImage.postMessage({body: 'goodsId=1212'})
+            }
         },
         filtration (Arr) {
             Arr.forEach((item, index) => {
@@ -260,7 +266,6 @@ export default {
             transform: translate(-50%,-50%);
         }
         .train_bodydepartment{
-            height: 100vh;
             flex-direction: column;
             .train_SelectDepart{
                 box-sizing: border-box;

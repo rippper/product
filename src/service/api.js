@@ -558,6 +558,10 @@ export default {
     url: API_URL + wechatExam + '/PostExam',
     data: {}
   },
+  GetExamReviewInfo: { // zyb考试结果获取
+    url: API_URL + wechatExam + '/GetExamReviewInfo',
+    data: {}
+  },
   CircleArticleList: { // 学习圈热门动态
     url: API_URL + wechatcircle + '/CircleArticleList',
     data: {}

@@ -2,7 +2,7 @@
     <div class="examTitleList_background">
         <div class="examTitleList" :class="{ 'examTitleList_action' : descriptionType }">
             <div class="exam_testList">
-                <header-fix :fixed="true" :title="title">
+                <header-fix :absolute="true" :title="title">
                     <i class="exam_back" slot="left" @click="goBack()"></i>
                     <i class="exam_search" slot="right"></i>
                 </header-fix>
@@ -246,7 +246,6 @@ export default {
     }
     .examTitleList{
         width: 100%;
-        height: 100vh;
         position: relative;
         transition: 0.5s;
         transform-style: preserve-3d;

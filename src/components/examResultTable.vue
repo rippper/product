@@ -3,7 +3,7 @@
         <p class="examResult_topType"><span class="examResult_typeBox"></span><span v-text="topicName" class="examResult_typewords"></span></p>
         <div class="examResult_topicList">
             <ul>
-                <li v-for="(item, index) in topicList" :key="index" :class="{ 'is-corrent': item.topicResult == true, 'is-worry': item.topicResult == false }" v-text="item.topicIndex"></li>
+                <li v-for="(item, index) in topicList" :key="index" :class="{ 'is-corrent': item.topicResult == 1, 'is-worry': item.topicResult == 2, 'not-result': item.topicResult == 3 }" v-text="item.topicIndex"></li>
             </ul>
         </div>
     </div>
@@ -14,50 +14,11 @@ export default {
     name: 'examResultTable',
     data () {
         return {
-            topicName: '单选题',
-            topicList: [
-                {
-                    topicIndex: 1,
-                    topicResult: true
-                },
-                {
-                    topicIndex: 2,
-                    topicResult: false
-                },
-                {
-                    topicIndex: 3,
-                    topicResult: false
-                },
-                {
-                    topicIndex: 4,
-                    topicResult: true
-                },
-                {
-                    topicIndex: 5,
-                    topicResult: true
-                },
-                {
-                    topicIndex: 6,
-                    topicResult: true
-                },
-                {
-                    topicIndex: 7,
-                    topicResult: false
-                },
-                {
-                    topicIndex: 8,
-                    topicResult: false
-                },
-                {
-                    topicIndex: 9,
-                    topicResult: true
-                },
-                {
-                    topicIndex: 10,
-                    topicResult: true
-                }
-            ]
         }
+    },
+    props: {
+        topicName: String,
+        topicList: Array
     }
 }
 </script>
@@ -78,6 +39,15 @@ export default {
                 background: linear-gradient(to right, #f7c24f, #f1a42a);
                 border-radius: toRem(3px);
             }
+            .colorbox-red{
+                background: linear-gradient(to right, #f7c24f, #f1a42a);
+            }
+            .colorbox-yellow{
+                background: linear-gradient(to right, #f7c24f, #f1a42a);
+            }
+            .colorbox-blue{
+                background: linear-gradient(to right, #f7c24f, #f1a42a);
+            }
         }
         .examResult_topicList{
             ul{
@@ -96,6 +66,10 @@ export default {
                 }
                 .is-worry{
                     background: url('../assets/exam-resultcross.png') no-repeat;
+                    background-size: 100%;
+                }
+                .not-result{
+                    background: url('../assets/exam-noresult.png') no-repeat;
                     background-size: 100%;
                 }
             }

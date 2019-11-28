@@ -1,6 +1,6 @@
 <template>
     <div class="examText" ref="examText">
-        <header-fix :backType="true" :fixed="true">
+        <header-fix :backType="true" :absolute="true">
             <i class="examT_goBack" slot="left"></i>
         </header-fix>
         <div class="examT_BodyPart">

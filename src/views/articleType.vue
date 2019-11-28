@@ -87,7 +87,7 @@ export default {
             articleData: [],
             TheLoader: '加载中',
             differType: false,
-            Rows: 10,
+            Rows: 9,
             currentPage: 1,
             allCount: 0
         }

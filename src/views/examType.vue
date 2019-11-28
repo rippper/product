@@ -1,6 +1,6 @@
 <template>
     <div class="examType" ref="examType">
-        <header-fix :fixed="true" :theStyle="true">
+        <header-fix :absolute="true" :theStyle="true">
             <i class="exam_ToBack" slot="left"></i>
         </header-fix>
         <div class="exam_TitleBox"></div>
@@ -81,6 +81,7 @@ export default {
         height: 100vh;
         display: flex;
         flex-direction: column;
+        position: relative;
         .exam_ToBack{
             position: absolute;
             top: 50%;

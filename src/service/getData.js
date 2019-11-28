@@ -651,6 +651,11 @@ export const GetExamInfo = (data) => fetch.post(Api.GetExamInfo.url,
  */
 export const PostExam = (data) => fetch.post(Api.PostExam.url,
   { ...Api.PostExam.data, ...data })
+/*
+ * zyb考试结果获取 
+ */
+export const GetExamReviewInfo = (data) => fetch.post(Api.GetExamReviewInfo.url,
+  { ...Api.GetExamReviewInfo.data, ...data })
 /* 将所有的API封装起来 */
 const allApi = {}
 for (let key in Api) {

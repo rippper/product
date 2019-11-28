@@ -69,7 +69,6 @@ router.beforeEach((to, from, next) => {
   }
   function getParamer (paramer) {
     var url = window.location.href.split('?')[1] 
-    console.log(url)
     if (url) {                                
       let urlParamArry = url.split('&')               
       for (var i = 0; i < urlParamArry.length; i++) {
@@ -83,9 +82,9 @@ router.beforeEach((to, from, next) => {
         return false
     }
   }
+  console.log(token)
   if (token) {
     GetUserInfo({}).then((active) => {
-      console.log(active)
       store.dispatch('saveUserInfo', active.Data)
       setStore('userInfo', active.Data)
     })
@@ -110,6 +109,7 @@ router.beforeEach((to, from, next) => {
       store.dispatch('getUserInformation', {})
       next()
     } else if (JSON.stringify(store.state.userInfo) === '{}') {
+      console.log('tokenTip', token)
       if (agent.weixin && isAllowWeiXin) {
         window.location.href = getWXUrl('#/login')
       } else {

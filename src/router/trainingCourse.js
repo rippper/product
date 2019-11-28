@@ -9,18 +9,18 @@ export default [
         name: 'trainingcourse',
         path: '/trainingcourse',
         component: TrainingCourse,
-        meta: { title: '培训班', isSkip: true }
+        meta: { title: '培训班' }
     },
     {
         name: 'trainingdetails',
         path: '/trainingdetails',
         component: TrainingDetails,
-        meta: { title: '培训班详情', isSkip: true }
+        meta: { title: '培训班详情' }
     },
     {
         name: 'trainingsearch',
         path: '/trainingsearch',
         component: TrainingSearch,
-        meta: { title: '培训班搜索', isSkip: true }
+        meta: { title: '培训班搜索' }
     }
 ]

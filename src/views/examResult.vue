@@ -26,9 +26,9 @@
                 </div>
             </div>
             <div class="exam_result_list">
-                <exam-result-table></exam-result-table>
-                <exam-result-table></exam-result-table>
-                <exam-result-table></exam-result-table>
+                <exam-result-table :topicList="singleResult" :topicName="'单选题'"></exam-result-table>
+                <exam-result-table :topicList="moreResult" :topicName="'多选题'"></exam-result-table>
+                <exam-result-table :topicList="writeResult" :topicName="'简答题'"></exam-result-table>
             </div>
         </div>
         <div class="exam_result_selectbotton">
@@ -44,20 +44,61 @@
 
 <script>
 import { headerFix, examResultTable } from '../components'
+import { GetExamReviewInfo } from '../service/getData'
 export default {
     name: 'examResult',
     data () {
         return {
-            Value: this.$route.Value,
-            ExamId: this.$route.Id,
-            score: 50,
-            spendTime: '6:00',
-            passScore: 130,
-            chanse: 5
+            Value: this.$route.query.result,
+            ExamId: this.$route.query.Id,
+            score: 0,
+            spendTime: '0:00',
+            passScore: 0,
+            chanse: '--',
+            singleResult: [],
+            moreResult: [],
+            writeResult: []
         }
     },
+    mounted () {
+        this.render()
+    },
     methods: {
-
+        async render () {
+            let msg = await GetExamReviewInfo({
+                Exam_id: this.ExamId,
+                ExamDetailId: this.Value
+            })
+            let min = Math.floor(msg.Data.UserExamDetail.Time / 60)
+            let sec = msg.Data.UserExamDetail.Time % 60
+            this.score = msg.Data.UserExamDetail.Score
+            this.passScore = msg.Data.Exam.PassingScore
+            this.spendTime = min + ':' + sec
+            msg.Data.Type1Questions.forEach((item, index) => {
+                item.topicIndex = index + 1
+                if (item.UserScore != 0) { // 通过给出分数判断题目的对错
+                    item.topicResult = 1
+                } else {
+                    item.topicResult = 2
+                }
+            })
+            this.singleResult = msg.Data.Type1Questions
+            msg.Data.Type2Questions.forEach((item, index) => {
+                item.topicIndex = index + 1
+                if (item.UserScore != 0) { // 通过给出分数判断题目的对错
+                    item.topicResult = 1
+                } else {
+                    item.topicResult = 2
+                }
+            })
+            this.moreResult = msg.Data.Type2Questions
+            msg.Data.Type3Questions.forEach((item, index) => {
+                item.topicIndex = index + 1
+                item.topicResult = 3
+            })
+            this.writeResult = msg.Data.Type3Questions
+            console.log(msg)
+        }
     },
     components: {
         headerFix,
