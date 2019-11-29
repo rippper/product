@@ -106,6 +106,9 @@ export default {
     },
     methods: {
         linkToCourse () {
+            console.log('linkToCourse')
+            
+            // window.webkit.messageHandlers.goBack.postMessage({ vcId: 'vcId=1212' })
             this.$router.push({ path: '/trainingcourse' })
         },
         scrollThing () {

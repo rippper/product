@@ -1,38 +1,6 @@
 <template>
     <div class="examTitleList_background">
         <div class="examTitleList" :class="{ 'examTitleList_action' : descriptionType }">
-            <div class="exam_testList">
-                <header-fix :absolute="true" :title="title">
-                    <i class="exam_back" slot="left" @click="goBack()"></i>
-                    <i class="exam_search" slot="right"></i>
-                </header-fix>
-                <div 
-                    class="exam_TitleList_TheList"
-                    v-infinite-scroll="downMore"
-                    infinite-scroll-disabled="loading"
-                    infinite-scroll-distance="10"
-                    ref="exam_TitleList_TheList"
-                >
-                    <ul>
-                        <li v-for="(item, index) in TestList" :key="index">
-                            <div class="exam_ListIndex" v-text="item.IndexNum"></div>
-                            <div class="exam_ListInfor">
-                                <p v-text="item.Name"></p>
-                                <div>
-                                    <span class="exam_ClockIcon"></span>
-                                    <span v-text="item.StartTime"></span> ~ <span v-text="item.EndTime"></span>
-                                </div>
-                            </div>
-                            <div class="exam_ListButton">
-                                <div class="exam_ListBotton_button" @click="openDescription(index)">
-                                    开始考试
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="exam_LoadMsg" v-text="loadMsg"></div>
-                </div>
-            </div>
             <div class="exam_description">
                 <header-fix :absolute="true" :title="title" :theStyle="true">
                     <i class="exam_detail_goback" slot="left" @click="closeDescription"></i>
@@ -81,6 +49,37 @@
                     <div class="button_reject" v-show="BeChooseButtonType == false">开始考试</div>
                 </div>
             </div>
+            <div class="exam_testList">
+                <header-fix :absolute="true" :title="title">
+                    <i class="exam_back" slot="left" @click="goBack()"></i>
+                    <i class="exam_search" slot="right" @click="checkinfor()"></i>
+                </header-fix>
+                <div class="exam_textListInfor"
+                    v-infinite-scroll="downMore"
+                    infinite-scroll-disabled="loading"
+                    infinite-scroll-distance="10"
+                    ref="exam_TitleList_TheList"
+                >
+                    <ul>
+                        <li v-for="(item, index) in TestList" :key="index">
+                            <div class="exam_ListIndex" v-text="item.IndexNum"></div>
+                            <div class="exam_ListInfor">
+                                <p v-text="item.Name"></p>
+                                <div>
+                                    <span class="exam_ClockIcon"></span>
+                                    <span v-text="item.StartTime"></span> ~ <span v-text="item.EndTime"></span>
+                                </div>
+                            </div>
+                            <div class="exam_ListButton">
+                                <div class="exam_ListBotton_button" @click="openDescription(index)">
+                                    开始考试
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="exam_LoadMsg" v-text="loadMsg"></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -118,23 +117,9 @@ export default {
         }
     },
     mounted () {
-        this.Calculate()
         this.render()
-        window.addEventListener('resize', this.windowsChange)
-    },
-    beforeDestroy () {
-        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
-        windowsChange () {
-            return (() => {
-                this.screenWidth = window.screen.width
-                this.screenHeight = window.screen.height
-            })()
-        },
-        Calculate () {
-            this.$refs.exam_TitleList_TheList.style.height = window.screen.height + 'px'
-        },
         goBack () {
             this.$router.push({ path: '/examtype' })
         },
@@ -151,6 +136,9 @@ export default {
             this.BeChooseF = '0'
             this.BeChooseS = '0'
             this.BeChooseTL = '- -'
+        },
+        checkinfor () {
+            alert('hello!')
         },
         async openDescription (Index) {
             this.descriptionType = true
@@ -225,14 +213,6 @@ export default {
             }
         }
     },
-    watch: {
-        screenWidth (val) {
-            this.Calculate()
-        },
-        screenHeight (val) {
-            this.Calculate()
-        }
-    },
     components: {
         headerFix
     }
@@ -243,9 +223,11 @@ export default {
   @import "../style/mixin";
     .examTitleList_background{
         perspective: 1000px;
+        height:100vh;
     }
     .examTitleList{
         width: 100%;
+        height: 100vh;
         position: relative;
         transition: 0.5s;
         transform-style: preserve-3d;
@@ -271,253 +253,260 @@ export default {
         }
         .exam_testList{
             width: 100%;
+            height: 100vh;
             position: absolute;
             top: 0;
             left: 0;
             transition: 0.5s;
             transform: translateZ(1px);
-        }
-        .exam_testList_action{
-            transform: rotateY(180deg);
-        }
-        .exam_TitleList_TheList{
-            padding-top: toRem(92px);
-            background: #fff;
-            overflow: auto;
-            ul{
-                padding: 0 toRem(15px);
-                li{
-                    padding: toRem(20px) 0;
-                    border-bottom: toRem(1px) solid #d1d1d1;
-                    display: flex;
-                    .exam_ListIndex{
-                        padding-top: toRem(3px);
-                        margin-right: toRem(20px);
-                        font-size: toRem(30px);
-                        color: #4374df;
-                        font-weight: bold;
-                    }
-                    .exam_ListInfor{
-                        flex: 1;
+            .exam_textListInfor{
+                position: relative;
+                width: 100%;
+                height: 100vh;
+                background: #fff;
+                overflow: auto;
+                & > ul{
+                    padding: 0 toRem(15px);
+                    padding-top: toRem(92px);
+                    li{
+                        padding: toRem(20px) 0;
+                        border-bottom: toRem(1px) solid #d1d1d1;
                         display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
-                        height: toRem(128px);
-                        font-size: toRem(30px);
-                        width: toRem(460px);
-                    }
-                    .exam_ListButton{
-                        width: toRem(208px);
-                        text-align: center;
-                        &:before{
-                            content: '';
-                            display: inline-block;
-                            vertical-align: middle;
-                            height: 100%;
-                        }
-                        .exam_ListBotton_button{
-                            height: toRem(80px);
-                            line-height: toRem(80px);
-                            padding: 0 toRem(25px);
-                            border-radius: toRem(80px);
-                            display: inline-block;
+                        .exam_ListIndex{
+                            padding-top: toRem(3px);
+                            margin-right: toRem(20px);
                             font-size: toRem(30px);
-                            color: #fff;
-                            background: #4374df;
+                            color: #4374df;
+                            font-weight: bold;
+                        }
+                        .exam_ListInfor{
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            height: toRem(128px);
+                            font-size: toRem(30px);
+                            width: toRem(460px);
+                        }
+                        .exam_ListButton{
+                            width: toRem(208px);
+                            text-align: center;
+                            &:before{
+                                content: '';
+                                display: inline-block;
+                                vertical-align: middle;
+                                height: 100%;
+                            }
+                            .exam_ListBotton_button{
+                                height: toRem(80px);
+                                line-height: toRem(80px);
+                                padding: 0 toRem(25px);
+                                border-radius: toRem(80px);
+                                display: inline-block;
+                                font-size: toRem(30px);
+                                color: #fff;
+                                background: #4374df;
+                            }
                         }
                     }
                 }
             }
             .exam_LoadMsg{
                 height: toRem(90px);
+                background: #fff;
                 line-height: toRem(90px);
                 font-size: toRem(28px);
                 text-align: center;
             }
         }
-        .exam_description{
-            width: 100%;
-            height: 100vh;
-            background: #5383eb;
+    }
+    .exam_testList_action{
+        transform: rotateY(180deg);
+    }   
+
+    .exam_description{
+        width: 100%;
+        height: inherit;
+        background: #5383eb;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translateZ(-1px) rotateY(180deg);
+        .exam_detail_goback{
+            width: toRem(24px);
+            height: toRem(42px);
+            background:url('../assets/arti-rebackblank.png');
+            background-size: 100%;
             position: absolute;
-            top: 0;
-            left: 0;
-            transform: translateZ(-1px) rotateY(180deg);
-            .exam_detail_goback{
-                width: toRem(24px);
-                height: toRem(42px);
-                background:url('../assets/arti-rebackblank.png');
-                background-size: 100%;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%,-50%);
-            }
-            .exam_description_name{
-                text-align: center;
-                color: #fff;
-                font-size: toRem(35px);
-                margin-top: toRem(150px);
-            }
-            .exam_dp_msgbox{
-                perspective: 500px;
-                width: 100%;
-                margin-top: toRem(80px);
-                .exam_dp_background{
-                    transform-style: preserve-3d;
-                    position:relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .exam_description_name{
+            text-align: center;
+            color: #fff;
+            font-size: toRem(35px);
+            margin-top: toRem(150px);
+        }
+        .exam_dp_msgbox{
+            perspective: 500px;
+            width: 100%;
+            margin-top: toRem(80px);
+            .exam_dp_background{
+                transform-style: preserve-3d;
+                position:relative;
+                width: toRem(630px);
+                height: toRem(820px);
+                margin: 0 auto;
+                background: rgba(255,255,255,0.5);
+                border-radius: toRem(10px);
+                .exam_bg_deep{
                     width:toRem(630px);
                     height: toRem(820px);
-                    margin: 0 auto;
-                    background: rgba(255,255,255,0.5);
+                    background: rgba(255,255,255,0.2);
                     border-radius: toRem(10px);
-                    .exam_bg_deep{
-                        width:toRem(630px);
-                        height: toRem(820px);
-                        background: rgba(255,255,255,0.2);
-                        border-radius: toRem(10px);
-                        transform: translateZ(toRem(-50px)) translateY(toRem(-40px));
+                    transform: translateZ(toRem(-50px)) translateY(toRem(-40px));
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+                .exam_bg_light{
+                    width:toRem(630px);
+                    height: toRem(820px);
+                    background: rgba(255,255,255,1);
+                    border-radius: toRem(10px);
+                    padding-top: toRem(76px);
+                    transform: translateZ(toRem(50px)) translateY(toRem(40px));
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    &:before{
+                        content: '';
                         position: absolute;
-                        top: 0;
-                        left: 0;
+                        top: toRem(-85px);
+                        right: 0;
+                        width: toRem(73px);
+                        height: toRem(156px);
+                        background: url('../assets/exam_woman.png');
+                        background-size: 100%;
                     }
-                    .exam_bg_light{
-                        width:toRem(630px);
-                        height: toRem(820px);
-                        background: rgba(255,255,255,1);
-                        border-radius: toRem(10px);
-                        padding-top: toRem(76px);
-                        transform: translateZ(toRem(50px)) translateY(toRem(40px));
+                    &:after{
+                        content: '';
                         position: absolute;
-                        top: 0;
-                        left: 0;
-                        &:before{
-                            content: '';
-                            position: absolute;
-                            top: toRem(-85px);
-                            right: 0;
-                            width: toRem(73px);
-                            height: toRem(156px);
-                            background: url('../assets/exam_woman.png');
-                            background-size: 100%;
+                        top: 50%;
+                        left: toRem(50px);
+                        width: 0;
+                        height: toRem(630px);
+                        border: toRem(1px) solid #b1b1b1;
+                        margin-top: toRem(-315px);
+                    }
+                    .exam_descript{
+                        height: toRem(240px);
+                        .exam_dp_content{
+                            margin-left: toRem(96px);
+                            width: toRem(490px);
                         }
-                        &:after{
-                            content: '';
-                            position: absolute;
-                            top: 50%;
-                            left: toRem(50px);
-                            width: 0;
-                            height: toRem(630px);
-                            border: toRem(1px) solid #b1b1b1;
-                            margin-top: toRem(-315px);
+                    }
+                    .exam_time{
+                        height: toRem(180px);
+                        .exam_dp_content{
+                            margin-left: toRem(96px);
+                            width: toRem(490px);
                         }
-                        .exam_descript{
-                            height: toRem(240px);
-                            .exam_dp_content{
-                                margin-left: toRem(96px);
-                                width: toRem(490px);
-                            }
-                        }
-                        .exam_time{
-                            height: toRem(180px);
-                            .exam_dp_content{
-                                margin-left: toRem(96px);
-                                width: toRem(490px);
-                            }
-                        }
-                        .exam_other{
-                            height: toRem(300px);
-                            ul{
-                                margin-left: toRem(96px);
-                                width: toRem(490px);
-                                display: flex;
-                                justify-content: space-between;
-                                li{
-                                    width: 33%;
-                                    text-align: center;
-                                    .exam_dp_msg{
-                                        height: toRem(70px);
-                                        line-height: toRem(70px);
-                                        font-size: toRem(35px);
-                                        font-weight: bold;
-                                        position: relative;
-                                        .exam_dp_time{
-                                            width: toRem(130px);
-                                            height: toRem(40px);
-                                            line-height: toRem(40px);
-                                            padding: 0 toRem(15px);
-                                            margin:auto;
-                                            background: #d1022c;
-                                            font-size: toRem(16px);
-                                            color: #fff;
-                                            border-radius: toRem(40px);
-                                            position: absolute;
-                                            top:0;
-                                            right:0;
-                                            bottom:0;
-                                            left:0;
-                                            
-                                        }
+                    }
+                    .exam_other{
+                        height: toRem(300px);
+                        ul{
+                            margin-left: toRem(96px);
+                            width: toRem(490px);
+                            display: flex;
+                            justify-content: space-between;
+                            li{
+                                width: 33%;
+                                text-align: center;
+                                .exam_dp_msg{
+                                    height: toRem(70px);
+                                    line-height: toRem(70px);
+                                    font-size: toRem(35px);
+                                    font-weight: bold;
+                                    position: relative;
+                                    .exam_dp_time{
+                                        width: toRem(130px);
+                                        height: toRem(40px);
+                                        line-height: toRem(40px);
+                                        padding: 0 toRem(15px);
+                                        margin:auto;
+                                        background: #d1022c;
+                                        font-size: toRem(16px);
+                                        color: #fff;
+                                        border-radius: toRem(40px);
+                                        position: absolute;
+                                        top:0;
+                                        right:0;
+                                        bottom:0;
+                                        left:0;
+                                        
                                     }
                                 }
                             }
                         }
-                        .exam_dp_title{
-                            position: relative;
-                            font-size: toRem(34px);
-                            font-weight: bold;
-                            padding-left: toRem(41px);
-                            margin-bottom: toRem(20px);
-                            z-index: 1;
-                            .exam_colorbox_yellow{
-                                display: inline-block;
-                                width: toRem(20px);
-                                height: toRem(20px);
-                                background: linear-gradient(to right,#f7c051,#f1a127);
-                                margin-right: toRem(35px);
-                            }
-                            .exam_colorbox_green{
-                                display: inline-block;
-                                width: toRem(20px);
-                                height: toRem(20px);
-                                background: linear-gradient(to right,#74e074,#41c64d);
-                                margin-right: toRem(35px);
-                            }
-                            .exam_colorbox_blue{
-                                display: inline-block;
-                                width: toRem(20px);
-                                height: toRem(20px);
-                                background: linear-gradient(to right,#6aaaf6,#317df1);
-                                margin-right: toRem(35px);
-                            }
+                    }
+                    .exam_dp_title{
+                        position: relative;
+                        font-size: toRem(34px);
+                        font-weight: bold;
+                        padding-left: toRem(41px);
+                        margin-bottom: toRem(20px);
+                        z-index: 1;
+                        .exam_colorbox_yellow{
+                            display: inline-block;
+                            width: toRem(20px);
+                            height: toRem(20px);
+                            background: linear-gradient(to right,#f7c051,#f1a127);
+                            margin-right: toRem(35px);
+                        }
+                        .exam_colorbox_green{
+                            display: inline-block;
+                            width: toRem(20px);
+                            height: toRem(20px);
+                            background: linear-gradient(to right,#74e074,#41c64d);
+                            margin-right: toRem(35px);
+                        }
+                        .exam_colorbox_blue{
+                            display: inline-block;
+                            width: toRem(20px);
+                            height: toRem(20px);
+                            background: linear-gradient(to right,#6aaaf6,#317df1);
+                            margin-right: toRem(35px);
                         }
                     }
                 }
             }
-            .exam_button_tostart{
-                margin-top: toRem(100px);
-                .button_action{
-                    text-align:center;
-                    width: toRem(240px);
-                    height: toRem(72px);
-                    line-height: toRem(72px);
-                    margin: 0 auto;
-                    border-radius: toRem(5px);
-                    background: linear-gradient(to right, #49c6f5, #0da3f6);
-                    color:#fff;
-                }
-                .button_reject{
-                    text-align:center;
-                    width: toRem(240px);
-                    height: toRem(72px);
-                    line-height: toRem(72px);
-                    margin: 0 auto;
-                    background: #888;
-                    color:#fff;
-                }
+        }
+        .exam_button_tostart{
+            margin-top: toRem(100px);
+            .button_action{
+                text-align:center;
+                width: toRem(240px);
+                height: toRem(72px);
+                line-height: toRem(72px);
+                margin: 0 auto;
+                border-radius: toRem(5px);
+                background: linear-gradient(to right, #49c6f5, #0da3f6);
+                color:#fff;
+            }
+            .button_reject{
+                text-align:center;
+                width: toRem(240px);
+                height: toRem(72px);
+                line-height: toRem(72px);
+                margin: 0 auto;
+                background: #888;
+                color:#fff;
             }
         }
     }
+    
     .examTitleList_action{
         transform: rotateY(180deg);
         transform-origin: center; 

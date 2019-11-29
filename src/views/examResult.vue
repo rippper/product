@@ -71,6 +71,7 @@ export default {
             })
             let min = Math.floor(msg.Data.UserExamDetail.Time / 60)
             let sec = msg.Data.UserExamDetail.Time % 60
+            sec < 10 ? sec = '0' + sec : sec
             this.score = msg.Data.UserExamDetail.Score
             this.passScore = msg.Data.Exam.PassingScore
             this.spendTime = min + ':' + sec

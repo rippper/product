@@ -1,9 +1,10 @@
 <template>
     <div class="examType" ref="examType">
-        <header-fix :absolute="true" :theStyle="true">
-            <i class="exam_ToBack" slot="left"></i>
-        </header-fix>
-        <div class="exam_TitleBox"></div>
+        <div class="exam_TitleBox">
+            <header-fix :absolute="true" :theStyle="true">
+                <i class="exam_ToBack" slot="left"></i>
+            </header-fix>
+        </div>
         <div class="exam_TypeList">
             <ul>
                 <li v-for="(item, index) in typeList" :key="index" @click="linkTo(index)">
@@ -78,9 +79,6 @@ export default {
 <style lang="scss">
 @import "../style/mixin";
     .examType{
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
         position: relative;
         .exam_ToBack{
             position: absolute;
@@ -93,15 +91,18 @@ export default {
             background-size: 100%;
         }
         .exam_TitleBox{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: toRem(300px);
             background: url('../assets/exam_titlebackground.png') no-repeat;
             background-size: 100%;
+            z-index: 5;
         }
         .exam_TypeList{
             flex: 1;
-            overflow: auto;
-            padding: toRem(30px) 0;
-
+            padding: toRem(310px) 0;
             background: #fff;
             ul{
                 li{

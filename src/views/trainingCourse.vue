@@ -3,12 +3,13 @@
  */
 <template>
     <div class="trainCour" ref="trainCour">
-        <headerFix title="培训班" :fixed="true">
-            <i class="train_back" slot="left" @clic="goBack"></i>
-            <i class="train_searchdepart" slot="right" @click="ToSearch"></i>
-        </headerFix>
+        
         <div class="train_bodydepartment">
             <!-- 头部检索列表 -->
+            <headerFix title="培训班">
+                <i class="train_back" slot="left" @click="goBack"></i>
+                <i class="train_searchdepart" slot="right" @click="ToSearch"></i>
+            </headerFix>
             <div class="train_SelectDepart" ref="titlepart">
                     <transPlaceSelect
                         v-for="(item, index) in selectType"
@@ -19,21 +20,20 @@
                     >
                     </transPlaceSelect>
             </div>
-            <!-- 培训班列表 -->
-            <div class="train_CourseDepart" ref="itempart">
-                <ul 
-                    class="train_selectitem"
-                    v-infinite-scroll="downmore"
-                    infinite-scroll-disabled="loading"
-                    infinite-scroll-distance="10"
-                >
-                    <li v-for="(item, index) in courseInfor" :key="index" @click="linkto(item.Id)">
-                        <trainingCourseItem :courseInfor="courseInfor[index]" @renderFnc="getTrainClass"></trainingCourseItem>
-                    </li>
-                </ul>
-                <div class="train_LoadMore" v-text="loadMore"></div>
-            </div>
         </div>
+        <!-- 培训班列表 -->
+        <!-- <div class="train_CourseDepart" ref="itempart"> -->
+            <ul 
+                v-infinite-scroll="downmore"
+                infinite-scroll-disabled="loading"
+                infinite-scroll-distance="10"
+            >
+                <li v-for="(item, index) in courseInfor" :key="index" @click="linkto(item.Id)">
+                    <trainingCourseItem :courseInfor="courseInfor[index]" @renderFnc="getTrainClass"></trainingCourseItem>
+                </li>
+            </ul>
+            <div class="train_LoadMore" v-text="loadMore"></div>
+        <!-- </div> -->
     </div>
 </template>
 
@@ -72,33 +72,26 @@ export default {
         }
     },
     mounted () {
-        this.cauclate()
+        // this.cauclate()
         this.getTrainClass()
-        window.addEventListener('resize', this.windowsChange)
-    },
-    beforeDestroy () {
-        window.removeEventListener('resize', this.windowsChange)
     },
     methods: {
-        windowsChange () {
-            return (() => {
-                console.log(window.screen.availHeight)
-                this.screenWidth = window.innerWidth + 'px'
-                this.screenHeight = window.innerHeight + 'px'
-                console.log(this.screenHeight)
-            })()
-        },
-        cauclate () {
-            let topBox = parseFloat(window.getComputedStyle(this.$refs.titlepart).height) + parseFloat(window.getComputedStyle(this.$refs.titlepart).padding) + parseFloat(window.getComputedStyle(this.$refs.titlepart).marginBottom)
-            topBox = Math.ceil(topBox) + 4
-            let all = window.innerHeight + 'px'
-            this.$refs.itempart.style.height = parseFloat(all) - topBox + 'px'
-        },
+        // cauclate () {
+        //     let topBox = parseFloat(window.getComputedStyle(this.$refs.titlepart).height) + parseFloat(window.getComputedStyle(this.$refs.titlepart).padding) + parseFloat(window.getComputedStyle(this.$refs.titlepart).marginBottom)
+        //     topBox = Math.ceil(topBox) + 4
+        //     let all = window.screen.height + 'px'
+        //     // let all = window.innerHeight + 'px'
+        //     this.$refs.itempart.style.height = parseFloat(all) - topBox + 'px'
+        // },
         goBack () {
             let source = JSON.parse(localStorage.getItem('source'))
             if (source == 'iOS') {
-                window.webkit.messageHandlers.uploadPersonImage.postMessage({body: 'goodsId=1212'})
+                console.log('goback')
+                window.webkit.messageHandlers.goBack.postMessage({ vcId: 'vcId=1212' })
+            } else {
+                this.$router.push({ path: '/' })
             }
+            console.log('nosource')
         },
         filtration (Arr) {
             Arr.forEach((item, index) => {
@@ -224,14 +217,6 @@ export default {
             } 
         }
     },
-    watch: {
-        screenHeight (value) {
-            this.cauclate()
-        },
-        screenWidth (value) {
-            this.cauclate()
-        }
-    },
     components: {
         headerFix,
         transPlaceSelect,
@@ -243,8 +228,16 @@ export default {
 <style lang="scss">
   @import "../style/mixin";
   .trainCour {
-        background:#f2f7ff;
-        height: 100vh;
+        width: 100%;
+        max-height: 100vh;
+        overflow: auto;
+        background: #fff;
+        padding-bottom: toRem(50px);
+        box-sizing: border-box;
+        position: relative;
+        & > ul{
+            padding-top: toRem(380px);
+        }
         .train_back{
             width: toRem(24px);
             height: toRem(42px);
@@ -266,25 +259,21 @@ export default {
             transform: translate(-50%,-50%);
         }
         .train_bodydepartment{
-            flex-direction: column;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
             .train_SelectDepart{
-                box-sizing: border-box;
                 background: #fff;
-                padding-top: toRem(98px);
                 padding-bottom: toRem(20px);
                 margin-bottom: toRem(20px);
             }
-            .train_CourseDepart{
-                overflow: auto;
-                background: #fff;
-                padding-top: toRem(42px);
-                padding-bottom: toRem(50px);
-            }
-            .train_LoadMore{
-                text-align: center;
-                font-size: toRem(25px);
-                height: toRem(10px);
-            }
+
+        }
+        .train_LoadMore{
+            text-align: center;
+            font-size: toRem(25px);
+            height: toRem(10px);
         }
       
   }

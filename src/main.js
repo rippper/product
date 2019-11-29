@@ -82,7 +82,6 @@ router.beforeEach((to, from, next) => {
         return false
     }
   }
-  console.log(token)
   if (token) {
     GetUserInfo({}).then((active) => {
       store.dispatch('saveUserInfo', active.Data)
@@ -109,11 +108,13 @@ router.beforeEach((to, from, next) => {
       store.dispatch('getUserInformation', {})
       next()
     } else if (JSON.stringify(store.state.userInfo) === '{}') {
-      console.log('tokenTip', token)
-      if (agent.weixin && isAllowWeiXin) {
-        window.location.href = getWXUrl('#/login')
-      } else {
-        next({ path: '/login' })
+      if (!token) {
+        console.log('tokenTip', token)
+        if (agent.weixin && isAllowWeiXin) {
+          window.location.href = getWXUrl('#/login')
+        } else {
+          next({ path: '/login' })
+        }
       }
     }
   }

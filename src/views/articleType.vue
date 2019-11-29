@@ -259,9 +259,6 @@ export default {
             color: #fff;
             display: flex;
             padding: 0 toRem(20px);
-            position: fixed;
-            top: 0;
-            left: 0;
             z-index: 10;
             .artic_LeftPart{
                 flex: 1;
@@ -301,7 +298,6 @@ export default {
         }
         .artic_Body{
             height: toRem(250px);
-            padding-top: toRem(92px);
             background: #4071da;
             display: flex;
             .artic_SelectName{
