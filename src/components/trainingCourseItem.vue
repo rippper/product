@@ -33,10 +33,8 @@
                 <span class="train_Applyer_ApplyPeople" v-text="courseInfor.UserLimit - courseInfor.CurrentUser"></span>/<span v-text="courseInfor.UserLimit"></span>
             </div>
             <div class="train_Applyer_buttonGroup">
-                <div class="train_Applyer_rejuect" v-if="courseInfor.buttonState.Type == 0" v-text="courseInfor.buttonState.Value">
-                </div>
-                <div class="train_Applyer_accept" v-else-if="courseInfor.buttonState.Type == 1" v-text="courseInfor.buttonState.Value" @click.stop="forApply()">
-                </div>
+                <div class="train_Applyer_rejuect" v-if="courseInfor.buttonState.Type == 0" v-text="courseInfor.buttonState.Value"></div>
+                <div class="train_Applyer_accept" v-else-if="courseInfor.buttonState.Type == 1" @click.stop="forApply()" v-text="courseInfor.buttonState.Value"></div>
             </div>
         </div>
     </div>
@@ -102,12 +100,14 @@ export default {
                 display: inline-block;
                 width: toRem(90px);
                 height: toRem(38px);
-                line-height: toRem(38px);
                 text-align: center;
                 border-radius: toRem(5px);
                 margin-right: toRem(15px);
                 font-size: toRem(18px);
                 color: #fff;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
             }
             .train_labelAndName_LabelGray{
                 background: #b1b1b1;
@@ -157,9 +157,9 @@ export default {
         }
         .train_CourseItem_Applyer{
             height: toRem(136px);
-            line-height: toRem(130px);
             display: flex;
             justify-content: space-between;
+            align-items: center;
             .train_Applyer_Shower{
                 font-size: toRem(28px);
                 margin-right: toRem(5px);
@@ -170,13 +170,13 @@ export default {
                 color: #d1022c;
             }
             .train_Applyer_rejuect, .train_Applyer_accept{
-                display: inline-block;
+                display: flex;
                 width: toRem(150px);
                 height: toRem(52px);
-                line-height: toRem(52px);
-                text-align: center;
                 color: #fff;
                 border-radius: toRem(52px);
+                justify-content: space-around;
+                align-items: center;
             }
             .train_Applyer_buttonGroup{
                 vertical-align: middle

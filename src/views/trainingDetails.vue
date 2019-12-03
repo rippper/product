@@ -223,11 +223,13 @@ export default {
                 {
                     width: toRem(90px);
                     height: toRem(44px);
-                    line-height: toRem(44px);
                     text-align: center;
                     color:#fff;
                     border-radius: 3px;
                     margin-left: toRem(15px);
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
                 }
                 .trdet_CourseName_TitleLabelGrey{
                     background: #b1b1b1;
@@ -252,10 +254,11 @@ export default {
                         .trdet_Tabel_Label{
                             width: toRem(160px);
                             height: toRem(80px);
-                            line-height: toRem(80px);
                             color: #a9bcc7;
                             font-size: toRem(28px);
                             margin-right: toRem(75px);
+                            display: flex;
+                            align-items: center;
                         }
                         .trdet_Tabel_Content{
                             width:100%;
@@ -264,11 +267,14 @@ export default {
                             border-bottom: toRem(1px) solid #efefef;
                         }
                         .trdet_EXone{
-                            line-height: toRem(80px);
+                            display: flex;
+                            align-items: center;
                         }
                         .trdet_indent{
                             text-indent: 2em;
-                            line-height: toRem(50px);
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: center;
                             padding-top: toRem(15px);
                             text-align: justify;
                             text-justify: inter-ideograph;
@@ -288,9 +294,10 @@ export default {
         .trdet_MsgDepart_PeopleNum{
             width: 50%;
             height: toRem(98px);
-            line-height: toRem(98px);
-            text-align: center;
             background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             .trdet_PeopleNum_HaveApply{
                 font-size: toRem(40px);
                 font-weight: 600;
@@ -302,11 +309,13 @@ export default {
         {
             width: 50%;
             height: toRem(98px);
-            line-height: toRem(98px);
             text-align: center;
             background:#4374df;
             color:#fff;
             font-size: toRem(34px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
         }
         .trdet_MsgDepart_ApplyButtonUse{
             background:#4374df;

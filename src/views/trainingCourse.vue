@@ -237,6 +237,7 @@ export default {
         position: relative;
         & > ul{
             padding-top: toRem(380px);
+            -webkit-overflow-scrolling:touch;
         }
         .train_back{
             width: toRem(24px);

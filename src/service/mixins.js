@@ -4,13 +4,14 @@ export const goBack = {
   methods: {
     goBack: function () {
       this.$router.go(-1)
-      let UA = userAgent()
+      let UA = userAgent()  
       if (!window.history.state) {
         if (UA.ios) {
           window.webkit.messageHandlers.leaveWebview.postMessage('leaveWebview')
+          // window.webkit.messageHandlers.goBack.postMessage({ vcId: 'vcId=1212' })
         }
         if (UA.android) {
-          window.jyzx.leaveWebview()
+          window.sqjz.closePage()
         }
       }
     }

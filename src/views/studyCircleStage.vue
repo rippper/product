@@ -1,7 +1,7 @@
 <template>
     <div class="studyCircleStage container_top">
         <header-fix :title="title" fixed>
-            <i class="webapp webapp-left" @click.stop="goBack" slot="left"></i>
+            <i class="webapp webapp-left" @click="goBack" slot="left"></i>
         </header-fix>
         <section class="active-circle">
             <div class="title">
@@ -114,9 +114,7 @@
             </section>
         </section>
         <div class="circleAdd">
-            <router-link :to="{path: '/studyCircleCreate', query: {id: TypeId}}">
-                <img src="../assets/circle-addBtn.png" alt="">
-            </router-link>
+            <img src="../assets/circle-addBtn.png" alt="" @click="linkToDetail">
         </div>
     </div>
 </template>
@@ -125,9 +123,7 @@
     import { CircleInfoList, CircleHotInfoList } from '../service/getData'
     import Avatar from '../assets/noCourse.png'
     import { Indicator } from 'mint-ui'
-    import { goBack } from '../service/mixins'
     export default {
-        mixins: [goBack],
         data () {
             return {
                 title: '',
@@ -234,6 +230,29 @@
                 })
                 if (data.IsSuccess) {
                     this.circleHotInfoList = data.Data.List
+                }
+            },
+            goBack () {
+                let source = JSON.parse(localStorage.getItem('source'))
+                
+                if (source == 'iOS') {
+                    alert(source)
+                    window.webkit.messageHandlers.leaveWebview.postMessage('leaveWebview')
+                } else if (source == 'android') {
+                    alert(source)
+                    window.sqjz.closePage('closePage')
+                } else {
+                    this.$router.push({ path: '/studycirclecenter' })
+                }
+            },
+            linkToDetail () {
+                let source = JSON.parse(localStorage.getItem('source'))
+                if (source == 'iOS') {
+                    window.webkit.messageHandlers.createCircle.postMessage('createCircle')
+                } else if (source == 'android') {
+                    window.sqjz.goToCreateCirclePage('opencreatepage')
+                } else {
+                    this.$router.push({ path: '/studyCircleCreate', query: { id: this.TypeId } })
                 }
             }
         },

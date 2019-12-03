@@ -12,10 +12,10 @@
                     <li
                         v-for="(item, index) in typeList"
                         :key="index"
-                        v-text="item.text"
                         @click="typeSelect(index, item.id)"
                         ref="Option"
                     >
+                        <span v-text="item.text"></span>
                     </li>
                 </ul>
             </dd>
@@ -64,9 +64,12 @@ export default {
                 width: toRem(130px);
                 padding-left: toRem(30px);
                 span{
+                    display: inline-block;
+                    height: toRem(52px);
                     font-size: toRem(28px);
-                    line-height: toRem(52px);
                     font-weight: 600;
+                    display: flex;
+                    align-items: center;
                 }
             }
             dd{
@@ -74,15 +77,19 @@ export default {
                 ul{
                     display: flex;
                     flex-wrap: wrap;
+                    align-items: center;
                     li{
                         font-size: toRem(26px);
                         margin-right: toRem(15px);
                         padding-left: toRem(25px);
                         padding-right: toRem(25px);
                         height: toRem(52px);
-                        line-height: toRem(52px);
+                        // line-height: toRem(52px);
                         border-radius: toRem(52px);
                         color: #4a608c;
+                        display: flex;
+                        justify-content: space-around;
+                        align-items: center;
                     }
                 }
             }

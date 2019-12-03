@@ -25,6 +25,7 @@ const OpenApp = _import('openApp.vue')
 const NotesDetail = _import('notesDetail.vue')
 const NoticeDetail = _import('noticeDetail.vue')
 const MyExam = _import('myExam.vue')
+const MartDetail = _import('martDetail.vue')
 
 const routes = [
   {
@@ -142,6 +143,12 @@ const routes = [
     path: '/myExam',
     component: MyExam,
     meta: { title: '我的考试' }
+  },
+  {
+    name: 'martDetail',
+    path: '/martdetail',
+    component: MartDetail,
+    meta: { title: '商品详情' }
   },
   // 考试相关路由
   ...exam,

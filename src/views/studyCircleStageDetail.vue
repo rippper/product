@@ -93,183 +93,191 @@
             </comment-list-box>
         </mt-popup>
         <div class="circleArticleAdd">
-            <router-link :to="{path: '/studyCirclePublish', query: {id: id}}">
-                <img src="../assets/circle-addBtn.png" alt="">
-            </router-link>
+            <img src="../assets/circle-addBtn.png" alt="" @click="linkToAdd()">
         </div>
     </div>
 </template>
 
 <script>
-    import Avatar from '../assets/headImg-default.png'
-    import { Indicator } from 'mint-ui'
-    import { CircleDetail, CircleArticleList, AddUserAssist, DelUserAssist, CommentList } from '../service/getData'
-    import defaultImg from '../assets/no_data@2x.png'
-    export default {
-        data () {
-            return {
-                circleDetail: [],
-                coverImgUrl: '',
-                pageNum: 1,
-                articleInfoList: [],
-                noData: false,
-                noMoreData: false,
-                Avatar: Avatar,
-                loading: false,
-                commentCount: null,
-                commentListDetail: false,
-                commentDetailpid: null,
-                commentDetailList: [],
-                commentInputState: true,
-                statec: true,
-                circleCommentList: [],
-                circleCommentId: null,
-                commentBox: false,
-                TypeId: null,
-                id: '',
-                boxArr: null,
-                typeName: 'CircleArticle'
-            }
-        },
-        created () {
-            this.id = this.$route.query.id
-        },
-        mounted () {
-            this.getCircleDetail()
-            this.getCircleArticleList()
-        },
-        methods: {
-            // 获取学习圈详情
-            async getCircleDetail () {
-                let data = await CircleDetail({ Id: this.id })
-                if (data.IsSuccess) {
-                    this.circleDetail = data.Data
-                    this.coverImgUrl = data.Data.Img
-                    if (!this.coverImgUrl) {
-                        this.coverImgUrl = defaultImg
-                    }
-                }
-            },
-            // 学习圈 帖子全部动态
-            async getCircleArticleList () {
-                Indicator.open()
-                this.loading = true
-                let data = await CircleArticleList({
-                    Sort: 'Id',
-                    Order: 'desc',
-                    Page: this.pageNum,
-                    Rows: 5,
-                    CircleId: this.id
-                })
-                Indicator.close()
-                this.loading = false
-                if (data.IsSuccess) {
-                    let arr = data.Data
-                    if (arr.length == 0 && this.pageNum > 1) {
-                        this.noMoreData = true
-                        return
-                    }
-                    if (arr.length == 0 && this.pageNum == 1) {
-                        this.noData = true
-                        return
-                    }
-                    this.pageNum += 1
-                    this.articleInfoList = this.articleInfoList.concat(arr)
-                }
-            },
-            // 添加点赞
-            async addAssist (item) {
-              let data = await AddUserAssist({
-                  ObjType: 'CircleArticle',
-                  ObjId: item.Id
-              })
-              if (data.IsSuccess) {
-                  item.AssistCount += 1
-                  item.IsAssist = 1
-              }
-            },
-            // 删除点赞
-            async deleteAssist (item) {
-                let data = await DelUserAssist({
-                    ObjType: 'CircleArticle',
-                    ObjId: item.Id
-                })
-                if (data.IsSuccess) {
-                    item.AssistCount -= 1
-                    item.IsAssist = 0
-                }
-            },
-            showCommentBox (item) {
-                let body = document.querySelector('body')
-                body.addEventListener('click', this.catchHandle, false) 
-                this.commentBox = true
-                body.style.overflow = 'hidden'
-                body.style.height = '100vh'
-                this.boxArr = item
-                this.circleCommentId = item.Id
-                // console.log(this.circleCommentId)
-                this.getCommentBoxList()
-            },
-            catchHandle () {
-                this.commentInputState = true
-            },
-            closeBox () {
-                let body = document.querySelector('body')
-                this.commentBox = false
-                this.boxArr = {}
-                body.style.overflow = 'auto'
-                body.style.height = 'auto'
-                body.removeEventListener('click', this.catchHandle, false)
-            },
-            emitstate (val) {
-                this.commentInputState = val
-            },
-            // 获取评论列表
-            async getCommentBoxList () {
-                if (!this.boxArr.Id) {
-                return
-                }
-                Indicator.open()
-                this.loading = true
-                let data = await CommentList({
-                    MainId: this.boxArr.Id,
-                    Type: 'CircleArticle',
-                    ParentId: 0,
-                    Sort: 'Id',
-                    Order: 'desc',
-                    Page: this.boxArr.page,
-                    Rows: 5
-                })
-                this.loading = false
-                Indicator.close()
-                if (data.IsSuccess) {
-                    this.circleCommentList = data.Data.List
-                    this.commentCount = data.Data.TotalCount
-                }
-            },
-            backComment () {
-                this.commentListDetail = false
-                this.showCommentBox(this.boxArr)
-            },
-            openDetail (val) {
-                this.closeBox()
-                this.commentDetailpid = val.Id
-                this.commentListDetail = true
-                let body = document.querySelector('body')
-                body.removeEventListener('click', this.catchHandle, false)
-                this.$nextTick(() => {
-                this.circleCommentList.forEach((item) => {
-                    if (item.Id == this.commentDetailpid) {
-                    this.commentDetailList = item.List
-                    }
-                })
-                })
-            }
-        },
-        watch: {
-
+import Avatar from '../assets/headImg-default.png'
+import { Indicator } from 'mint-ui'
+import { CircleDetail, CircleArticleList, AddUserAssist, DelUserAssist, CommentList } from '../service/getData'
+import defaultImg from '../assets/no_data@2x.png'
+export default {
+    data () {
+        return {
+            circleDetail: [],
+            coverImgUrl: '',
+            pageNum: 1,
+            articleInfoList: [],
+            noData: false,
+            noMoreData: false,
+            Avatar: Avatar,
+            loading: false,
+            commentCount: null,
+            commentListDetail: false,
+            commentDetailpid: null,
+            commentDetailList: [],
+            commentInputState: true,
+            statec: true,
+            circleCommentList: [],
+            circleCommentId: null,
+            commentBox: false,
+            TypeId: null,
+            id: '',
+            boxArr: null,
+            typeName: 'CircleArticle'
         }
+    },
+    created () {
+        this.id = this.$route.query.id
+    },
+    mounted () {
+        this.getCircleDetail()
+        this.getCircleArticleList()
+    },
+    methods: {
+        // 获取学习圈详情
+        async getCircleDetail () {
+            let data = await CircleDetail({ Id: this.id })
+            if (data.IsSuccess) {
+                this.circleDetail = data.Data
+                this.coverImgUrl = data.Data.Img
+                if (!this.coverImgUrl) {
+                    this.coverImgUrl = defaultImg
+                }
+            }
+        },
+        // 学习圈 帖子全部动态
+        async getCircleArticleList () {
+            Indicator.open()
+            this.loading = true
+            let data = await CircleArticleList({
+                Sort: 'Id',
+                Order: 'desc',
+                Page: this.pageNum,
+                Rows: 5,
+                CircleId: this.id
+            })
+            Indicator.close()
+            this.loading = false
+            if (data.IsSuccess) {
+                let arr = data.Data
+                if (arr.length == 0 && this.pageNum > 1) {
+                    this.noMoreData = true
+                    return
+                }
+                if (arr.length == 0 && this.pageNum == 1) {
+                    this.noData = true
+                    return
+                }
+                this.pageNum += 1
+                this.articleInfoList = this.articleInfoList.concat(arr)
+            }
+        },
+        // 添加点赞
+        async addAssist (item) {
+            let data = await AddUserAssist({
+                ObjType: 'CircleArticle',
+                ObjId: item.Id
+            })
+            if (data.IsSuccess) {
+                item.AssistCount += 1
+                item.IsAssist = 1
+            }
+        },
+        // 删除点赞
+        async deleteAssist (item) {
+            let data = await DelUserAssist({
+                ObjType: 'CircleArticle',
+                ObjId: item.Id
+            })
+            if (data.IsSuccess) {
+                item.AssistCount -= 1
+                item.IsAssist = 0
+            }
+        },
+        showCommentBox (item) {
+            let body = document.querySelector('body')
+            body.addEventListener('click', this.catchHandle, false) 
+            this.commentBox = true
+            body.style.overflow = 'hidden'
+            body.style.height = '100vh'
+            this.boxArr = item
+            this.circleCommentId = item.Id
+            // console.log(this.circleCommentId)
+            this.getCommentBoxList()
+        },
+        catchHandle () {
+            this.commentInputState = true
+        },
+        closeBox () {
+            let body = document.querySelector('body')
+            this.commentBox = false
+            this.boxArr = {}
+            body.style.overflow = 'auto'
+            body.style.height = 'auto'
+            body.removeEventListener('click', this.catchHandle, false)
+        },
+        emitstate (val) {
+            this.commentInputState = val
+        },
+        // 获取评论列表
+        async getCommentBoxList () {
+            if (!this.boxArr.Id) {
+            return
+            }
+            Indicator.open()
+            this.loading = true
+            let data = await CommentList({
+                MainId: this.boxArr.Id,
+                Type: 'CircleArticle',
+                ParentId: 0,
+                Sort: 'Id',
+                Order: 'desc',
+                Page: this.boxArr.page,
+                Rows: 5
+            })
+            this.loading = false
+            Indicator.close()
+            if (data.IsSuccess) {
+                this.circleCommentList = data.Data.List
+                this.commentCount = data.Data.TotalCount
+            }
+        },
+        backComment () {
+            this.commentListDetail = false
+            this.showCommentBox(this.boxArr)
+        },
+        openDetail (val) {
+            this.closeBox()
+            this.commentDetailpid = val.Id
+            this.commentListDetail = true
+            let body = document.querySelector('body')
+            body.removeEventListener('click', this.catchHandle, false)
+            this.$nextTick(() => {
+            this.circleCommentList.forEach((item) => {
+                if (item.Id == this.commentDetailpid) {
+                this.commentDetailList = item.List
+                }
+            })
+            })
+        },
+        linkToAdd () {
+            let source = JSON.parse(localStorage.getItem('source'))
+            if (source == 'iOS') {
+                window.webkit.messageHandlers.createCircle.postMessage('createCircle')
+            } else if (source == 'android') {
+                window.sqjz.goToCreateCirclePage('opencreatepage')
+            } else {
+                this.$router.push({ path: '/studyCircleCreate', query: { 'id': this.id } })
+            }
+        }
+    },
+    watch: {
+
     }
+}
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
@@ -303,8 +311,6 @@
                     margin: toRem(100px) toRem(30px) 0;
                     .content-num{
                         margin-right: toRem(25px);
-                    }
-                    .view-num{
                     }
                 }
             }
